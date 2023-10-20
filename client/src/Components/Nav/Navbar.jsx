@@ -24,15 +24,13 @@ const Navbar = () => {
                 <NavLink
                   key={value}
                   to={item.path}
-                  className={`text-md transition-transform${({
-                    isActive,
-                    isPending,
-                  }) =>
+                  className={({ isActive, isPending }) =>
                     isPending
-                      ? 'text-orange-400'
+                      ? 'text-md transition-transform text-orange-400'
                       : isActive
-                      ? 'text-yellow-700'
-                      : 'text-black'}`}
+                      ? 'text-md transition-transform text-yellow-700'
+                      : 'text-md transition-transform text-black'
+                  }
                 >
                   {item.name}
                 </NavLink>
