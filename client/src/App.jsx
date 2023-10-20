@@ -19,7 +19,7 @@ function App() {
         setUser,
       }}
     >
-      <div className='w-full min-h-screen'>
+      <div className='w-full min-h-screen bg-primary-main'>
         <Navbar />
 
         <div className='m-auto max-w-[1200px] w-[100%]'>

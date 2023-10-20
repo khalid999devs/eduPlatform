@@ -6,10 +6,10 @@ import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <div className='w-full h-auto py-2 px-2 md:px-[4]'>
+    <div className='w-full h-auto py-3 pb-4 px-3 md:px-[4] shadow-md'>
       <div
         id='navbar'
-        className='flex flex-row gap-4 m-auto max-w-[1200px] w-[100%] items-center'
+        className='flex flex-row gap-4 m-auto max-w-6xl w-[100%] items-center'
       >
         {/* logo */}
         <div>
@@ -28,7 +28,7 @@ const Navbar = () => {
                     isPending
                       ? 'text-md transition-transform text-orange-400'
                       : isActive
-                      ? 'text-md transition-transform text-yellow-700'
+                      ? 'text-md transition-transform text-secondary-dark'
                       : 'text-md transition-transform text-black'
                   }
                 >
@@ -41,12 +41,13 @@ const Navbar = () => {
           {/* buttons */}
           <div className='flex flex-row gap-3'>
             <PrimaryButton
-              icon={<AiFillCaretDown fontSize={'.9rem'} />}
               text={'All Courses'}
+              classes={'bg-onPrimary-light'}
             />
             <PrimaryButton
               icon={<BsCaretRight fontSize={'.9rem'} />}
               text={'Login'}
+              classes={'bg-secondary-main'}
             />
           </div>
         </div>

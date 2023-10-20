@@ -19,3 +19,14 @@ export const quickLinks = [
     path: '/liveClass',
   },
 ];
+
+export const companyLinks = [
+  {
+    name: 'Privacy policy',
+    path: '/privacy',
+  },
+  {
+    name: 'Terms and conditions',
+    path: '/terms',
+  },
+];

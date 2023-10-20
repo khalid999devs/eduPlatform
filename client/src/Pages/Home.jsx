@@ -4,7 +4,7 @@ const Home = () => {
   const { user } = ContextConsumer();
   console.log(user);
 
-  return <div className='min-h-[60vh] grid place-items-center'>Home Page</div>;
+  return <div className='h-auto py-12'></div>;
 };
 
 export default Home;
