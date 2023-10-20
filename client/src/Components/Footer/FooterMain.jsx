@@ -2,11 +2,11 @@ import { companyLinks, quickLinks } from '../../assets/LinkInfo';
 import { Link } from 'react-router-dom';
 import IconText from '../Typography/IconText';
 import { contacts } from '../../assets/pageInfo';
-import { FaPhone, FaEnvelope } from 'react-icons/fa6';
+import { FaPhone, FaEnvelope, FaLocationDot } from 'react-icons/fa6';
 
 const FooterMain = () => {
   return (
-    <div className='w-full p-2 md:p-4 md:py-10 px-2 md:px-3 mt-6 bg-onPrimary-main text-white'>
+    <div className='w-full p-2 md:p-4 py-14 md:py-10 px-2 md:px-3 mt-6 bg-onPrimary-main text-white'>
       <div
         id='mainFooter'
         className='grid md:grid-cols-[2fr,1.5fr,1.5fr] gap-4 md:gap-12 m-auto max-w-6xl w-full opacity-80'
@@ -19,7 +19,7 @@ const FooterMain = () => {
             </h1>
           </div>
           <div>
-            <p className='font-[300] text-onPrimary-light opacity-90 text-sm max-w-[70%]'>
+            <p className='font-[300] text-onPrimary-light opacity-90 text-sm max-w-[80%]'>
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint ea
               excepturi et id eveniet? Voluptas.
             </p>
@@ -58,6 +58,7 @@ const FooterMain = () => {
           <div className='flex flex-col gap-2 font-light'>
             <IconText text={contacts.mobileNos[0]} icon={<FaPhone />} />
             <IconText text={contacts.emails[0]} icon={<FaEnvelope />} />
+            <IconText text={contacts.location} icon={<FaLocationDot />} />
           </div>
         </div>
 

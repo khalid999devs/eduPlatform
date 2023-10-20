@@ -18,7 +18,7 @@ const PrimaryButton = ({
         children
       ) : (
         <>
-          <p className={`text-sm ${textClasses}`}>{text}</p>
+          {text && <p className={`text-sm ${textClasses}`}>{text}</p>}
           {icon && icon}
         </>
       )}

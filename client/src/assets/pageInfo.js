@@ -3,6 +3,7 @@ import { FaFacebook, FaYoutube } from 'react-icons/fa';
 export const contacts = {
   mobileNos: ['01XXXXXXXXX'],
   emails: ['example01@gmail.com'],
+  location: 'Motijheel, Dhaka',
   socials: [
     {
       name: 'Facebook',

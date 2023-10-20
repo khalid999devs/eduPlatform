@@ -4,6 +4,10 @@ export const links = [
     path: '/',
   },
   {
+    name: 'Courses',
+    path: '/courses',
+  },
+  {
     name: 'About',
     path: '/about',
   },
@@ -11,12 +15,17 @@ export const links = [
 
 export const quickLinks = [
   {
-    name: 'About us',
+    name: 'Courses',
+    path: '/courses',
+  },
+
+  {
+    name: 'About',
     path: '/about',
   },
   {
-    name: 'Live classes',
-    path: '/liveClass',
+    name: 'Policies',
+    path: '/policies',
   },
 ];
 

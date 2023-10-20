@@ -1,5 +1,5 @@
 import { links } from '../../assets/LinkInfo';
-import { AiFillCaretDown } from 'react-icons/ai';
+import { RxHamburgerMenu } from 'react-icons/rx';
 import { BsCaretRight } from 'react-icons/bs';
 import PrimaryButton from '../Buttons/PrimaryButton';
 import { NavLink } from 'react-router-dom';
@@ -39,7 +39,7 @@ const Navbar = () => {
           </div>
 
           {/* buttons */}
-          <div className='flex flex-row gap-3'>
+          <div className='hidden md:flex flex-row gap-3'>
             <PrimaryButton
               text={'All Courses'}
               classes={'bg-onPrimary-light'}
@@ -48,6 +48,18 @@ const Navbar = () => {
               icon={<BsCaretRight fontSize={'.9rem'} />}
               text={'Login'}
               classes={'bg-secondary-main'}
+            />
+          </div>
+
+          {/* buttons */}
+          <div className='flex md:hidden flex-row gap-3'>
+            <PrimaryButton
+              text={'All Courses'}
+              classes={'bg-onPrimary-light'}
+            />
+            <PrimaryButton
+              icon={<RxHamburgerMenu fontSize={'1.2rem'} />}
+              classes={'bg-secondary-main p-2'}
             />
           </div>
         </div>
