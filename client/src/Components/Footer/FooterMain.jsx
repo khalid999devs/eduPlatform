@@ -6,13 +6,13 @@ import { FaPhone, FaEnvelope, FaLocationDot } from 'react-icons/fa6';
 
 const FooterMain = () => {
   return (
-    <div className='w-full p-2 md:p-4 py-14 md:py-10 px-2 md:px-3 mt-6 bg-onPrimary-main text-white'>
+    <div className='w-full p-2 md:p-4 py-14 md:py-10 px-2 md:px-3 mt-16 bg-onPrimary-main text-white'>
       <div
         id='mainFooter'
-        className='grid md:grid-cols-[2fr,1.5fr,1.5fr] gap-4 md:gap-12 m-auto max-w-6xl w-full opacity-80'
+        className='grid md:grid-cols-[2fr,1.5fr,1.5fr] gap-12 md:gap-12 ml-5 md:ml-auto m-auto max-w-6xl w-full opacity-80'
       >
         {/* left logo */}
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2 md:gap-4'>
           <div>
             <h1 className='text-2xl font-bold text-secondary-main opacity-80'>
               Chemgenie
@@ -27,7 +27,7 @@ const FooterMain = () => {
         </div>
 
         {/* quick link */}
-        <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-3 md:gap-6'>
           <div>
             <h2 className='text-xl font-medium text-onPrimary-light'>
               Quick Links
@@ -49,7 +49,7 @@ const FooterMain = () => {
         </div>
 
         {/* contact */}
-        <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-3 md:gap-6'>
           <div>
             <h2 className='text-xl font-medium text-onPrimary-light'>
               Contact

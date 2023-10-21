@@ -3,22 +3,50 @@ import { RxHamburgerMenu } from 'react-icons/rx';
 import { BsCaretRight } from 'react-icons/bs';
 import PrimaryButton from '../Buttons/PrimaryButton';
 import { NavLink } from 'react-router-dom';
+import MobileNav from './MobileNav';
+import { useEffect, useState } from 'react';
 
 const Navbar = () => {
+  const [isMobOpen, setIsMobOpen] = useState(false);
+  const [isTop, setIsTop] = useState(true);
+
+  const setNavState = (e) => {
+    if (window.scrollY > 200) {
+      setIsTop(false);
+    }
+    if (window.scrollY <= 200) {
+      setIsTop(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', setNavState);
+
+    return () => {
+      window.removeEventListener('scroll', setNavState);
+    };
+  }, []);
+
   return (
-    <div className='w-full h-auto py-3 pb-4 px-3 md:px-[4] shadow-md'>
+    <div
+      className={`w-full z-40 h-auto py-3 pb-4 px-3 md:px-[4] transition-all duration-500 bg-primary-main ${
+        isTop ? '' : 'fixed shadow-md'
+      }`}
+    >
       <div
         id='navbar'
-        className='flex flex-row gap-4 m-auto max-w-6xl w-[100%] items-center'
+        className='flex flex-row gap-4 m-auto max-w-6xl w-[100%] items-center justify-between'
       >
         {/* logo */}
         <div>
-          <h1 className='text-2xl font-bold text-black w-fit pr-3'>Logo</h1>
+          <h1 className='text-2xl font-bold text-black w-fit pr-3'>
+            Chemgenie
+          </h1>
         </div>
         {/* main nav */}
-        <div className='flex flex-row justify-between w-full'>
+        <div className='flex flex-row justify-end md:justify-between w-full'>
           {/* menus */}
-          <div className='flex flex-row gap-6 px-4 items-center'>
+          <div className='hidden md:flex flex-row gap-6 px-4 items-center'>
             {links.map((item, value) => {
               return (
                 <NavLink
@@ -42,7 +70,8 @@ const Navbar = () => {
           <div className='hidden md:flex flex-row gap-3'>
             <PrimaryButton
               text={'All Courses'}
-              classes={'bg-onPrimary-light'}
+              classes={'border border-solid border-onPrimary-main '}
+              textClasses={'text-onPrimary-main'}
             />
             <PrimaryButton
               icon={<BsCaretRight fontSize={'.9rem'} />}
@@ -53,17 +82,22 @@ const Navbar = () => {
 
           {/* buttons */}
           <div className='flex md:hidden flex-row gap-3'>
-            <PrimaryButton
+            {/* <PrimaryButton
               text={'All Courses'}
               classes={'bg-onPrimary-light'}
-            />
+            /> */}
             <PrimaryButton
               icon={<RxHamburgerMenu fontSize={'1.2rem'} />}
               classes={'bg-secondary-main p-2'}
+              onClick={() => {
+                setIsMobOpen(true);
+              }}
             />
           </div>
         </div>
       </div>
+
+      <MobileNav setIsMobOpen={setIsMobOpen} isMobOpen={isMobOpen} />
     </div>
   );
 };
