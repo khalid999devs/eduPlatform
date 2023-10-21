@@ -4,17 +4,19 @@ import { Link } from 'react-router-dom';
 
 const Coursecard = ({
   cardDetails: { name, desc, price, id, rating, img },
+  onClick,
 }) => {
   return (
     <>
-      <div className='w-[350px] max-w-sm border rounded-lg shadow bg-onPrimary-main hover:scale-[101%] duration-200 transition-transform'>
-        <a href='#'>
-          <img
-            className='w-full h-64 rounded-t-lg'
-            src={'Images/cardPH.jpg' || img}
-            alt='product image'
-          />
-        </a>
+      <div
+        className='w-[350px] max-w-sm border rounded-lg shadow bg-onPrimary-main hover:scale-[101%] duration-200 transition-transform cursor-pointer'
+        onClick={onClick}
+      >
+        <img
+          className='w-full h-64 rounded-t-lg'
+          src={'Images/cardPH.jpg' || img}
+          alt='product image'
+        />
         <div className='px-5 pb-5 pt-3'>
           <h5 className='text-xl text-left font-bold tracking-tight text-white'>
             {name || 'Lorem ipsum dolor sit amet. lorem10'}

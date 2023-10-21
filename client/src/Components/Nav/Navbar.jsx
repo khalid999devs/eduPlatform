@@ -2,11 +2,12 @@ import { links } from '../../assets/LinkInfo';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { BsCaretRight } from 'react-icons/bs';
 import PrimaryButton from '../Buttons/PrimaryButton';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import MobileNav from './MobileNav';
 import { useEffect, useState } from 'react';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isMobOpen, setIsMobOpen] = useState(false);
   const [isTop, setIsTop] = useState(true);
 
@@ -30,7 +31,7 @@ const Navbar = () => {
   return (
     <div
       className={`w-full z-40 h-auto py-3 pb-4 px-3 md:px-[4] transition-all duration-500 bg-primary-main ${
-        isTop ? '' : 'fixed shadow-md'
+        isTop ? '' : 'fixed top-0 left-0 shadow-md'
       }`}
     >
       <div
@@ -72,11 +73,17 @@ const Navbar = () => {
               text={'All Courses'}
               classes={'border border-solid border-onPrimary-main '}
               textClasses={'text-onPrimary-main'}
+              onClick={() => {
+                navigate('/courses');
+              }}
             />
             <PrimaryButton
               icon={<BsCaretRight fontSize={'.9rem'} />}
               text={'Login'}
               classes={'bg-secondary-main'}
+              onClick={() => {
+                navigate('/login');
+              }}
             />
           </div>
 
