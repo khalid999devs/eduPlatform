@@ -9,7 +9,7 @@ const FooterMain = () => {
     <div className='w-full p-2 md:p-4 py-14 md:py-10 px-2 md:px-3 mt-16 bg-onPrimary-main text-white'>
       <div
         id='mainFooter'
-        className='grid md:grid-cols-[2fr,1.5fr,1.5fr] gap-12 md:gap-12 ml-5 md:ml-auto m-auto max-w-6xl w-full opacity-80'
+        className='grid md:grid-cols-[2fr,1.5fr,1.5fr] gap-12 md:gap-12 pl-5 md:pl-0 md:ml-auto m-auto max-w-6xl w-full opacity-80'
       >
         {/* left logo */}
         <div className='flex flex-col gap-2 md:gap-4'>

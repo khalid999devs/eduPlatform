@@ -7,3 +7,29 @@
 * {
   font-family: 'Poppins', sans-serif;
 }
+
+/* login form create class*/
+.create {
+  @apply grid grid-cols-1 border rounded-xl gap-2 mx-auto  ring-offset-4;
+  /* box-shadow: 0 0 40px -15px #251c9bb0; */
+}
+
+.create section {
+  @apply gap-3 flex items-center mx-auto;
+}
+
+.create > section {
+  @apply mb-4 w-full flex justify-between flex-col items-start md:flex-row;
+}
+
+.create label {
+  @apply text-sm;
+}
+
+.create > section > input {
+  @apply border-0 outline-none p-2.5 rounded-md bg-slate-900/40 text-yellow-50;
+}
+
+.create > section > input:focus {
+  @apply border-0 outline-none;
+}

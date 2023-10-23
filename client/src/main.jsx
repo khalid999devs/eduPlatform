@@ -13,6 +13,7 @@ import MyProfile from './Pages/dashboard/MyProfile.jsx';
 import EnrolledCourses from './Pages/dashboard/EnrolledCourses.jsx';
 import AllCourses from './Pages/AllCourses.jsx';
 import Coursedetails from './Pages/CourseDetails.jsx';
+import ChangePass from './Pages/Password/ChangePass.jsx';
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: '/courses',
         element: <AllCourses />,
+      },
+      {
+        path: '/change-pass',
+        element: <ChangePass />,
       },
     ],
   },

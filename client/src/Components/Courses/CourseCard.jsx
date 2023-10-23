@@ -9,7 +9,7 @@ const Coursecard = ({
   return (
     <>
       <div
-        className='w-[350px] max-w-sm border rounded-lg shadow bg-onPrimary-main hover:scale-[101%] duration-200 transition-transform cursor-pointer'
+        className=' max-w-sm border rounded-lg shadow bg-onPrimary-main hover:scale-[101%] duration-200 transition-transform cursor-pointer'
         onClick={onClick}
       >
         <img

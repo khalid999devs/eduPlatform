@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import Input from '../Components/Form/Input';
+import SignupForm from '../Components/Account/Client/SignupForm';
+import { Link } from 'react-router-dom';
+
 function ClientSignUp() {
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
@@ -7,40 +9,19 @@ function ClientSignUp() {
     e.preventDefault();
   }
   return (
-    <div className='signin'>
-      <h1 className='title'>Sign up</h1>
-      <form onSubmit={handlesubmit}>
-        <div className='create'>
-          {/* email */}
-          <Input
-            id={'email'}
-            placeHolder={'enter your email'}
-            setVal={setemail}
-            value={email}
-            autoComplete={false}
-            type={'email'}
-            title={'Email'}
-          />
-          {/* password */}
-          <Input
-            id={'pass'}
-            placeHolder={'type your password'}
-            setVal={setpass}
-            value={pass}
-            autoComplete={false}
-            type={'password'}
-            title={'Password'}
-          />
-
-          {/* button */}
-          <button
-            className='bg-slate-900 text-slate-100 rounded-md p-3 hover:bg-blue-600 hover:shadow-blue-500/40 hover:shadow-lg duration-100 ease-out'
-            type='submit'
+    <div className=' signin min-h-[60vh] max-w-[750px]  m-auto p-4 mb-24 mt-14'>
+      <SignupForm />
+      <div className='mt-5'>
+        <h1 className='text-center '>
+          Already have an account?{' '}
+          <Link
+            to={'/login'}
+            className='text-blue-500 text-center transition-color hover:text-blue-700'
           >
-            Login
-          </button>
-        </div>
-      </form>
+            Sign in
+          </Link>
+        </h1>
+      </div>
     </div>
   );
 }

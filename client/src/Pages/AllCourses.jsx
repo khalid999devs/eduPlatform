@@ -32,7 +32,7 @@ const AllCourses = () => {
   ]);
 
   return (
-    <div className='flex flex-row m-auto items-center justify-around w-full flex-wrap py-10 mt-16 gap-6 md:gap-0'>
+    <div className='flex flex-row m-auto items-center justify-center w-full flex-wrap lg:flex-nowrap py-10 mt-8 px-3 gap-6'>
       {courses.map((course, value) => {
         return (
           <Coursecard
