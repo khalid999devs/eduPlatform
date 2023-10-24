@@ -7,16 +7,25 @@ const Context = createContext('');
 
 function App() {
   const [user, setUser] = useState({
-    name: 'Example FullName',
-    usename: 'example012',
+    name: 'Example FullNamefsdhdk',
+    username: 'example012',
     avatar: '',
+    img: '',
   });
+
+  const logout = () => {
+    console.log('logged out');
+    setUser((user) => {
+      return { ...user, username: '' };
+    });
+  };
 
   return (
     <Context.Provider
       value={{
         user,
         setUser,
+        logout,
       }}
     >
       <div className='w-full min-h-screen bg-primary-main'>

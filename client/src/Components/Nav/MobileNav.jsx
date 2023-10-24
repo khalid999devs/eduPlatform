@@ -4,10 +4,10 @@ import { links } from '../../assets/LinkInfo';
 import { NavLink } from 'react-router-dom';
 import { BsCaretRight } from 'react-icons/bs';
 
-const MobileNav = ({ isMobOpen, setIsMobOpen }) => {
+const MobileNav = ({ isMobOpen, setIsMobOpen, user, setUser }) => {
   return (
     <div
-      className={`block z-40 fixed top-0 min-h-screen min-w-[300px] w-[60vw] bg-secondary-main md:hidden transition-all duration-500 ${
+      className={`block z-50 fixed top-0 min-h-screen min-w-[300px] w-[60vw] bg-secondary-main md:hidden transition-all duration-500 ${
         isMobOpen ? 'right-0' : 'right-[-100%]'
       }`}
     >
@@ -41,6 +41,20 @@ const MobileNav = ({ isMobOpen, setIsMobOpen }) => {
               </NavLink>
             );
           })}
+          {user.username && (
+            <NavLink
+              to={`/dashboard`}
+              className={({ isActive, isPending }) =>
+                isPending
+                  ? 'text-[1.4rem] hover:text-secondary-dark w-fit p-1 px-2 pr-4 transition-transform text-orange-400'
+                  : isActive
+                  ? 'text-[1.4rem] hover:text-secondary-dark w-fit p-1 px-2 pr-4 transition-transform text-secondary-dark'
+                  : 'text-[1.4rem] hover:text-secondary-dark w-fit p-1 px-2 pr-4 transition-transform text-black'
+              }
+            >
+              Dashboard
+            </NavLink>
+          )}
         </div>
         <div className=''>
           <div className='w-[80%] m-auto'>

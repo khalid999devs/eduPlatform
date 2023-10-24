@@ -14,6 +14,8 @@ import EnrolledCourses from './Pages/dashboard/EnrolledCourses.jsx';
 import AllCourses from './Pages/AllCourses.jsx';
 import Coursedetails from './Pages/CourseDetails.jsx';
 import ChangePass from './Pages/Password/ChangePass.jsx';
+import About from './Pages/About.jsx';
+import PaymentHistory from './Pages/dashboard/PaymentHistory.jsx';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: '/about',
+        element: <About />,
       },
       {
         path: '/login',
@@ -48,6 +54,10 @@ const router = createBrowserRouter([
           {
             path: '/dashboard/enrolled-courses',
             element: <EnrolledCourses />,
+          },
+          {
+            path: '/dashboard/payment-history',
+            element: <PaymentHistory />,
           },
         ],
       },

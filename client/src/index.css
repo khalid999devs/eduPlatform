@@ -7,6 +7,9 @@
 * {
   font-family: 'Poppins', sans-serif;
 }
+html {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
 
 /* login form create class*/
 .create {

@@ -3,8 +3,10 @@ import Input from '../../Form/Input';
 import AlertBox from '../../Form/AlertBox';
 import PrimaryButton from '../../Buttons/PrimaryButton';
 import { mobileResExp } from '../../../assets/utils';
+import { ContextConsumer } from '../../../App';
 
 function SignupForm() {
+  const { user, setUser } = ContextConsumer();
   const [email, setemail] = useState('');
   const [mobileNo, setMobileNo] = useState('');
   const [pass, setpass] = useState('');

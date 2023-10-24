@@ -39,3 +39,22 @@ export const companyLinks = [
     path: '/terms',
   },
 ];
+
+export const dashboardLinks = [
+  {
+    name: 'Dashboard',
+    path: '/dashboard',
+  },
+  {
+    name: 'My Profile',
+    path: '/dashboard/my-profile',
+  },
+  {
+    name: 'Enrolled Courses',
+    path: '/dashboard/enrolled-courses',
+  },
+  {
+    name: 'Payment History',
+    path: '/dashboard/payment-history',
+  },
+];

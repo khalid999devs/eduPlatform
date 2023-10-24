@@ -42,7 +42,6 @@ const MyCourses = () => {
       </h1>
       <div className='flex flex-row m-auto items-center justify-center w-full flex-wrap lg:flex-nowrap py-6 gap-6'>
         {courses.map((course, value) => {
-          console.log(course);
           return <Coursecard key={value} cardDetails={course} />;
         })}
       </div>

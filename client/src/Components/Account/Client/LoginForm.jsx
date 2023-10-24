@@ -4,8 +4,10 @@ import PrimaryButton from '../../Buttons/PrimaryButton';
 import AlertBox from '../../Form/AlertBox';
 import { Link } from 'react-router-dom';
 import { emailResExp, mobileResExp } from '../../../assets/utils';
+import { ContextConsumer } from '../../../App';
 
 function LoginForm({ children }) {
+  const { setUser, user } = ContextConsumer();
   const [emailMob, setemailMob] = useState('');
   const [pass, setpass] = useState('');
   const [check, setchk] = useState(false);

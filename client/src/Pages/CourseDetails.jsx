@@ -1,10 +1,5 @@
-import React from 'react';
-import { FaAngleRight } from 'react-icons/fa6';
-import { HiOutlineAcademicCap } from 'react-icons/hi2';
-import { PiNotebook, PiNotePencil, PiVideoBold } from 'react-icons/pi';
-import { GoDiscussionClosed } from 'react-icons/go';
-import { AiOutlineSchedule } from 'react-icons/ai';
-import { MdOutlineSlowMotionVideo } from 'react-icons/md';
+import FixedCard from '../Components/CourseDetails/FixedCard';
+import CourseInfo from '../Components/CourseDetails/CourseInfo';
 
 const Coursedetails = () => {
   return (
@@ -164,7 +159,24 @@ const Coursedetails = () => {
     //     </div>
     //   </div>
     // </div>
-    <div className='px-3 w-full m-auto my-10'>Hello</div>
+    <div className='px-3 w-full m-auto my-10 relative'>
+      <FixedCard
+        cardDetails={{
+          id: 1,
+          img: '',
+          rating: 5,
+          price: '',
+        }}
+      />
+      <CourseInfo
+        courseInfo={{
+          title: '',
+          desc: '',
+          schedule: '',
+          demoLink: '',
+        }}
+      />
+    </div>
   );
 };
 

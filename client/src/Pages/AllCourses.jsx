@@ -6,29 +6,15 @@ const AllCourses = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([
     {
-      name: '',
-      desc: '',
-      price: '',
-      id: '1',
-      rating: '',
-      img: '',
+      // name: '',
+      // desc: '',
+      // price: '',
+      // id: '1',
+      // rating: 5,
+      // img: '',
     },
-    {
-      name: '',
-      desc: '',
-      price: '',
-      id: '2',
-      rating: '',
-      img: '',
-    },
-    {
-      name: '',
-      desc: '',
-      price: '',
-      id: '3',
-      rating: '',
-      img: '',
-    },
+    {},
+    {},
   ]);
 
   return (
