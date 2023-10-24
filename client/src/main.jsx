@@ -16,6 +16,9 @@ import Coursedetails from './Pages/CourseDetails.jsx';
 import ChangePass from './Pages/Password/ChangePass.jsx';
 import About from './Pages/About.jsx';
 import PaymentHistory from './Pages/dashboard/PaymentHistory.jsx';
+import AdminDashboard from './Pages/admin/AdminDashboard.jsx';
+import Admin from './Pages/admin/Admin.jsx';
+import AdminLogin from './Pages/admin/AdminLogin.jsx';
 
 const router = createBrowserRouter([
   {
@@ -72,6 +75,21 @@ const router = createBrowserRouter([
       {
         path: '/change-pass',
         element: <ChangePass />,
+      },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <Admin />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboard />,
+      },
+      {
+        path: 'login',
+        element: <AdminLogin />,
       },
     ],
   },
