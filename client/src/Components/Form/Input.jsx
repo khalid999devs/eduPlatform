@@ -14,6 +14,7 @@ function Input({
   labelClass,
   inputClass,
   onChange,
+  name,
   props,
   error = { state: 'severe', text: '' },
 }) {
@@ -43,6 +44,7 @@ function Input({
           setVal(e.target.value);
           onChange && onChange(e);
         }}
+        name={name}
         {...props}
       />
       {error.state && (

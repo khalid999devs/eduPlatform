@@ -1,3 +1,8 @@
+import { AiFillDashboard } from 'react-icons/ai';
+import { BsFilePersonFill } from 'react-icons/bs';
+import { GiGraduateCap } from 'react-icons/gi';
+import { MdPayment } from 'react-icons/md';
+
 export const links = [
   {
     name: 'Home',
@@ -44,17 +49,21 @@ export const dashboardLinks = [
   {
     name: 'Dashboard',
     path: '/dashboard',
+    icon: AiFillDashboard,
   },
   {
     name: 'My Profile',
     path: '/dashboard/my-profile',
+    icon: BsFilePersonFill,
   },
   {
     name: 'Enrolled Courses',
     path: '/dashboard/enrolled-courses',
+    icon: GiGraduateCap,
   },
   {
     name: 'Payment History',
     path: '/dashboard/payment-history',
+    icon: MdPayment,
   },
 ];

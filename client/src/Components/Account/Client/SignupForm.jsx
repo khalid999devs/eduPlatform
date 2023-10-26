@@ -7,6 +7,7 @@ import { ContextConsumer } from '../../../App';
 
 function SignupForm() {
   const { user, setUser } = ContextConsumer();
+  const [fullName, setFullName] = useState('');
   const [email, setemail] = useState('');
   const [mobileNo, setMobileNo] = useState('');
   const [pass, setpass] = useState('');
@@ -14,8 +15,16 @@ function SignupForm() {
   const [passvalid, setpv] = useState(null);
   const [show, handlePass] = useState(false);
   const [inputError, setInputError] = useState({
-    state: '',
-    text: '',
+    mobileNo: {
+      name: '',
+      state: '',
+      text: '',
+    },
+    fullName: {
+      name: '',
+      state: '',
+      text: '',
+    },
   });
   const [error, setError] = useState({ text: '', alert: '', state: false });
   const setErrorToInit = () => {
@@ -24,9 +33,16 @@ function SignupForm() {
 
   function handlesubmit(e) {
     e.preventDefault();
-    if ((mobileNo || email) && pass && conpass && !inputError.state) {
+    if (
+      (mobileNo || email) &&
+      fullName &&
+      pass &&
+      conpass &&
+      !inputError.state
+    ) {
       setErrorToInit();
       const data = {
+        fullName,
         mobileNo,
         email,
         pass,
@@ -70,6 +86,45 @@ function SignupForm() {
           Create a new account
         </h1>
 
+        {/* Fullname */}
+        <Input
+          id={'fullName'}
+          placeHolder={'your full name'}
+          setVal={setFullName}
+          value={fullName}
+          autoComplete={true}
+          type={'text'}
+          title={'Full name'}
+          name={'fullName'}
+          required={true}
+          onChange={(e) => {
+            if (e.target.value.length > 40) {
+              setInputError((inputError) => {
+                return {
+                  ...inputError,
+                  [e.target.name]: {
+                    ...inputError.fullName,
+                    state: 'severe',
+                    text: 'Name is too long',
+                    name: e.target.name,
+                  },
+                };
+              });
+            } else
+              setInputError((inputError) => {
+                return {
+                  ...inputError,
+                  [e.target.name]: {
+                    state: '',
+                    text: '',
+                    name: '',
+                  },
+                };
+              });
+          }}
+          error={inputError.fullName}
+        />
+
         {/* email */}
         <Input
           id={'email'}
@@ -79,6 +134,7 @@ function SignupForm() {
           autoComplete={false}
           type={'email'}
           title={'Email'}
+          name={'email'}
         />
 
         {/* Mobile no */}
@@ -86,6 +142,7 @@ function SignupForm() {
           id={'mobile'}
           placeHolder={'01XXXXXXXXX'}
           setVal={setMobileNo}
+          name={'mobileNo'}
           onChange={(e) => {
             if (
               !mobileResExp.test(e.target.value) &&
@@ -94,13 +151,14 @@ function SignupForm() {
               setInputError({
                 state: 'severe',
                 text: 'Enter a valid mobile no.',
+                name: e.target.name,
               });
-            else setInputError({ state: '', text: '' });
+            else setInputError({ state: '', text: '', name: '' });
           }}
           value={mobileNo}
           autoComplete={true}
           type={'text'}
-          error={inputError}
+          error={inputError.name === 'mobileNo' ? inputError : {}}
           title={'Mobile no'}
         />
 
@@ -113,6 +171,7 @@ function SignupForm() {
           autoComplete={false}
           type={'password'}
           title={'Password'}
+          name={'password'}
           show={show}
           required={true}
           handlePass={() => handlePass((pre) => !pre)}
@@ -126,6 +185,7 @@ function SignupForm() {
           autoComplete={false}
           type={'password'}
           title={'Confirm Password'}
+          name={'confirmPass'}
           show={show}
           required={true}
           handlePass={() => handlePass((pre) => !pre)}
