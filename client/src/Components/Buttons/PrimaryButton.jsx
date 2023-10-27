@@ -5,6 +5,7 @@ const PrimaryButton = ({
   text,
   children,
   textClasses,
+  props,
 }) => {
   return (
     <button
@@ -13,6 +14,7 @@ const PrimaryButton = ({
         ` ${classes}`
       }
       onClick={onClick}
+      {...props}
     >
       {children ? (
         children

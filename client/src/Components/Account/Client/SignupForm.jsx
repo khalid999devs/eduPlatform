@@ -38,7 +38,8 @@ function SignupForm() {
       fullName &&
       pass &&
       conpass &&
-      !inputError.state
+      !inputError.fullName.state &&
+      !inputError.mobileNo.state
     ) {
       setErrorToInit();
       const data = {
@@ -49,13 +50,20 @@ function SignupForm() {
       };
       console.log(data);
     } else {
-      if (inputError.state)
-        setError({
-          text: inputError.text,
-          alert: 'error',
-          state: true,
-        });
-      else if (!email || !mobileNo)
+      if (inputError.mobileNo.state || inputError.fullName.state) {
+        if (inputError.mobileNo.state)
+          setError({
+            text: inputError.mobileNo.text,
+            alert: 'error',
+            state: true,
+          });
+        if (inputError.fullName.state)
+          setError({
+            text: inputError.fullName.text,
+            alert: 'error',
+            state: true,
+          });
+      } else if (!email || !mobileNo)
         setError({
           text: 'You must provide either email or mobile no.',
           alert: 'error',
@@ -148,17 +156,32 @@ function SignupForm() {
               !mobileResExp.test(e.target.value) &&
               e.target.value.length !== 0
             )
-              setInputError({
-                state: 'severe',
-                text: 'Enter a valid mobile no.',
-                name: e.target.name,
+              setInputError((inputError) => {
+                return {
+                  ...inputError,
+                  [e.target.name]: {
+                    state: 'severe',
+                    text: 'Enter a valid mobile no.',
+                    name: e.target.name,
+                  },
+                };
               });
-            else setInputError({ state: '', text: '', name: '' });
+            else
+              setInputError((inputError) => {
+                return {
+                  ...inputError,
+                  [e.target.name]: {
+                    state: '',
+                    text: '',
+                    name: '',
+                  },
+                };
+              });
           }}
           value={mobileNo}
           autoComplete={true}
           type={'text'}
-          error={inputError.name === 'mobileNo' ? inputError : {}}
+          error={inputError.mobileNo}
           title={'Mobile no'}
         />
 

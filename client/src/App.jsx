@@ -8,6 +8,8 @@ const Context = createContext('');
 function App() {
   const [user, setUser] = useState({
     name: 'Example FullNamefsdhdk',
+    email: 'example@gmail.com',
+    mobileNo: '01XXXXXXXXX',
     username: 'example012',
     avatar: '',
     img: '',
