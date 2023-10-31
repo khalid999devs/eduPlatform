@@ -3,33 +3,21 @@ import { FaArrowRight, FaChevronRight } from 'react-icons/fa';
 import Coursecard from '../Courses/CourseCard';
 import PrimaryButton from '../Buttons/PrimaryButton';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MyCourses = () => {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([
     {
-      name: '',
-      desc: '',
-      price: '',
-      id: '',
-      rating: '',
-      img: '',
+      // name: '',
+      // desc: '',
+      // price: '',
+      // id: '',
+      // rating: '',
+      // img: '',
     },
-    {
-      name: '',
-      desc: '',
-      price: '',
-      id: '',
-      rating: '',
-      img: '',
-    },
-    {
-      name: '',
-      desc: '',
-      price: '',
-      id: '',
-      rating: '',
-      img: '',
-    },
+    {},
+    {},
   ]);
 
   return (
@@ -42,7 +30,15 @@ const MyCourses = () => {
       </h1>
       <div className='flex flex-row m-auto items-center justify-center w-full flex-wrap lg:flex-nowrap py-6 gap-6'>
         {courses.map((course, value) => {
-          return <Coursecard key={value} cardDetails={course} />;
+          return (
+            <Coursecard
+              key={value}
+              cardDetails={course}
+              onClick={(_) => {
+                navigate(`/courses/${course.id}`);
+              }}
+            />
+          );
         })}
       </div>
 

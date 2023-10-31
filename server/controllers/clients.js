@@ -1,4 +1,4 @@
-const { CAs, ParEvents, Participants, sequelize } = require('../models');
+const { CAs, ParEvents, clients, sequelize } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -14,7 +14,7 @@ const sendSMS = require('../utils/sendSMS');
 
 const registration = async (req, res) => {
   if (req.mode === 'participant') {
-    const newPar = await Participants.create(req.user);
+    const newPar = await clients.create(req.user);
     req.eventsRel.parId = newPar.id;
     const event = await ParEvents.create(req.eventsRel);
 
@@ -39,27 +39,19 @@ const registration = async (req, res) => {
 
 const login = async (req, res) => {
   let clientUser;
-  const { email, password, mode } = req.body;
+  const { email, password } = req.body;
 
   if (!email || !password)
     return res.json({
       succeed: false,
       msg: 'Email or Password should not be empty.',
     });
-  if (mode === 'par') {
-    clientUser = await Participants.findOne({ where: { email: email } });
-  } else if (mode === 'ca') {
-    clientUser = await CAs.findOne({ where: { email: email } });
-  } else {
-    throw new BadRequestError('wrong mode value');
-  }
+  clientUser = await clients.findOne({ where: { email: email } });
 
   if (!clientUser)
     return res.json({
       succeed: false,
-      msg: `${email} does not exist for ${
-        mode === 'par' ? 'participant' : 'CA'
-      }`,
+      msg: `${email} does not exist for students`,
     });
 
   const match = await compare(password, clientUser.password);
@@ -75,7 +67,6 @@ const login = async (req, res) => {
   const user = {
     id: clientUser.id,
     userName: clientUser.userName,
-    mode: mode,
   };
 
   const token = sign(user, process.env.CLIENT_SECRET, {
@@ -98,23 +89,14 @@ const logout = (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { mode, id } = req.user;
-  let events = await ParEvents.findOne({
-    where: { [mode === 'par' ? 'parId' : 'CAId']: id },
-    attributes: ['eventInfo'],
-  });
+  const { id } = req.user;
+
   let extraInfo = {};
-  if (mode === 'par') {
-    extraInfo = await Participants.findOne({
-      where: { id: id },
-      attributes: ['fullName', 'image', 'email', 'phone'],
-    });
-  } else if (mode === 'ca') {
-    extraInfo = await CAs.findOne({
-      where: { id: id },
-      attributes: ['fullName', 'image', 'email', 'phone'],
-    });
-  }
+  extraInfo = await clients.findOne({
+    where: { id: id },
+    attributes: ['fullName', 'image', 'email', 'phone'],
+  });
+
   const result = {
     ...req.user,
     ...extraInfo.dataValues,
@@ -133,14 +115,14 @@ const deleteClient = async (req, res) => {
 
   let clientUser = null;
   if (mode === 'par') {
-    clientUser = await Participants.findByPk(id, {
+    clientUser = await clients.findByPk(id, {
       attributes: ['password', 'image'],
     });
     const match = await compare(password, clientUser.password);
     if (!match) {
       throw new UnauthenticatedError('wrong password Entered');
     }
-    await Participants.destroy({ where: { id: id } });
+    await clients.destroy({ where: { id: id } });
   } else if (mode === 'ca') {
     clientUser = await CAs.findByPk(id, { attributes: ['password', 'image'] });
     const match = await compare(password, clientUser.password);
@@ -158,25 +140,17 @@ const deleteClient = async (req, res) => {
 
 const resetPassSetToken = async (req, res) => {
   let clientUser;
-  const { email, mode, sendMode, number } = req.body;
+  const { email, sendMode, number } = req.body;
   let finder = {
     [sendMode === 'sms' ? 'phone' : 'email']:
       sendMode === 'sms' ? number : email,
   };
 
-  if (mode === 'par') {
-    clientUser = await Participants.findOne({
-      attributes: ['email', 'phone'],
-      where: finder,
-    });
-  } else if (mode === 'ca') {
-    clientUser = await CAs.findOne({
-      attributes: ['email', 'phone'],
-      where: finder,
-    });
-  } else {
-    throw new UnauthenticatedError('wrong mode value entered');
-  }
+  clientUser = await clients.findOne({
+    attributes: ['email', 'phone'],
+    where: finder,
+  });
+
   if (!clientUser) {
     throw new NotFoundError(
       `user with this ${sendMode === 'sms' ? 'number' : 'email'} does not exist`
@@ -221,11 +195,7 @@ const resetPassSetToken = async (req, res) => {
     otpCount: 0,
   };
 
-  if (mode === 'par') {
-    [metadata] = await Participants.update(updateObj, { where: finder });
-  } else {
-    [metadata] = await CAs.update(updateObj, { where: finder });
-  }
+  [metadata] = await clients.update(updateObj, { where: finder });
 
   if (metadata == 0) {
     res.json({
@@ -243,7 +213,7 @@ const resetPassSetToken = async (req, res) => {
 };
 
 const resetPassVerify = async (req, res) => {
-  const { email, otp, password, mode, phone, clientMode, sendMode } = req.body;
+  const { email, otp, password, mode, phone, sendMode } = req.body;
   const maxOtpCount = 10;
 
   let finder = {
@@ -253,7 +223,7 @@ const resetPassVerify = async (req, res) => {
 
   let otpData;
   if (clientMode === 'par') {
-    otpData = await Participants.findOne({
+    otpData = await clients.findOne({
       attributes: ['otp', 'otpCount', 'otpTime'],
       where: finder,
     });
@@ -270,10 +240,7 @@ const resetPassVerify = async (req, res) => {
     );
 
   if (mode === 'ov' && Date.now() <= Number(otpData.otpTime)) {
-    if (clientMode === 'par')
-      await Participants.increment('otpCount', { by: 1, where: finder });
-    else if (clientMode === 'ca')
-      await CAs.increment('otpCount', { by: 1, where: finder });
+    await clients.increment('otpCount', { by: 1, where: finder });
   }
 
   if (Date.now() > Number(otpData.otpTime))
@@ -292,16 +259,10 @@ const resetPassVerify = async (req, res) => {
   if (mode !== 'ov') {
     const hassedPass = hashSync(password, Number(process.env.SALT));
 
-    if (clientMode === 'par') {
-      await Participants.update(
-        { password: hassedPass },
-        { where: { [email ? 'email' : 'phone']: email ? email : phone } }
-      );
-    } else if (clientMode === 'ca') {
-      await CAs.update({ password: hassedPass }, { where: { email: email } });
-    } else {
-      throw new UnauthenticatedError('wrong mode value entered');
-    }
+    await clients.update(
+      { password: hassedPass },
+      { where: { [email ? 'email' : 'phone']: email ? email : phone } }
+    );
 
     res.json({
       succeed: true,
@@ -311,37 +272,35 @@ const resetPassVerify = async (req, res) => {
 };
 
 const getAllClients = async (req, res) => {
-  const mode = req.params.mode;
   const { skip, rowNum } = req.body;
   if (skip === '' || skip === null || skip === undefined || !rowNum)
     throw new BadRequestError('skip or rows field must not be empty');
 
-  let result;
-  if (mode === 'allPar') {
-    [result] = await sequelize.query(
-      `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM participants as par LEFT JOIN parevents as pe ON par.id=pe.parId LIMIT ${skip},${rowNum};`
-    );
-  } else if (mode === 'cas') {
-    result = await CAs.findAll({
-      include: {
-        model: ParEvents,
-        as: 'ParEvent',
-        attributes: ['eventInfo'],
-      },
-      attributes: { exclude: ['password'] },
-      offset: Number(skip),
-      limit: Number(rowNum),
-    });
-  } else {
-    [result] = await sequelize.query(
-      `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM participants as par LEFT JOIN parevents as pe ON par.id=pe.parId WHERE JSON_EXTRACT(pe.eventInfo, "$.${mode}") =0 or JSON_EXTRACT(pe.eventInfo, "$.${mode}") =1 LIMIT ${skip},${rowNum};`
-    );
-  }
+  // let result;
+  //   [result] = await sequelize.query(
+  //     `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM clients as par LEFT JOIN parevents as pe ON par.id=pe.parId LIMIT ${skip},${rowNum};`
+  //   );
+
+  // result = await clients.findAll({
+  //   include: {
+  //     model: ,
+  //     as: 'ClientCourse',
+  //     attributes: ['eventInfo'],
+  //   },
+  //   attributes: { exclude: ['password'] },
+  //   offset: Number(skip),
+  //   limit: Number(rowNum),
+  // });
+
+  // [result] = await sequelize.query(
+  //   `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM clients as par LEFT JOIN parevents as pe ON par.id=pe.parId WHERE JSON_EXTRACT(pe.eventInfo, "$.${mode}") =0 or JSON_EXTRACT(pe.eventInfo, "$.${mode}") =1 LIMIT ${skip},${rowNum};`
+  // );
+
   res.json({ succeed: true, result: result });
 };
 
 const getClientOnId = async (req, res) => {
-  const { id, userName, mode } = req.user;
+  const { id, userName } = req.user;
   const username = req.params.username;
   if (userName !== username) {
     return res.json({
@@ -351,49 +310,32 @@ const getClientOnId = async (req, res) => {
     });
   }
   let clientUser;
-  if (mode === 'par') {
-    clientUser = await Participants.findOne({
-      where: { id: id },
-      attributes: { exclude: ['password'] },
-      include: {
-        model: ParEvents,
-        as: 'ParEvent',
-      },
-    });
+  clientUser = await clients.findOne({
+    where: { id: id },
+    attributes: { exclude: ['password'] },
+    include: {
+      model: ParEvents,
+      as: 'ParEvent',
+    },
+  });
 
-    res.json({
-      succeed: true,
-      mode: mode,
-      result: clientUser,
-      msg: 'participant found',
-    });
-  } else if (mode === 'ca') {
-    clientUser = await CAs.findOne({
-      where: { id: id },
-      attributes: { exclude: ['password'] },
-      include: {
-        model: ParEvents,
-        as: 'ParEvent',
-      },
-    });
-    res.json({
-      succeed: true,
-      mode: mode,
-      result: clientUser,
-      msg: 'CA found',
-    });
-  } else {
-    res.json({
-      succeed: false,
-      msg: 'something went wrong finding the client',
-    });
-  }
+  res.json({
+    succeed: true,
+    mode: mode,
+    result: clientUser,
+    msg: 'participant found',
+  });
+
+  res.json({
+    succeed: false,
+    msg: 'something went wrong finding the client',
+  });
 };
 
 const profileView = async (req, res) => {
   const userName = req.params.username;
   let targetClient = undefined;
-  targetClient = await Participants.findOne({
+  targetClient = await clients.findOne({
     attributes: ['fullName', 'userName', 'institute', 'image'],
     where: { userName: userName },
   });
@@ -433,8 +375,6 @@ module.exports = {
   deleteClient,
   resetPassSetToken,
   resetPassVerify,
-  getEventBasedCount,
-  allPointOrderedCAs,
   getAllClients,
   getClientOnId,
   profileView,

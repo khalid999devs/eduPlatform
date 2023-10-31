@@ -25,7 +25,7 @@ const modelCases = {
   cas: 'CAs',
   contact: 'Contact',
   faq: 'Faq',
-  participants: 'Participants',
+  clients: 'clients',
 };
 
 fs.readdirSync(__dirname)

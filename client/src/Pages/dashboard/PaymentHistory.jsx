@@ -19,8 +19,8 @@ const PaymentHistory = () => {
   return (
     <div className='flex flex-col gap-5 mb-6 w-full '>
       <h1 className='text-xl font-medium '>Payment History</h1>
-      <div className=' overflow-auto'>
-        <table className='w-full border'>
+      <div className='max-w-[90vw] overflow-auto'>
+        <table className='min-w-[600px] w-full border'>
           <thead className='bg-white border-b'>
             <tr>
               <th
