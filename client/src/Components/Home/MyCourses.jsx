@@ -53,6 +53,9 @@ const MyCourses = () => {
         icon={<FaChevronRight fontSize={'1rem'} />}
         classes={'bg-secondary-main py-3 mt-2 px-10'}
         textClasses={'text-[1.05rem]'}
+        onClick={() => {
+          navigate('/courses');
+        }}
       />
     </div>
   );

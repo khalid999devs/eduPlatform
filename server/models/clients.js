@@ -51,13 +51,6 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null,
     },
   });
-  clients.associate = (models) => {
-    clients.hasOne(models.ParEvents, {
-      foreignKey: 'parId',
-      onDelete: 'CASCADE',
-      as: 'ClientCourse',
-    });
-  };
 
   return clients;
 };

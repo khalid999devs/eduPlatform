@@ -2,7 +2,7 @@ module.exports = {
   development: {
     username: 'root',
     password: '',
-    database: 'init2',
+    database: 'edu_platform',
     host: 'localhost',
     dialect: 'mysql',
     logging: false,
@@ -34,4 +34,4 @@ module.exports = {
       idle: 10000,
     },
   },
-}
+};

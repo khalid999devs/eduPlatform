@@ -1,4 +1,4 @@
-const { CAs, clients, sequelize, PageSettings } = require('../models');
+const { clients } = require('../models');
 const uniqid = require('uniqid');
 const { validate } = require('deep-email-validator');
 const { UnauthenticatedError, BadRequestError } = require('../errors');
@@ -36,12 +36,6 @@ const passwordValidate = async (req, res, next) => {
     if (!match) {
       throw new UnauthenticatedError('wrong password entered');
     } else next();
-  } else if (mode === 'ca') {
-    const clientUser = await CAs.findByPk(id, { attributes: ['password'] });
-    const match = await compare(password, clientUser.password);
-    if (!match) {
-      throw new UnauthenticatedError('wrong password entered');
-    } else next();
   }
 };
 
@@ -75,9 +69,7 @@ const clientRegValidate = async (req, res, next) => {
 };
 
 module.exports = {
-  caRegValidate,
   clientRegValidate,
   emailValidate,
   passwordValidate,
-  caPermitValidate,
 };
