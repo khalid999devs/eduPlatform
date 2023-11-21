@@ -28,13 +28,7 @@ router.get('/getClient', clientValidate, getUser);
 router.get('/view/:username', profileView);
 
 //participants
-router.post(
-  '/reg/par',
-  upload.single('participants'),
-  emailValidate,
-  clientRegValidate,
-  registration
-);
+router.post('/reg', emailValidate, clientRegValidate, registration);
 
 //combined
 router.post('/getAll', adminValidate, getAllClients);

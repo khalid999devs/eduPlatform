@@ -46,17 +46,17 @@ const clientRegValidate = async (req, res, next) => {
       where: { email: email },
     });
     if (isEmailThere) {
-      deleteFile(req.file.path);
       throw new UnauthenticatedError(`Already registered with ${email}`);
     }
 
     const hashedPass = hashSync(password, hashSalt);
+    const username = fullName.split(' ')[0].toLowerCase() + `@${Date.now()}`;
 
     const data = {
       fullName: fullName.trim(),
       email,
       phone: phone.trim(),
-      userName: req.userName,
+      userName: username,
       password: hashedPass,
     };
 

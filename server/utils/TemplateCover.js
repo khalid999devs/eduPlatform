@@ -2,7 +2,7 @@ const EmailCover = (body) => {
   return (
     body +
     `
- 
+    --Chemgenie
  `
   );
 };

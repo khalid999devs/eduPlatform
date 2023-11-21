@@ -1,4 +1,4 @@
-const { CAs, ParEvents, clients, sequelize } = require('../models');
+const { clients, sequelize } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -13,23 +13,10 @@ const mailer = require('../utils/sendMail');
 const sendSMS = require('../utils/sendSMS');
 
 const registration = async (req, res) => {
-  if (req.mode === 'participant') {
-    const newPar = await clients.create(req.user);
-    req.eventsRel.parId = newPar.id;
-    const event = await ParEvents.create(req.eventsRel);
-
-    mailer({ client: newPar, event }, 'par').catch((err) => {
-      // console.log(err)
-    });
-  } else if (req.mode === 'ca') {
-    const newCA = await CAs.create(req.user);
-    req.eventsRel.CAId = newCA.id;
-    const event = await ParEvents.create(req.eventsRel);
-
-    mailer({ client: newCA, event }, 'ca').catch((err) => {
-      // console.log(err)
-    });
-  }
+  const newPar = await clients.create(req.user);
+  mailer({ client: newPar }, 'par').catch((err) => {
+    // console.log(err)
+  });
 
   res.status(StatusCodes.CREATED).json({
     succeed: true,
@@ -100,7 +87,6 @@ const getUser = async (req, res) => {
   const result = {
     ...req.user,
     ...extraInfo.dataValues,
-    clientEvents: Object.keys(JSON.parse(events.dataValues.eventInfo)),
   };
 
   res.json({ succeed: true, result });
@@ -109,31 +95,21 @@ const getUser = async (req, res) => {
 const deleteClient = async (req, res) => {
   const { password } = req.body;
   const id = req.user.id;
-  const mode = req.user.mode;
+
   if (!password)
     throw new BadRequestError('you should provide the password first');
 
   let clientUser = null;
-  if (mode === 'par') {
-    clientUser = await clients.findByPk(id, {
-      attributes: ['password', 'image'],
-    });
-    const match = await compare(password, clientUser.password);
-    if (!match) {
-      throw new UnauthenticatedError('wrong password Entered');
-    }
-    await clients.destroy({ where: { id: id } });
-  } else if (mode === 'ca') {
-    clientUser = await CAs.findByPk(id, { attributes: ['password', 'image'] });
-    const match = await compare(password, clientUser.password);
-
-    if (!match) {
-      throw new UnauthenticatedError('wrong password Entered');
-    }
-    await CAs.destroy({ where: { id: id } });
+  clientUser = await clients.findByPk(id, {
+    attributes: ['password', 'image'],
+  });
+  const match = await compare(password, clientUser.password);
+  if (!match) {
+    throw new UnauthenticatedError('wrong password Entered');
   }
+  await clients.destroy({ where: { id: id } });
 
-  deleteFile(clientUser.image);
+  if (clientUser.image) deleteFile(clientUser.image);
   res.clearCookie('token');
   res.json({ succeed: true, msg: 'delete succeed' });
 };
@@ -163,6 +139,7 @@ const resetPassSetToken = async (req, res) => {
   if (sendMode === 'sms' && number) {
     let hostUrl = undefined;
     if (req.headers.origin) hostUrl = new URL(req.headers.origin);
+    else hostUrl = req.hostname;
     sendSMS(number, `Your ${hostUrl.host || 'resetPass'} OTP code is ${otp}`)
       .then((res) => {
         // console.log(res)
@@ -222,17 +199,11 @@ const resetPassVerify = async (req, res) => {
   };
 
   let otpData;
-  if (clientMode === 'par') {
-    otpData = await clients.findOne({
-      attributes: ['otp', 'otpCount', 'otpTime'],
-      where: finder,
-    });
-  } else {
-    otpData = await CAs.findOne({
-      attributes: ['otp', 'otpCount', 'otpTime'],
-      where: finder,
-    });
-  }
+
+  otpData = await clients.findOne({
+    attributes: ['otp', 'otpCount', 'otpTime'],
+    where: finder,
+  });
 
   if (!otpData)
     throw new UnauthenticatedError(

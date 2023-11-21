@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from './Components/Nav/Navbar';
 import FooterMain from './Components/Footer/FooterMain';
 import { createContext, useContext, useState } from 'react';
+import './axios/global';
 
 const Context = createContext('');
 

@@ -1,7 +1,7 @@
-const nodemailer = require('nodemailer')
-const { writeFileSync } = require('fs')
-const { htmlCreator } = require('./htmlTemplates')
-const { EmailCover, EmailTextCover } = require('./TemplateCover')
+const nodemailer = require('nodemailer');
+const { writeFileSync } = require('fs');
+const { htmlCreator } = require('./htmlTemplates');
+const { EmailCover, EmailTextCover } = require('./TemplateCover');
 
 let transporter = nodemailer.createTransport({
   pool: true,
@@ -16,24 +16,24 @@ let transporter = nodemailer.createTransport({
     // do not fail on invalid certs
     rejectUnauthorized: false,
   },
-})
+});
 
 const mailer = async (data, mode) => {
-  const { subject, body, text } = htmlCreator(mode, data)
+  const { subject, body, text } = htmlCreator(mode, data);
 
   let mailContent = {
-    from: `NDITC <${process.env.SERVER_EMAIL}>`,
+    from: `Chemgenie <${process.env.SERVER_EMAIL}>`,
     to: `${data.client.email}`,
     subject: subject,
     html: body ? EmailCover(body) : null,
     text: text ? EmailTextCover(text) : null,
-  }
+  };
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailContent, function (error, mailData) {
-      const date = new Date()
+      const date = new Date();
       const fullTime = `${date.getDate()}-${
         date.getMonth() + 1
-      }-${date.getFullYear()} ,time-${date.getHours()}:${date.getMinutes()}`
+      }-${date.getFullYear()} ,time-${date.getHours()}:${date.getMinutes()}`;
 
       if (error) {
         writeFileSync(
@@ -44,10 +44,10 @@ const mailer = async (data, mode) => {
             flag: 'a+',
             mode: 0o666,
           }
-        )
-        console.log(error)
+        );
+        console.log(error);
 
-        reject('email sending failed. something went wrong')
+        reject('email sending failed. something went wrong');
       } else {
         writeFileSync(
           './logs/succeed/sentEmails.txt',
@@ -57,11 +57,11 @@ const mailer = async (data, mode) => {
             flag: 'a+',
             mode: 0o666,
           }
-        )
-        resolve('success')
+        );
+        resolve('success');
       }
-    })
-  })
-}
+    });
+  });
+};
 
-module.exports = mailer
+module.exports = mailer;
