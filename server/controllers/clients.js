@@ -14,9 +14,9 @@ const sendSMS = require('../utils/sendSMS');
 
 const registration = async (req, res) => {
   const newPar = await clients.create(req.user);
-  mailer({ client: newPar }, 'par').catch((err) => {
-    // console.log(err)
-  });
+  // mailer({ client: newPar }, 'par').catch((err) => {
+  //   // console.log(err)
+  // });
 
   res.status(StatusCodes.CREATED).json({
     succeed: true,

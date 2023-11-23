@@ -4,9 +4,17 @@ import AlertBox from '../../Form/AlertBox';
 import PrimaryButton from '../../Buttons/PrimaryButton';
 import { mobileResExp } from '../../../assets/utils';
 import { ContextConsumer } from '../../../App';
+import axios from 'axios';
+import reqs from '../../../assets/requests';
+import Checkbox from '../../Form/Checkbox';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import Popup from '../../Alerts/Popup';
 
 function SignupForm() {
-  const { user, setUser } = ContextConsumer();
+  const { settings, setSettings, setContextTrigger, contextTrigger } =
+    ContextConsumer();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [fullName, setFullName] = useState('');
   const [email, setemail] = useState('');
   const [mobileNo, setMobileNo] = useState('');
@@ -27,6 +35,10 @@ function SignupForm() {
     },
   });
   const [error, setError] = useState({ text: '', alert: '', state: false });
+  const [keepLogged, setKeppLogged] = useState(true);
+  const [accept, setAccept] = useState(false);
+  const [popup, setPopup] = useState({ text: '', state: '' }); //state: error,warning,success
+  const [loading, setLoading] = useState(false);
   const setErrorToInit = () => {
     setError({ text: '', alert: '', state: false });
   };
@@ -42,13 +54,72 @@ function SignupForm() {
       !inputError.mobileNo.state
     ) {
       setErrorToInit();
+      setLoading(true);
       const data = {
         fullName,
-        mobileNo,
+        phone: mobileNo,
         email,
-        pass,
+        password: pass,
       };
-      console.log(data);
+      setPopup({ text: 'Submitting your information', state: '' });
+      axios
+        .post(reqs.CLIENT_REG, data)
+        .then((res) => {
+          if (res.data?.succeed) {
+            setLoading(false);
+            if (keepLogged) {
+              setPopup({ text: 'Logging in...', state: '' });
+              setLoading(true);
+              axios
+                .post(
+                  reqs.CLIENT_LOGIN,
+                  { email, password: pass },
+                  { withCredentials: true }
+                )
+                .then((res) => {
+                  if (res.data.succeed) {
+                    setPopup({ text: res.data.msg, state: 'success' });
+                    setContextTrigger(!contextTrigger);
+                  } else {
+                    navigate(`/login`);
+                    return;
+                  }
+                  navigate(settings.redirect || `/dashboard`);
+                })
+                .catch((err) => {
+                  setLoading(false);
+                  setPopup({
+                    text: err.response.data.msg || 'Login failed',
+                    state: 'error',
+                  });
+                });
+            } else {
+              setPopup({ text: res.data.msg, state: 'success' });
+              navigate(settings.redirect || `/dashboard`);
+            }
+
+            setFullName('');
+            setemail('');
+            setMobileNo('');
+            setpass('');
+            setConpass('');
+          } else {
+            setError({
+              text: res.data.msg,
+              alert: 'error',
+              state: true,
+            });
+            return;
+          }
+        })
+        .catch((err) => {
+          setPopup({ text: '', state: '' });
+          setError({
+            text: err.response.data.msg,
+            alert: 'error',
+            state: true,
+          });
+        });
     } else {
       if (inputError.mobileNo.state || inputError.fullName.state) {
         if (inputError.mobileNo.state)
@@ -69,6 +140,8 @@ function SignupForm() {
           alert: 'error',
           state: true,
         });
+
+      return;
     }
   }
   useEffect(() => {
@@ -83,6 +156,7 @@ function SignupForm() {
 
   return (
     <>
+      <Popup />
       {error.state && (
         <AlertBox setAlert={setError} text={error.text} alert={error.alert} />
       )}
@@ -231,6 +305,18 @@ function SignupForm() {
           </p>
         )}
         {/* button */}
+        <Checkbox
+          checked={keepLogged}
+          setChecked={setKeppLogged}
+          text={`Keep me logged in`}
+          name={'keepLogged'}
+        />
+        <Checkbox
+          checked={accept}
+          setChecked={setAccept}
+          text={`I accept the tearms and cookies`}
+          name={'acceptTerms'}
+        />
         {/* button */}
         <PrimaryButton
           classes={'bg-onPrimary-main p-3 mt-4'}

@@ -16,6 +16,11 @@ function App() {
     img: '',
   });
 
+  const [settings, setSettings] = useState({
+    redirect: '',
+  });
+  const [contextTrigger, setContextTrigger] = useState(false);
+
   const logout = () => {
     console.log('logged out');
     setUser((user) => {
@@ -29,6 +34,10 @@ function App() {
         user,
         setUser,
         logout,
+        settings,
+        setSettings,
+        contextTrigger,
+        setContextTrigger,
       }}
     >
       <div className='w-full min-h-screen bg-primary-main'>
