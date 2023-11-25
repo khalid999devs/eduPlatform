@@ -66,6 +66,7 @@ function SignupForm() {
         .post(reqs.CLIENT_REG, data)
         .then((res) => {
           if (res.data?.succeed) {
+            setPopup({ text: res.data.msg, state: 'success' });
             setLoading(false);
             if (keepLogged) {
               setPopup({ text: 'Logging in...', state: '' });
@@ -73,18 +74,23 @@ function SignupForm() {
               axios
                 .post(
                   reqs.CLIENT_LOGIN,
-                  { email, password: pass },
+                  {
+                    email,
+                    phone: mobileNo,
+                    password: pass,
+                    isCookieLong: true,
+                  },
                   { withCredentials: true }
                 )
                 .then((res) => {
                   if (res.data.succeed) {
                     setPopup({ text: res.data.msg, state: 'success' });
                     setContextTrigger(!contextTrigger);
+                    navigate(settings.redirect || `/dashboard`);
                   } else {
                     navigate(`/login`);
                     return;
                   }
-                  navigate(settings.redirect || `/dashboard`);
                 })
                 .catch((err) => {
                   setLoading(false);
@@ -95,7 +101,6 @@ function SignupForm() {
                 });
             } else {
               setPopup({ text: res.data.msg, state: 'success' });
-              navigate(settings.redirect || `/dashboard`);
             }
 
             setFullName('');
@@ -104,18 +109,17 @@ function SignupForm() {
             setpass('');
             setConpass('');
           } else {
-            setError({
-              text: res.data.msg,
-              alert: 'error',
-              state: true,
-            });
-            return;
+            throw new Error(res.data.msg);
           }
         })
         .catch((err) => {
-          setPopup({ text: '', state: '' });
+          setLoading(false);
+          setPopup({
+            text: err.response.data.msg || err.message,
+            state: 'error',
+          });
           setError({
-            text: err.response.data.msg,
+            text: err.response.data.msg || err.message,
             alert: 'error',
             state: true,
           });
@@ -156,7 +160,19 @@ function SignupForm() {
 
   return (
     <>
-      <Popup />
+      {popup.text && (
+        <Popup
+          state={popup.state}
+          text={popup.text}
+          loading={loading}
+          onClick={() => {
+            setLoading(false);
+            if (popup.state === 'success' && !keepLogged) {
+              navigate(settings.redirect || `/login`);
+            } else setPopup({ text: '', state: '' });
+          }}
+        />
+      )}
       {error.state && (
         <AlertBox setAlert={setError} text={error.text} alert={error.alert} />
       )}
@@ -213,7 +229,7 @@ function SignupForm() {
           placeHolder={'example@gmail.com'}
           setVal={setemail}
           value={email}
-          autoComplete={false}
+          autoComplete={true}
           type={'email'}
           title={'Email'}
           name={'email'}
@@ -305,6 +321,7 @@ function SignupForm() {
           </p>
         )}
         {/* button */}
+
         <Checkbox
           checked={keepLogged}
           setChecked={setKeppLogged}
@@ -323,6 +340,7 @@ function SignupForm() {
           textClasses={'text-center w-full text-white'}
           text={'Sign Up'}
           type={'submit'}
+          disabled={!accept}
         />
       </form>
     </>

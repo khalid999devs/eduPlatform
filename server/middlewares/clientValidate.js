@@ -12,7 +12,6 @@ const emailValidate = async (req, res, next) => {
   if (email) {
     if (emailRes?.valid) next();
     else {
-      deleteFile(req.file.path);
       throw new UnauthenticatedError(
         'Invalid email ID. Please provide a valid one.'
       );
@@ -41,7 +40,7 @@ const passwordValidate = async (req, res, next) => {
 
 const clientRegValidate = async (req, res, next) => {
   const { fullName, email, phone, password } = req.body;
-  if (fullName && email && phone && password) {
+  if (fullName && (email || phone) && password) {
     const isEmailThere = await clients.findOne({
       where: { email: email },
     });

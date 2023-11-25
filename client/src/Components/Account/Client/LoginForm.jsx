@@ -2,23 +2,33 @@ import { useEffect, useState } from 'react';
 import Input from '../../Form/Input';
 import PrimaryButton from '../../Buttons/PrimaryButton';
 import AlertBox from '../../Form/AlertBox';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { emailResExp, mobileResExp } from '../../../assets/utils';
 import { ContextConsumer } from '../../../App';
+import Popup from '../../Alerts/Popup';
+import reqs from '../../../assets/requests';
+import axios from 'axios';
 
 function LoginForm({ children }) {
-  const { setUser, user } = ContextConsumer();
+  const { setUser, user, contextTrigger, setContextTrigger, settings } =
+    ContextConsumer();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [emailMob, setemailMob] = useState('');
   const [pass, setpass] = useState('');
   const [check, setchk] = useState(false);
   const [show, handlePass] = useState(false);
   const [error, setError] = useState({ text: '', alert: '', state: false });
+  const [popup, setPopup] = useState({ text: '', state: '' }); //state: error,warning,success
   const setErrorToInit = () => {
     setError({ text: '', alert: '', state: false });
   };
+  const [loading, setLoading] = useState(false);
 
   function handlesubmit(e) {
     e.preventDefault();
+    let emailS = '',
+      phoneS = '';
     if (emailMob && pass) {
       let passed = false;
       if (emailMob.includes('@')) {
@@ -29,7 +39,10 @@ function LoginForm({ children }) {
             alert: 'error',
           });
           passed = false;
-        } else passed = true;
+        } else {
+          passed = true;
+          emailS = emailMob;
+        }
       } else {
         if (!mobileResExp.test(emailMob)) {
           setError({
@@ -38,18 +51,44 @@ function LoginForm({ children }) {
             alert: 'error',
           });
           passed = false;
-        } else passed = true;
+        } else {
+          passed = true;
+          phoneS = emailMob;
+        }
       }
 
       if (passed === true) {
         if (error.state) setErrorToInit();
         const data = {
-          emailMob,
-          pass,
+          email: emailS,
+          phone: phoneS,
+          password: pass,
           isCookieLong: check,
         };
         console.log(data);
         //api call here
+        setLoading(true);
+        setPopup({ text: 'Logging in...' });
+        axios
+          .post(reqs.CLIENT_LOGIN, { ...data }, { withCredentials: true })
+          .then((res) => {
+            if (res.data.succeed) {
+              setPopup({ text: res.data.msg, state: 'success' });
+              setContextTrigger(!contextTrigger);
+              navigate(settings.redirect || `/dashboard`);
+            } else {
+              throw new Error(res.data.msg);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+            setPopup({
+              text: err.response?.data.msg || err.message || 'Login failed',
+              state: 'error',
+            });
+            setpass('');
+          });
       } else {
         return;
       }
@@ -65,6 +104,17 @@ function LoginForm({ children }) {
 
   return (
     <>
+      {popup.text && (
+        <Popup
+          state={popup.state}
+          text={popup.text}
+          loading={loading}
+          onClick={() => {
+            setLoading(false);
+            setPopup({ text: '', state: '' });
+          }}
+        />
+      )}
       {error.state && (
         <AlertBox setAlert={setError} text={error.text} alert={error.alert} />
       )}

@@ -11,6 +11,7 @@ const { attachTokenToResponse } = require('../utils/createToken');
 const deleteFile = require('../utils/deleteFile');
 const mailer = require('../utils/sendMail');
 const sendSMS = require('../utils/sendSMS');
+const { Op } = require('sequelize');
 
 const registration = async (req, res) => {
   const newPar = await clients.create(req.user);
@@ -26,14 +27,16 @@ const registration = async (req, res) => {
 
 const login = async (req, res) => {
   let clientUser;
-  const { email, password } = req.body;
+  const { email, password, isCookieLong, phone } = req.body;
 
-  if (!email || !password)
+  if ((!email && !phone) || !password)
     return res.json({
       succeed: false,
-      msg: 'Email or Password should not be empty.',
+      msg: 'Email & Phone or Password field should not be empty.',
     });
-  clientUser = await clients.findOne({ where: { email: email } });
+  clientUser = await clients.findOne({
+    where: { [Op.or]: [{ email: email }, { phone: phone }] },
+  });
 
   if (!clientUser)
     return res.json({
@@ -57,7 +60,7 @@ const login = async (req, res) => {
   };
 
   const token = sign(user, process.env.CLIENT_SECRET, {
-    expiresIn: 60 * 60 * 24 * 30,
+    expiresIn: isCookieLong ? 60 * 60 * 24 * 30 : 60 * 60 * 4,
   });
   attachTokenToResponse('token', { res, token, expiresInDay: 30 });
   res.json({

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-export const useFetch = (url, setAlertMsg, credentials = false) => {
+export const useFetch = ({ url, setAlertMsg, credentials = false }) => {
   const [data, setData] = useState([]);
+  const [alert, setAlert] = useState('');
 
   const getData = useCallback(async () => {
     try {
@@ -11,9 +12,13 @@ export const useFetch = (url, setAlertMsg, credentials = false) => {
       });
       if (response.data.succeed) {
         setData(response.data);
+      } else {
+        setAlertMsg ? setAlertMsg(res.data.msg) : setAlert(res.data.msg);
       }
     } catch (error) {
-      setAlertMsg(error.response.data.msg);
+      setAlertMsg
+        ? setAlertMsg(error.response.data.msg)
+        : setAlert(error.response.data.msg);
     }
   }, [url]);
 

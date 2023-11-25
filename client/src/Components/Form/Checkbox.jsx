@@ -6,7 +6,7 @@ const Checkbox = ({ checked, setChecked, name, text, extra, classes }) => {
       <input
         type='checkbox'
         name={name}
-        value={checked}
+        checked={checked}
         onChange={() => {
           setChecked(!checked);
         }}
