@@ -27,10 +27,21 @@ function App() {
   const [contextTrigger, setContextTrigger] = useState(false);
 
   const logout = () => {
-    console.log('logged out');
-    setUser((user) => {
-      return { ...user, username: '' };
-    });
+    axios
+      .get(reqs.CLIENT_LOGOUT, { withCredentials: true })
+      .then((res) => {
+        console.log(res.data, '');
+        if (res.data.succeed) {
+          setUser((user) => {
+            return { ...user, username: '' };
+          });
+        } else {
+          throw new Error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const setClientUser = (data) => {

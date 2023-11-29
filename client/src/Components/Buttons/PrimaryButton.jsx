@@ -7,6 +7,7 @@ const PrimaryButton = ({
   textClasses,
   props,
   disabled,
+  type,
 }) => {
   return (
     <button
@@ -17,6 +18,7 @@ const PrimaryButton = ({
       }
       onClick={onClick}
       disabled={disabled || false}
+      type={type || 'button'}
       {...props}
     >
       {children ? (

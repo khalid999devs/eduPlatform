@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { dashboardLinks } from '../../assets/LinkInfo';
 
 const Avatar = ({ user, logout }) => {
+  const navigate = useNavigate();
   return (
     <div className='flex flex-row gap-2 w-max h-full p-1 py-0 relative [&:hover>#tooltip]:block [&:hover>#tooltip]:opacity-100 items-center z-50 cursor-pointer px-2 md:px-1 lg:px-2'>
       <div className='w-[35px] h-[35px]'>
@@ -54,6 +55,7 @@ const Avatar = ({ user, logout }) => {
               className='w-fit hover:text-secondary-dark transition-colors duration-200 mt-3'
               onClick={() => {
                 logout();
+                navigate('/login');
               }}
             >
               Logout

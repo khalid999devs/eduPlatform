@@ -5,6 +5,9 @@ import ValuedInput from '../../Components/Form/ValuedInput';
 import { ContextConsumer } from '../../App';
 import SendOTP from './SendOTP';
 import VerifyOTP from './VerifyOTP';
+import axios from 'axios';
+import reqs from '../../assets/requests';
+import FinalPassChange from './FinalPassChange';
 
 const ChangePass = () => {
   const { user } = ContextConsumer();
@@ -14,14 +17,58 @@ const ChangePass = () => {
   });
   const [changeMode, setChangeMode] = useState('SendOTP');
   const [mode, setMode] = useState('email');
+  const [changeInfo, setChangeInfo] = useState({
+    pass: '',
+    cPass: '',
+  });
+  const [otp, setOtp] = useState('');
 
   const handleSetOtp = () => {
-    console.log(`otp sent`);
-    setChangeMode('VerifyOTP');
+    const data =
+      mode == 'email'
+        ? { email: info.email, sendMode: mode }
+        : { number: info.mobileNo, sendMode: mode };
+
+    axios
+      .post(reqs.RESET_PASS_SET_TOKEN, data)
+      .then((res) => {
+        if (res.data.succeed) {
+          console.log(res.data);
+          setChangeMode('VerifyOTP');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
+  const handleOTPVerify = () => {
+    axios
+      .post(reqs.RESET_PASS_OTP_VERIFY, {})
+      .then((res) => {
+        if (res.data.succeed) {
+          setChangeMode('finalPassChange');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleChangePass = () => {
+    console.log('pads');
+    //axios.post(reqs.RESET_PASS_OTP_VERIFY,{})
+  };
+
   const handleChange = (e) => {
     setInfo((info) => {
       return { ...info, [e.target.name]: e.target.value };
+    });
+  };
+
+  const handleNewPassChange = (e) => {
+    setChangeInfo((changeInfo) => {
+      return { ...changeInfo, [e.target.name]: e.target.value };
     });
   };
 
@@ -41,8 +88,14 @@ const ChangePass = () => {
             handleSetOtp={handleSetOtp}
             handleChange={handleChange}
           />
+        ) : changeMode === 'VerifyOTP' ? (
+          <VerifyOTP otp={otp} setOtp={setOtp} mode={mode} info={info} />
         ) : (
-          <VerifyOTP />
+          <FinalPassChange
+            changeInfo={changeInfo}
+            handleNewPassChange={handleNewPassChange}
+            handleChangePass={handleChangePass}
+          />
         )}
       </div>
     </div>
