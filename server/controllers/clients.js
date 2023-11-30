@@ -143,11 +143,13 @@ const resetPassSetToken = async (req, res) => {
     let hostUrl = undefined;
     if (req.headers.origin) hostUrl = new URL(req.headers.origin);
     else hostUrl = req.hostname;
-    sendSMS(number, `Your ${hostUrl.host || 'resetPass'} OTP code is ${otp}`)
+    sendSMS(number, `Your ${hostUrl || 'resetPass'} OTP code is ${otp}`)
       .then((res) => {
-        // console.log(res)
+        // console.log(res);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        // console.log(err);
+      });
   } else if (email) {
     mailer(
       {

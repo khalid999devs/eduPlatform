@@ -4,7 +4,6 @@ import PrimaryButton from '../../Components/Buttons/PrimaryButton';
 import ValuedInput from '../../Components/Form/ValuedInput';
 import { ContextConsumer } from '../../App';
 import SendOTP from './SendOTP';
-import VerifyOTP from './VerifyOTP';
 import axios from 'axios';
 import reqs from '../../assets/requests';
 import FinalPassChange from './FinalPassChange';
@@ -15,13 +14,14 @@ const ChangePass = () => {
     email: user.email,
     mobileNo: user.mobileNo,
   });
-  const [changeMode, setChangeMode] = useState('SendOTP');
+  const [changeMode, setChangeMode] = useState('finalPassChange'); //SendOTP|VerifyOTP|finalPassChange
   const [mode, setMode] = useState('email');
   const [changeInfo, setChangeInfo] = useState({
     pass: '',
     cPass: '',
   });
   const [otp, setOtp] = useState('');
+  const [alert, setAlert] = useState({ msg: '', state: '' });
 
   const handleSetOtp = () => {
     const data =
@@ -34,23 +34,43 @@ const ChangePass = () => {
       .then((res) => {
         if (res.data.succeed) {
           console.log(res.data);
+          setAlert({ msg: res.data.msg, state: 'success' });
           setChangeMode('VerifyOTP');
+        } else {
+          throw new Error(res.data.msg);
         }
       })
       .catch((err) => {
+        setAlert({
+          msg: err.response.data.msg || err.message || 'Error sending OTP',
+          state: 'error',
+        });
         console.log(err);
       });
   };
 
-  const handleOTPVerify = () => {
+  const handleOTPVerify = (onChangeOTP) => {
     axios
-      .post(reqs.RESET_PASS_OTP_VERIFY, {})
+      .post(reqs.RESET_PASS_OTP_VERIFY, {
+        [info.email ? 'email' : 'phone']: info.email || info.mobileNo,
+        otp: onChangeOTP.length === 4 ? onChangeOTP : otp,
+        mode: 'ov',
+        sendMode: mode,
+      })
       .then((res) => {
         if (res.data.succeed) {
+          console.log(res.data);
+          setAlert({ msg: res.data?.msg, state: 'success' });
           setChangeMode('finalPassChange');
+        } else {
+          throw new Error(res.data.msg);
         }
       })
       .catch((err) => {
+        setAlert({
+          msg: err.response?.data.msg || err.message || 'Error sending OTP',
+          state: 'error',
+        });
         console.log(err);
       });
   };
@@ -79,7 +99,7 @@ const ChangePass = () => {
           Change Password
         </h1>
 
-        {changeMode === 'SendOTP' ? (
+        {changeMode === 'SendOTP' || changeMode === 'VerifyOTP' ? (
           <SendOTP
             info={info}
             setInfo={setInfo}
@@ -87,9 +107,12 @@ const ChangePass = () => {
             setMode={setMode}
             handleSetOtp={handleSetOtp}
             handleChange={handleChange}
+            changeMode={changeMode}
+            otp={otp}
+            setOtp={setOtp}
+            handleOTPVerify={handleOTPVerify}
+            alert={alert}
           />
-        ) : changeMode === 'VerifyOTP' ? (
-          <VerifyOTP otp={otp} setOtp={setOtp} mode={mode} info={info} />
         ) : (
           <FinalPassChange
             changeInfo={changeInfo}
