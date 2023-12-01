@@ -13,6 +13,9 @@ const SendOTP = ({
   setOtp,
   alert,
   handleOTPVerify,
+  setChangeMode,
+  otpClicked,
+  countDownRef,
 }) => {
   return (
     <>
@@ -81,6 +84,7 @@ const SendOTP = ({
           className='text-secondary-dark hover:text-orange-600 transition-transform p-1'
           onClick={() => {
             setMode((mode) => (mode === 'email' ? 'sms' : 'email'));
+            if (changeMode === 'VerifyOTP') setChangeMode('SendOTP');
           }}
         >
           {mode === 'email'
@@ -90,7 +94,7 @@ const SendOTP = ({
       </div>
 
       {/* button */}
-      {changeMode === 'SendOTP' ? (
+      {otpClicked === false ? (
         <PrimaryButton
           classes={'bg-onPrimary-main p-3'}
           textClasses={'text-center w-full text-white'}
@@ -99,13 +103,11 @@ const SendOTP = ({
           onClick={handleSetOtp}
         />
       ) : (
-        <PrimaryButton
-          classes={'bg-onPrimary-main p-3'}
-          textClasses={'text-center w-full text-white'}
-          text={'Verify OTP'}
-          type={'submit'}
-          onClick={handleOTPVerify}
-        />
+        <p className='mt-2 text-center text-onPrimary-main text-[.9rem]'>
+          you will be able to ask for new otp within{' '}
+          <span ref={countDownRef} className='text-red-600 text-sm'></span>{' '}
+          seconds
+        </p>
       )}
     </>
   );
