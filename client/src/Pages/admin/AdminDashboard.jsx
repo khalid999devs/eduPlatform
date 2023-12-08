@@ -1,7 +1,7 @@
-import { Outlet } from 'react-router-dom';
-
+import { Outlet } from "react-router-dom";
+import AdminRoot from "../../Components/Admin/admin/adminRoot";
 const AdminDashboard = () => {
-  return <div>Admin Dashboard</div>;
+  return <AdminRoot />;
 };
 
 export default AdminDashboard;
