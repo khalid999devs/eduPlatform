@@ -9,7 +9,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-  })
+  });
 
-  return Admin
-}
+  Admin.associate = (models) => {
+    Admin.hasMany(models.notifications, {
+      foriegnKey: 'adminId',
+      onDelete: 'CASCADE',
+    });
+  };
+
+  return Admin;
+};

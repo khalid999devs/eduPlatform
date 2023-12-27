@@ -48,5 +48,24 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
+  clients.associate = (models) => {
+    clients.hasMany(models.clientcourses, {
+      foriegnKey: 'clientId',
+      onDelete: 'CASCADE',
+    });
+    clients.hasMany(models.notifications, {
+      foriegnKey: 'clientId',
+      onDelete: 'CASCADE',
+    });
+    clients.hasMany(models.orders, {
+      foriegnKey: 'clientId',
+      onDelete: 'CASCADE',
+    });
+    clients.hasMany(models.clientexams, {
+      foriegnKey: 'clientId',
+      onDelete: 'CASCADE',
+    });
+  };
+
   return clients;
 };
