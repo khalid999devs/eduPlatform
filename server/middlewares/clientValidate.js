@@ -27,15 +27,14 @@ const passwordValidate = async (req, res, next) => {
   const { password } = req.body;
   if (!password) {
   }
-  if (mode === 'par') {
-    const clientUser = await clients.findByPk(id, {
-      attributes: ['password'],
-    });
-    const match = await compare(password, clientUser.password);
-    if (!match) {
-      throw new UnauthenticatedError('wrong password entered');
-    } else next();
-  }
+
+  const clientUser = await clients.findByPk(id, {
+    attributes: ['password'],
+  });
+  const match = await compare(password, clientUser.password);
+  if (!match) {
+    throw new UnauthenticatedError('wrong password entered');
+  } else next();
 };
 
 const clientRegValidate = async (req, res, next) => {
@@ -62,7 +61,6 @@ const clientRegValidate = async (req, res, next) => {
     req.user = data;
     next();
   } else {
-    deleteFile(req.file.path);
     throw new BadRequestError('Input fields should not be empty');
   }
 };

@@ -6,6 +6,9 @@ const { BadRequestError } = require('../errors');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const validFields = /students|courses/;
+    if (!file.fieldname) {
+      return cb(null, true);
+    }
     const isFieldValid = validFields.test(file.fieldname);
     if (!isFieldValid) {
       cb(new Error(`Field name didn't match`));
@@ -40,7 +43,8 @@ const storage = multer.diskStorage({
         cb(new BadRequestError('fullName should be provided'));
       }
     } else if (file.fieldname === 'courses') {
-      fileName = req.body.name.split(' ').join('') + `@${Date.now()}`;
+      fileName =
+        req.body.title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
     } else {
       fileName = file.fieldname + `-${Date.now()}`;
     }

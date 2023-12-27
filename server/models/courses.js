@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: 'free',
       },
-      ectimatedPrice: {
+      estimatedPrice: {
         type: DataTypes.INTEGER,
       },
       tags: {
@@ -39,7 +39,21 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      durationMonth: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      feeInterval: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        // values: ['monthly', 'full'],
+        defaultValue: 'monthly',
+      },
       instructor: {
+        type: DataTypes.TEXT,
+        defaultValue: '{}',
+      },
+      classInfo: {
         type: DataTypes.TEXT,
         defaultValue: '{}',
       },
