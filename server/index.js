@@ -5,6 +5,13 @@ const app = express();
 const db = require('./models');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const { v2: cloudinary } = require('cloudinary');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_SECRET_KEY,
+});
 
 //cors
 const whitelist = process.env.REMOTE_CLIENT_APP.split(',');
@@ -40,6 +47,7 @@ app.use('/api/faq', faqRouter);
 //notfound and errors
 const errorHandlerMiddleWare = require('./middlewares/errorHandler');
 const notFoundMiddleWare = require('./middlewares/notFound');
+const { redis } = require('./utils/redis');
 app.use(notFoundMiddleWare);
 app.use(errorHandlerMiddleWare);
 
