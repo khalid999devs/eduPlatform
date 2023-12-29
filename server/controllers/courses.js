@@ -1,4 +1,4 @@
-const { courses, notifications } = require('../models');
+const { courses, notifications, discussions, reviews } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -129,7 +129,7 @@ const getPubAllCourses = async (req, res) => {
   });
 };
 
-//only for valid user (will do after completing the order controllers and editing the user)
+//only for valid user (will do after completing the order controllers )
 const getCourseByUser = async (req, res) => {};
 
 module.exports = {

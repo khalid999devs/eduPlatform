@@ -4,10 +4,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    dueDate: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
   });
 
   clientcourses.associate = (models) => {

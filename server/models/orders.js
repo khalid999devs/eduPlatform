@@ -10,9 +10,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         defaultValue: '{}',
       },
-      dueDate: {
+      createdDate: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      invoiceNo: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
       },
     },
     { timestamps: true }
