@@ -14,6 +14,12 @@ const htmlCreator = (mode, data) => {
     <h3>Please use this to reset your password</h3>
     <h2 align="center" style="margin-top:20px;background-color:rgb(0,0,0); color:rgb(255,255,255)">${data.info.otp}</h2><br>
      `;
+  } else if (mode === 'order') {
+    const { client, info } = data;
+    subject = `Course purchase successful!`;
+    body = `
+    <p>Dear ${client.fullName}, your purchase for course: ${info.courseName} is successful/p>
+    `;
   }
 
   return { subject, body, text };
