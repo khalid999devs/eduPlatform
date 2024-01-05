@@ -48,6 +48,7 @@ const adminLogin = async (req, res) => {
   const user = {
     id: admin.id,
     userName: admin.userName,
+    role: 'admin',
   };
   const token = sign(user, process.env.ADMIN_SECRET, {
     expiresIn: '1h',

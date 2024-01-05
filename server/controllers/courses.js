@@ -1,4 +1,10 @@
-const { courses, notifications, discussions, reviews } = require('../models');
+const {
+  courses,
+  notifications,
+  discussions,
+  reviews,
+  clientcourses,
+} = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -9,6 +15,8 @@ const {
 const { redis } = require('../utils/redis');
 const mailer = require('../utils/sendMail');
 const deleteFile = require('../utils/deleteFile');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const uploadCourse = async (req, res) => {
   try {
@@ -132,10 +140,60 @@ const getPubAllCourses = async (req, res) => {
 //only for valid user (will do after completing the order controllers )
 const getCourseByUser = async (req, res) => {};
 
+const getZoomCreds = async (req, res) => {
+  const userId = req.user.id;
+  const username = req.user.userName;
+  const { courseId } = req.body;
+  const course = await courses.findByPk(courseId);
+  if (!course) {
+    throw new BadRequestError('Course not found!');
+  }
+
+  if (!(req.admin?.role === 'admin')) {
+    const isCourseExist = await clientcourses.findOne({
+      where: { clientId: userId, courseId: courseId },
+    });
+    console.log(isCourseExist);
+    if (!isCourseExist) {
+      throw new UnauthorizedError(
+        "You don't have permission to access this class!"
+      );
+    }
+  }
+  const { zoomInfo } = JSON.parse(course.classInfo);
+
+  const iat = Math.round(new Date().getTime() / 1000) - 30;
+  const expHour = parseInt(process.env.ZOOM_MEETEXP_H);
+  const exp = iat + 60 * 60 * expHour;
+
+  const oPayload = {
+    sdkKey: process.env.ZOOM_API_KEY,
+    mn: zoomInfo.meetingNo,
+    role: 0,
+    iat: iat,
+    exp: exp,
+    appKey: process.env.ZOOM_API_KEY,
+    tokenExp: exp,
+  };
+
+  const sPayload = JSON.stringify(oPayload);
+  const hashedSignature = bcrypt.hashSync(sPayload, parseInt(process.env.SALT));
+  const signature = jwt.sign(hashedSignature, process.env.ZOOM_API_SECRET);
+
+  res.json({
+    signature: signature,
+    sdkKey: oPayload.appKey,
+    username: username,
+    meetingNo: oPayload.mn,
+    password: zoomInfo.password,
+  });
+};
+
 module.exports = {
   uploadCourse,
   updateCourseImage,
   editCourseContents,
   getPubSingleCourse,
   getPubAllCourses,
+  getZoomCreds,
 };

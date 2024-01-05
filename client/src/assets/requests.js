@@ -19,6 +19,9 @@ const reqs = {
   DELETE_ACCOUNT: '/api/client/deleteAcc',
   RESET_PASS_SET_TOKEN: '/api/client/rPassToken',
   RESET_PASS_OTP_VERIFY: '/api/client/rPassVerify',
+
+  //courses
+  ZOOM_CRED: '/api/course/zoom-creds',
 };
 
 export default reqs;

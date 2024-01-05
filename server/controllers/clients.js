@@ -57,6 +57,7 @@ const login = async (req, res) => {
   const user = {
     id: clientUser.id,
     userName: clientUser.userName,
+    role: 'user',
   };
 
   const token = sign(user, process.env.CLIENT_SECRET, {

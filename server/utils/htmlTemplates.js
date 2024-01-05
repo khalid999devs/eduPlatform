@@ -18,7 +18,7 @@ const htmlCreator = (mode, data) => {
     const { client, info } = data;
     subject = `Course purchase successful!`;
     body = `
-    <p>Dear ${client.fullName}, your purchase for course: ${info.courseName} is successful/p>
+    <p>Dear ${client.fullName}, your purchase for course: ${info.courseName} is successful</p>
     `;
   }
 

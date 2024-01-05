@@ -1,4 +1,10 @@
-const { courses, notifications, orders, clients } = require('../models');
+const {
+  courses,
+  notifications,
+  orders,
+  clients,
+  clientcourses,
+} = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -9,6 +15,8 @@ const {
 const { redis } = require('../utils/redis');
 const mailer = require('../utils/sendMail');
 const deleteFile = require('../utils/deleteFile');
+const { Op } = require('sequelize');
+const sendSMS = require('../utils/sendSMS');
 
 const createOrder = async (req, res) => {
   const { courseId, paymentInfo } = req.body;
@@ -33,7 +41,7 @@ const createOrder = async (req, res) => {
   const timeMil = Date.now();
   const invoiceNo = `#${
     Math.ceil(Math.random() * 10) +
-    timeMil.slice(timeMil.length - 5, timeMil.length - 1)
+    timeMil.toString().slice(timeMil.length - 5, timeMil.length - 1)
   }`;
 
   // let dueInMil = timeMil + 30 * 24 * 60 * 60 * 1000;
@@ -49,11 +57,20 @@ const createOrder = async (req, res) => {
     invoiceNo,
   };
   const order = await orders.create(orderData);
+  await clientcourses.create({ courseId: course.id, clientId: user.id });
+  course.purchased = course.purchased + 1;
+  await course.save();
+
+  //send notifications
+  const notification = await notifications.create({
+    title: 'New purchase made',
+    message: `A new purchase for ${course.title} was made by ${user.userName}`,
+  });
 
   //sending sms and mail
   if (user.phone) {
     sendSMS(
-      number,
+      user.phone,
       `You purchase for ${course.title} is successful. Your order id is: ${invoiceNo} `
     )
       .then((res) => {
@@ -83,6 +100,7 @@ const createOrder = async (req, res) => {
     succeed: true,
     msg: 'Successfully purchased the course. Start learning now!',
     order,
+    notification,
   });
 };
 
