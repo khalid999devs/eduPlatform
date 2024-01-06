@@ -26,7 +26,7 @@ const ZoomEntry = () => {
     // }).then((res) => res.json());
 
     axios
-      .post(reqs.ZOOM_CRED)
+      .post(reqs.ZOOM_CRED, { courseId: 3 }, { withCredentials: true })
       .then((res) => {
         const {
           signature,

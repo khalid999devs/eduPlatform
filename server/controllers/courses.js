@@ -141,25 +141,25 @@ const getPubAllCourses = async (req, res) => {
 const getCourseByUser = async (req, res) => {};
 
 const getZoomCreds = async (req, res) => {
-  const userId = req.user.id;
-  const username = req.user.userName;
+  // const userId = req.user.id;
+  // const username = req.user.userName;
   const { courseId } = req.body;
   const course = await courses.findByPk(courseId);
   if (!course) {
     throw new BadRequestError('Course not found!');
   }
 
-  if (!(req.admin?.role === 'admin')) {
-    const isCourseExist = await clientcourses.findOne({
-      where: { clientId: userId, courseId: courseId },
-    });
-    console.log(isCourseExist);
-    if (!isCourseExist) {
-      throw new UnauthorizedError(
-        "You don't have permission to access this class!"
-      );
-    }
-  }
+  // if (!(req.admin?.role === 'admin')) {
+  //   const isCourseExist = await clientcourses.findOne({
+  //     where: { clientId: userId, courseId: courseId },
+  //   });
+  //   console.log(isCourseExist);
+  //   if (!isCourseExist) {
+  //     throw new UnauthorizedError(
+  //       "You don't have permission to access this class!"
+  //     );
+  //   }
+  // }
   const { zoomInfo } = JSON.parse(course.classInfo);
 
   const iat = Math.round(new Date().getTime() / 1000) - 30;
@@ -176,16 +176,16 @@ const getZoomCreds = async (req, res) => {
     tokenExp: exp,
   };
 
-  const sPayload = JSON.stringify(oPayload);
-  const hashedSignature = bcrypt.hashSync(sPayload, parseInt(process.env.SALT));
-  const signature = jwt.sign(hashedSignature, process.env.ZOOM_API_SECRET);
+  // const sPayload = JSON.stringify(oPayload);
+  // const hashedSignature = bcrypt.hashSync(sPayload, parseInt(process.env.SALT));
+  const signature = jwt.sign(oPayload, process.env.ZOOM_API_SECRET);
 
   res.json({
     signature: signature,
     sdkKey: oPayload.appKey,
-    username: username,
+    username: 'username@' + Date.now(),
     meetingNo: oPayload.mn,
-    password: zoomInfo.password,
+    password: zoomInfo.pass,
   });
 };
 

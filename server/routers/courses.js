@@ -24,6 +24,7 @@ router.patch('/edit-course/:id', adminValidate, editCourseContents);
 router.get('/get-pub-course/:id', getPubSingleCourse);
 router.get('/get-pub-courses', getPubAllCourses);
 
-router.post('/zoom-creds', clientValidate, getZoomCreds);
+// router.post('/zoom-creds', clientValidate, getZoomCreds);
+router.post('/zoom-creds', getZoomCreds);
 
 module.exports = router;

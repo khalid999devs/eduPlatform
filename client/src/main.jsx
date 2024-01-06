@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+// import { ReactDOM } from 'react';
 import App from './App.jsx';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -20,6 +21,7 @@ import AdminDashboard from './Pages/admin/AdminDashboard.jsx';
 import Admin from './Pages/admin/Admin.jsx';
 import AdminLogin from './Pages/admin/AdminLogin.jsx';
 import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
+import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
 
 const router = createBrowserRouter([
   {
@@ -75,7 +77,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/course/:id/class',
-        element: <ZoomEntry />,
+        element: <ZoomWeb />,
       },
       {
         path: '/change-pass',
