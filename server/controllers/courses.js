@@ -149,17 +149,17 @@ const getZoomCreds = async (req, res) => {
     throw new BadRequestError('Course not found!');
   }
 
-  // if (!(req.admin?.role === 'admin')) {
-  //   const isCourseExist = await clientcourses.findOne({
-  //     where: { clientId: userId, courseId: courseId },
-  //   });
-  //   console.log(isCourseExist);
-  //   if (!isCourseExist) {
-  //     throw new UnauthorizedError(
-  //       "You don't have permission to access this class!"
-  //     );
-  //   }
-  // }
+  if (!(req.admin?.role === 'admin')) {
+    const isCourseExist = await clientcourses.findOne({
+      where: { clientId: userId, courseId: courseId },
+    });
+
+    if (!isCourseExist) {
+      throw new UnauthorizedError(
+        "You don't have permission to access this class!"
+      );
+    }
+  }
   const { zoomInfo } = JSON.parse(course.classInfo);
 
   const iat = Math.round(new Date().getTime() / 1000) - 30;
