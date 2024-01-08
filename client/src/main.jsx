@@ -21,6 +21,15 @@ import AdminDashboard from './Pages/admin/AdminDashboard.jsx';
 import Admin from './Pages/admin/Admin.jsx';
 import AdminLogin from './Pages/admin/AdminLogin.jsx';
 
+import ChatBox from './Components/Admin/discussion/chat.jsx';
+import AddCourse from './Components/Admin/addcourse/addCourse.jsx';
+import Stundet from './Components/Admin/student/student.jsx';
+import AllCourse from './Components/Admin/courses/AllCourses.jsx';
+import EachCourse from './Components/Admin/courses/EachCourse.jsx';
+
+// import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
+// import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -73,7 +82,10 @@ const router = createBrowserRouter([
         path: '/courses',
         element: <AllCourses />,
       },
-
+      // {
+      //   path: '/course/:id/class',
+      //   element: <ZoomWeb />,
+      // },
       {
         path: '/change-pass',
         element: <ChangePass />,
@@ -90,9 +102,31 @@ const router = createBrowserRouter([
         element: <AdminDashboard />,
       },
       {
-        path: 'login',
+        path: '/admin/login',
         element: <AdminLogin />,
       },
+      {
+        path: '/admin/chat',
+        element: <ChatBox />,
+      },
+      {
+        path: '/admin/addcourse',
+        element: <AddCourse />
+      }, {
+        path: '/admin/students',
+        element: <Stundet />
+      },
+
+      {
+        path: '/admin/courses',
+        element: <AllCourse />,
+        children: [
+          {
+            path: "/admin/courses/:id/control",
+            element: <EachCourse />,
+          }
+        ]
+      }
     ],
   },
 ]);

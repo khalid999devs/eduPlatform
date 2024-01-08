@@ -1,12 +1,11 @@
-import { MdSearch } from "react-icons/md";
-import SelectBox from "./SelectBox";
+import { MdSearch } from "react-icons/md"; 
 import { useState } from "react";
 function Stundet() {
   const [phone, setPhone] = useState("");
   return (
     <>
       <div className="px-5 flex flex-col h-full">
-        <h2 className="text-center text-Text dark:text-darkText text-4xl font-semibold mb-10">
+        <h2 className="text-center text-darkText text-4xl font-semibold mb-10">
           Student page
         </h2>
         {/* serach box */}
@@ -25,14 +24,13 @@ function Stundet() {
               />
               <MdSearch className="inline-block text-3xl text-gray-600/70 " />
             </section>
-          </form>
-          <SelectBox />
+          </form> 
         </div>
         {/* sutdent lists */}
         <div className="flex justify-center flex-auto overflow-y-scroll max-w-6xl w-full mx-auto border border-root_bluish">
-          <table className="w-full dark:bg-slate-300 text-Text shadow-md cursor-default select-text">
+          <table className="w-full bg-slate-300 text-darkText shadow-md cursor-default select-text">
             <thead className="w-full">
-              <tr className="text-Text text-lg text-left">
+              <tr className="text-darkText text-lg text-left">
                 <th className="sticky top-0 left-0  shadow-root_bluish/20 shadow-lg  py-2 px-4 bg-gray-100 text-center">
                   Sl No.
                 </th>
@@ -77,13 +75,12 @@ const StudentList = ({ id, avatar, name, email, phone }) => {
   return (
     <tr
       key={id}
-      className={`hover:bg-gray-500/20 transition-colors duration-100 ease-in border-b ${
-        id != studentData.length - 1
-          ? " border-root_bluish"
-          : "border-transparent"
-      }`}
+      className={`hover:bg-gray-500/20 transition-colors duration-100 ease-in border-b ${id != studentData.length - 1
+        ? " border-root_bluish"
+        : "border-transparent"
+        }`}
     >
-      <td className="py-2">{id + 1}</td>
+      <td className="py-2 text-center">{id + 1}</td>
       <td className="py-2 text-center flex items-center gap-0 font-semibold my-auto">
         {avatar && (
           <img
@@ -97,7 +94,7 @@ const StudentList = ({ id, avatar, name, email, phone }) => {
         <p className="text-left pl-2">{name}</p>
       </td>
       <td className="py-2 text-left">{email}</td>
-      <td className="py-2 text-left">{phone}</td>
+      <td className="p-2 text-justify">{phone}</td>
     </tr>
   );
 };

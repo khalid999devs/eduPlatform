@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import UpdateForm from "./UpdaetPage";
-const Coursecard = ({ allData }) => {
+import { Link } from "react-router-dom"
+
+const Coursecard = ({ allData, id }) => {
   const [showUpdate, setUpdate] = useState(false);
 
   return (
@@ -13,15 +15,12 @@ const Coursecard = ({ allData }) => {
       />
 
       <div className="w-80 max-w-sm border m-5 mb-10  rounded-lg shadow bg-gray-800 border-gray-700 duration-100">
-        <a href="#">
-          {
-            <img
-              className="w-full h-48 aspect-video rounded-t-lg object-cover"
-              src={"/avatar.jpg"}
-              alt="product image"
-            />
-          }
-        </a>
+
+        <img
+          className="w-full h-48 aspect-video rounded-t-lg object-cover"
+          src={"/avatar.jpg"}
+          alt="product image"
+        />
         <div className="px-5 pb-5">
           <h5 className="text-3xl text-left font-bold tracking-tight text-white my-4">
             {allData?.title || "Title"}
@@ -43,7 +42,12 @@ const Coursecard = ({ allData }) => {
               >
                 Update
               </button>
-              <button className="text-black  font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-rose-500 hover:bg-yellow-400 hover:text-black ">
+              <Link to={`${id}/control`}>
+                <button className="text-black  font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-green-500 hover:bg-green-400 hover:text-black ">
+                  visit
+                </button>
+              </Link>
+              <button className="text-black  font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-rose-500 hover:bg-rose-400 hover:text-black ">
                 Delete
               </button>
             </div>
