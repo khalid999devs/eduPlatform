@@ -5,7 +5,7 @@ const { BadRequestError } = require('../errors');
 //file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const validFields = /students|courses/;
+    const validFields = /students|courses|resources/;
     if (!file.fieldname) {
       return cb(null, true);
     }
@@ -45,6 +45,9 @@ const storage = multer.diskStorage({
     } else if (file.fieldname === 'courses') {
       fileName =
         req.body.title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
+    } else if (file.fieldname === 'resources') {
+      fileName =
+        req.body.Title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
     } else {
       fileName = file.fieldname + `-${Date.now()}`;
     }
@@ -54,15 +57,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 4 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png/;
+    const fileTypes = /jpeg|jpg|png|pdf|ppt|pptx/;
     const mimeType = fileTypes.test(file.mimetype);
 
     if (mimeType) {
       return cb(null, true);
     } else {
-      cb(new Error('only jpg,png,jpeg is allowed!'));
+      cb(new Error('only jpg,png,jpeg,pdf,ppt,pptx is allowed!'));
     }
 
     cb(new Error('there was an unknown error'));

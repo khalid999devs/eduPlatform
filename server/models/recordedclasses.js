@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const recordedclasses = sequelize.define(
     'recordedclasses',
     {
-      vieoURL: {
+      videoURL: {
         type: DataTypes.TEXT,
         allowNull: false,
       },

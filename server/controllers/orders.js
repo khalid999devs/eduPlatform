@@ -40,8 +40,7 @@ const createOrder = async (req, res) => {
 
   const timeMil = Date.now();
   const invoiceNo = `#${
-    Math.ceil(Math.random() * 10) +
-    timeMil.toString().slice(timeMil.length - 5, timeMil.length - 1)
+    Math.ceil(Math.random() * 10) + timeMil.toString().slice(-4)
   }`;
 
   // let dueInMil = timeMil + 30 * 24 * 60 * 60 * 1000;
@@ -96,6 +95,7 @@ const createOrder = async (req, res) => {
     'order'
   ).catch((err) => {});
 
+  order.paymentInfo = JSON.parse(order.paymentInfo);
   res.json({
     succeed: true,
     msg: 'Successfully purchased the course. Start learning now!',
@@ -104,4 +104,28 @@ const createOrder = async (req, res) => {
   });
 };
 
-module.exports = { createOrder };
+const getAllOrdersAdmin = async (req, res) => {
+  const result = await orders.findAll({});
+  res.json({
+    succeed: true,
+    msg: 'Successful',
+    result,
+  });
+};
+
+const clientInvoices = async (req, res) => {
+  const userId = req.user.id;
+  const invoices = await orders.findAll({ where: { clientId: userId } });
+  if (invoices.length > 0) {
+    invoices.forEach((invoice) => {
+      invoice.paymentInfo = JSON.parse(invoice.paymentInfo);
+    });
+  }
+  res.json({
+    succeed: true,
+    msg: 'Successful',
+    invoices,
+  });
+};
+
+module.exports = { createOrder, getAllOrdersAdmin, clientInvoices };

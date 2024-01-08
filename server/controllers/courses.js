@@ -4,6 +4,9 @@ const {
   discussions,
   reviews,
   clientcourses,
+  Admin,
+  resources,
+  recordedclasses,
 } = require('../models');
 const {
   BadRequestError,
@@ -17,6 +20,8 @@ const mailer = require('../utils/sendMail');
 const deleteFile = require('../utils/deleteFile');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
+const cloudinary = require('cloudinary');
 
 const uploadCourse = async (req, res) => {
   try {
@@ -48,6 +53,8 @@ const uploadCourse = async (req, res) => {
       classInfo: data.classInfo || '{}',
     };
     const course = await courses.create(dbData);
+    course.instructor = JSON.parse(course.instructor);
+    course.classInfo = JSON.parse(course.classInfo);
     res.status(201).json({
       succeed: true,
       course,
@@ -138,11 +145,197 @@ const getPubAllCourses = async (req, res) => {
 };
 
 //only for valid user (will do after completing the order controllers )
-const getCourseByUser = async (req, res) => {};
+const getCourseByUser = async (req, res) => {
+  const userId = req.user?.id;
+  const adminId = req.admin?.id;
+  const courseId = req.params.id;
+
+  if (adminId) {
+    const admin = await Admin.findOne({ where: { id: adminId } });
+    if (!admin) {
+      throw new UnauthorizedError(
+        'You do not have permission to access the data!'
+      );
+    }
+  } else if (!adminId && userId) {
+    let isClientHasCourse = await clientcourses.findOne({
+      where: { [Op.and]: [{ courseId: courseId }, { clientId: userId }] },
+    });
+    if (!isClientHasCourse) {
+      throw new UnauthorizedError(
+        'You do not have permission to access this course!'
+      );
+    }
+  }
+
+  let course;
+  course = await courses.findOne({
+    where: { id: courseId },
+    attributes: { exclude: ['classInfo'] },
+  });
+  if (adminId) {
+    course = await courses.findOne({
+      where: { id: courseId },
+      include: [
+        {
+          model: resources,
+        },
+        {
+          model: recordedclasses,
+        },
+      ],
+    });
+
+    if (!course) {
+      throw new NotFoundError('No course found!');
+    }
+    course.resources.forEach((resource) => {
+      resource.filesUrl = JSON.parse(resource.filesUrl);
+    });
+    course.classInfo = JSON.parse(course.classInfo);
+  }
+  if (!course) {
+    throw new NotFoundError('No course found!');
+  }
+  course.instructor = JSON.parse(course.instructor);
+
+  res.json({
+    succeed: true,
+    msg: 'course found',
+    course,
+  });
+};
+
+const deleteCourse = async (req, res) => {
+  const courseId = req.params.id;
+  const course = await courses.findByPk(courseId);
+  if (!course) {
+    throw new NotFoundError('Course could not found!');
+  }
+  if (course.image) {
+    deleteFile(course.image);
+  }
+
+  //  futher update video using cloudinary
+  // if (course.demoVideoUrl) {
+  //   course.demoVideoUrl = JSON.parse(course.demoVideoUrl);
+  //   const result = await cloudinary.v2.uploader.destroy(publicId);
+  //   if (result.result === 'ok') {
+  //     return res.json({
+  //       message: 'Video deleted successfully',
+  //       cloudinaryResponse: result,
+  //     });
+  //   } else {
+  //     return res
+  //       .status(500)
+  //       .json({ error: 'Error deleting video', cloudinaryResponse: result });
+  //   }
+  // }
+
+  await course.destroy();
+  res.json({
+    succeed: true,
+    msg: 'Successfully deleted the course',
+  });
+};
+
+const addRecordedClass = async (req, res) => {
+  const courseId = req.params.id;
+  const { videoURL, videoTitle, videoLength, desc } = req.body;
+  if (!videoURL) {
+    throw new BadRequestError('Video URL must be provided');
+  }
+  const course = await courses.findOne({ where: { id: courseId } });
+  if (!course) {
+    throw new NotFoundError('Course could not found!');
+  }
+  const record = await recordedclasses.create({
+    videoURL,
+    videoTitle,
+    videoLength: Number(videoLength),
+    desc,
+    courseId: Number(courseId),
+  });
+  res.status(201).json({
+    succeed: true,
+    msg: 'Successfully added the record.',
+    record,
+  });
+};
+
+const editRecordedClass = async (req, res) => {
+  const recordId = req.params.id;
+  const data = req.body;
+  let record = await recordedclasses.findOne({ where: { id: recordId } });
+  if (!record) {
+    throw new NotFoundError('The specific recorded class could not found!');
+  }
+  record.set(data);
+  await record.save();
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully updated the record',
+    record,
+  });
+};
+
+const deleteRecordedClass = async (req, res) => {
+  const recordId = req.params.id;
+  let record = await recordedclasses.findOne({ where: { id: recordId } });
+  if (!record) {
+    throw new NotFoundError('The specific recorded class could not found!');
+  }
+  await record.destroy();
+  res.json({
+    succeed: true,
+    msg: 'Successfully deleted the Recorded Class',
+  });
+};
+
+const addResource = async (req, res) => {
+  const data = req.body;
+  const courseId = req.params.id;
+
+  if (req.file) {
+    const filePropName =
+      data.Title.split(' ').join('').slice(0, 10) +
+      Math.ceil(Math.random() * 100);
+    data.filesUrl = JSON.stringify({ [filePropName]: req.file.path });
+  }
+  const resource = await resources.create({ ...data, courseId: courseId });
+  resource.filesUrl = JSON.parse(resource.filesUrl);
+
+  res.status(201).json({
+    succeed: true,
+    msg: 'Successfully added the resource',
+    resource,
+  });
+};
+
+const deleteResource = async (req, res) => {
+  const resourceId = req.params.id;
+  const resource = await resources.findByPk(resourceId);
+  if (!resource) {
+    throw new BadRequestError('This particular resource could not found!');
+  }
+  const files = JSON.parse(resource.filesUrl);
+  if (Object.keys(files).length > 0) {
+    Object.keys(files).forEach((prop) => {
+      deleteFile(files[prop]);
+    });
+  }
+  await resource.destroy();
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully deleted the resource',
+  });
+};
 
 const getZoomCreds = async (req, res) => {
-  // const userId = req.user.id;
-  // const username = req.user.userName;
+  const userId = req.user.id;
+  const username = req.user.userName;
   const { courseId } = req.body;
   const course = await courses.findByPk(courseId);
   if (!course) {
@@ -183,7 +376,7 @@ const getZoomCreds = async (req, res) => {
   res.json({
     signature: signature,
     sdkKey: oPayload.appKey,
-    username: 'username@' + Date.now(),
+    username: username,
     meetingNo: oPayload.mn,
     password: zoomInfo.pass,
   });
@@ -196,4 +389,11 @@ module.exports = {
   getPubSingleCourse,
   getPubAllCourses,
   getZoomCreds,
+  getCourseByUser,
+  addRecordedClass,
+  editRecordedClass,
+  deleteRecordedClass,
+  addResource,
+  deleteResource,
+  deleteCourse,
 };
