@@ -1,4 +1,4 @@
-const { clients, sequelize } = require('../models');
+const { clients, sequelize, clientcourses } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -258,16 +258,14 @@ const getAllClients = async (req, res) => {
   //     `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM clients as par LEFT JOIN parevents as pe ON par.id=pe.parId LIMIT ${skip},${rowNum};`
   //   );
 
-  // result = await clients.findAll({
-  //   include: {
-  //     model: ,
-  //     as: 'ClientCourse',
-  //     attributes: ['eventInfo'],
-  //   },
-  //   attributes: { exclude: ['password'] },
-  //   offset: Number(skip),
-  //   limit: Number(rowNum),
-  // });
+  result = await clients.findAll({
+    include: {
+      model: clientcourses,
+    },
+    attributes: { exclude: ['password'] },
+    offset: Number(skip),
+    limit: Number(rowNum),
+  });
 
   // [result] = await sequelize.query(
   //   `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM clients as par LEFT JOIN parevents as pe ON par.id=pe.parId WHERE JSON_EXTRACT(pe.eventInfo, "$.${mode}") =0 or JSON_EXTRACT(pe.eventInfo, "$.${mode}") =1 LIMIT ${skip},${rowNum};`
