@@ -10,12 +10,13 @@ const emailValidate = async (req, res, next) => {
   const { email } = req.body;
   const emailRes = await validate(email);
   if (email) {
-    if (emailRes?.valid) next();
-    else {
-      throw new UnauthenticatedError(
-        'Invalid email ID. Please provide a valid one.'
-      );
-    }
+    // if (emailRes?.valid) next();
+    // else {
+    //   throw new UnauthenticatedError(
+    //     'Invalid email ID. Please provide a valid one.'
+    //   );
+    // }
+    next();
   } else {
     deleteFile(req.file.path);
     throw new UnauthenticatedError('Email field should not be empty');

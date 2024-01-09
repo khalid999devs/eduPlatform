@@ -8,10 +8,6 @@ const {
 } = require('../errors');
 const { redis } = require('../utils/redis');
 const mailer = require('../utils/sendMail');
-const deleteFile = require('../utils/deleteFile');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const { Op } = require('sequelize');
 const cloudinary = require('cloudinary');
 const { JSON } = require('sequelize');
 
