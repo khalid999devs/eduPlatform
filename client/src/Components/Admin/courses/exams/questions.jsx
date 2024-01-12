@@ -47,7 +47,7 @@ function QuestionsPage({ examData }) {
       </div>
       <div className="adddata">
         <form
-          className="grid grid-cols-1 lg:grid-cols-3 gap-3"
+          className="grid grid-cols-1 gap-3"
           onSubmit={(e) => {
             e.preventDefault();
           }}
@@ -127,24 +127,6 @@ function QuestionsPage({ examData }) {
               qData.options.length == 0 ||
               qData.qtitle.length == 0
             }
-            onClick={async () => {
-              await addDoc(
-                collection(
-                  database,
-                  `/courses/${params.exam}/exams/${params.question}/questions`
-                ),
-                qData
-              )
-                .then(() => {
-                  alert("Question added");
-                })
-                .catch(() => {
-                  alert("failed to add question");
-                })
-                .finally((res) => {
-                  setQuesData({ ans: "", options: [], qtitle: "" });
-                });
-            }}
           >
             submit
           </button>
@@ -210,21 +192,5 @@ function QuestionsPage({ examData }) {
       </div>
     </div>
   );
-}
-async function deleteQuestion(quesId, param, ques_num) {
-  await deleteDoc(
-    doc(
-      database,
-      `courses/${param?.exam}/exams/${param?.question}/questions/${quesId}`
-    )
-  )
-    .then(() => {
-      alert(`${ques_num} No. question has been deleted`);
-      console.log("success to delete");
-    })
-    .catch((err) => {
-      console.log(err);
-      alert(`Failed to delete question no ${ques_num}`);
-    });
 }
 export default QuestionsPage;

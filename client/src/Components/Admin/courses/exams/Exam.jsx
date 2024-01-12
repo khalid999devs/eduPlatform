@@ -20,12 +20,6 @@ export function checkHours(hour) {
   }
 }
 function Exam() {
-  const path = usePathname();
-  const { error, examData } = useFetchExamData(path);
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   const EachExamCard = ({ exam, id }) => {
     const starttime = new Date(exam?.exam_date);

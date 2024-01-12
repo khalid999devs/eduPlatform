@@ -8,7 +8,7 @@ import Exams from "./exams/exams";
 const VdoUpload = () => {
   const [file, setFile] = useState(null);
   return (
-    <div className="form-container  flex justify-center items-center flex-wrap mb-16 pt-16 dark:text-white">
+    <div className="form-container  flex justify-center items-start flex-wrap mb-16 pt-16 dark:text-white">
       {/* recorded class */}
       <div className=" p-3 mb-10">
         <h1 className="text-center text-darkText font-semibold text-2xl mb-6">

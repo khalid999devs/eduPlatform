@@ -18,7 +18,7 @@ function Exams() {
         }}
       >
         {/* set date */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <div className="flex flex-col md:justify-between md:items-center gap-4">
           <section className=" bg-slate-50 text-black items-center w-full p-3 rounded-md ring ring-sky-400 flex justify-between h-full gap-1">
             <label htmlFor={"ex_name"}>Exam Name: </label>
             <input

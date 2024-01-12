@@ -1,5 +1,6 @@
 import { FaAngleRight } from "react-icons/fa6";
 import Star from "../Courses/Star";
+import { reqImgWrapper } from "../../assets/requests";
 
 const FixedCard = ({ cardDetails: { id = 1, rating = 5, img, price } }) => {
   return (
@@ -8,7 +9,7 @@ const FixedCard = ({ cardDetails: { id = 1, rating = 5, img, price } }) => {
         <a href="#">
           <img
             className="w-full h-64 rounded-t-lg"
-            src={img || "/Images/cardPH.jpg"}
+            src={reqImgWrapper(img)}
             alt="product image"
           />
         </a>

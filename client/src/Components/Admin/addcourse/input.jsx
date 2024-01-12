@@ -45,11 +45,12 @@ function FormInput({
   );
 }
 function FileInput({ value, change, extraClass }) {
+  // console.log(value);
   return (
     <div
-      className={`upload mb-6 mx-3 outline-2 bg-purple-50 dark:bg-purple-900/30 outline-dotted outline-purple-600 p-3 rounded-lg transition-colors ${extraClass}`}
+      className={`upload mb-6 mx-3 outline-2 bg-purple-500/50 outline-dotted outline-purple-600 p-3 rounded-lg transition-colors ${extraClass}`}
     >
-      <p className="mt-1  text-gray-500 dark:text-gray-300 font-bold text-xl">
+      <p className="mt-1  text-purple-50 font-bold text-xl">
         Please upload a picture for your course banner
       </p>
       <label
@@ -59,16 +60,20 @@ function FileInput({ value, change, extraClass }) {
         Upload file <BsCloudUploadFill />
       </label>
 
-      <input hidden id="banner" type="file" required onChange={change} />
+      <input
+        hidden
+        id="banner"
+        type="file"
+        accept="image/jpg,image/jpeg,image/png"
+        required
+        onChange={change}
+      />
       {value && (
         <div>
-          <img
-            className="mx-auto aspect-auto mt-4 p-4"
-            src={URL.createObjectURL(value)}
-            width={250}
-            alt="image file"
-          />
-          <p className="text-violet-700 font-bold dark:text-violet-200 rounded-md uppercase">
+          <p className="text-darkText font-bold rounded-md uppercase">
+            {value?.name}
+          </p>
+          <p className="text-darkText font-bold rounded-md uppercase">
             SIZE:{" "}
             {(
               value?.size /

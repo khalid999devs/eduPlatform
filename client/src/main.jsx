@@ -118,11 +118,11 @@ const router = createBrowserRouter([
       },
 
       {
-        path: '/admin/courses',
+        path: '/admin/course',
         element: <AllCourse />,
         children: [
           {
-            path: "/admin/courses/:id/control",
+            path: ":id",
             element: <EachCourse />,
           }
         ]
