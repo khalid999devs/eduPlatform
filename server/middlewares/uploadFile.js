@@ -14,6 +14,12 @@ const storage = multer.diskStorage({
       cb(new Error(`Field name didn't match`));
     }
     let destName = resolve(__dirname, `../uploads/${file.fieldname}`);
+    if (file.fieldname === 'resources') {
+      destName = resolve(
+        __dirname,
+        `../uploads/${file.fieldname}/${req.body.Title.split(' ').join('_')}`
+      );
+    }
 
     if (!existsSync(destName)) {
       try {
@@ -22,7 +28,12 @@ const storage = multer.diskStorage({
         console.log(error);
       }
     }
-    const pathName = `uploads/${file.fieldname}`;
+    let pathName = `uploads/${file.fieldname}`;
+    if (file.fieldname) {
+      pathName = `uploads/${file.fieldname}/${req.body.Title.split(' ').join(
+        '_'
+      )}`;
+    }
     cb(null, pathName);
   },
   filename: (req, file, cb) => {

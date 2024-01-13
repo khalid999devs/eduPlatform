@@ -39,7 +39,7 @@ router.post('/add-recorded-class/:id', adminValidate, addRecordedClass);
 router.post(
   '/add-resource/:id',
   adminValidate,
-  upload.single('resources'),
+  upload.array('resources'),
   addResource
 );
 

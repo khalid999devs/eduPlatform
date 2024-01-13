@@ -297,11 +297,18 @@ const addResource = async (req, res) => {
   const data = req.body;
   const courseId = req.params.id;
 
-  if (req.file) {
-    const filePropName =
-      data.Title.split(' ').join('').slice(0, 10) +
-      Math.ceil(Math.random() * 100);
-    data.filesUrl = JSON.stringify({ [filePropName]: req.file.path });
+  if (req.files?.length > 0) {
+    const filesArr = [];
+    req.files.forEach((file, key) => {
+      const filePropName =
+        data.Title.split(' ').join('').slice(0, 10) +
+        Math.ceil(Math.random() * 100);
+      filesArr.push({
+        id: filePropName,
+        url: file.path,
+      });
+    });
+    data.filesUrl = JSON.stringify(filesArr);
   }
   const resource = await resources.create({ ...data, courseId: courseId });
   resource.filesUrl = JSON.parse(resource.filesUrl);
