@@ -6,11 +6,6 @@ import { AdminConsumer } from "../../../Pages/admin/Admin";
 import { Link } from "react-router-dom";
 
 const dashList = [
-  {
-    title: "Dashboard",
-    link: "/admin",
-    icon: <TbLayoutDashboard />,
-  },
   // {
   //     title: "Chat",
   //     link: "/chat",
@@ -52,7 +47,7 @@ const LeftPanel = () => {
       <div className="h-auto w-fit mx-auto">
         <a
           className="block px-8 py-6 m-0 text-sm whitespace-nowrap dark:text-white text-slate-700"
-          href="/admin"
+          href="/abs-admin"
         >
           <span className="ml-1 text-xl font-bold transition-all duration-200 ease-nav-brand">
             Admin page

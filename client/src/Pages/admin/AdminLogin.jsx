@@ -33,7 +33,7 @@ function AdminLogin({ children }) {
         if (res.data.succeed) {
           setPopup({ text: res.data.msg, state: "success" });
           setAdminTrigger(!adminTrigger);
-          navigate(`/admin`);
+          navigate(`/abs-admin`);
         } else {
           navigate(settings.redirect);
           throw new Error(res.data.msg);

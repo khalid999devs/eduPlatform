@@ -45,13 +45,25 @@ function FormInput({
   );
 }
 function FileInput({ value, change, extraClass }) {
-  // console.log(value);
   return (
     <div
-      className={`upload mb-6 mx-3 outline-2 bg-purple-500/50 outline-dotted outline-purple-600 p-3 rounded-lg transition-colors ${extraClass}`}
+      className={`upload mb-6 mx-3 outline-2 bg-onPrimary-main outline-dotted outline-purple-600 p-3 rounded-lg transition-colors ${extraClass}`}
     >
       <p className="mt-1  text-purple-50 font-bold text-xl">
         Please upload a picture for your course banner
+        {/* important quote */}
+        <ul className="list-none m-4 text-rose-600">
+          <li>
+            <span className="text-xs block ">
+              *Image size should not exceed 1000 KB
+            </span>
+          </li>
+          <li>
+            <span className="text-xs block ">
+              *Only PNG, JPG & JPEG type is allowed
+            </span>
+          </li>
+        </ul>
       </p>
       <label
         htmlFor="banner"
@@ -70,10 +82,10 @@ function FileInput({ value, change, extraClass }) {
       />
       {value && (
         <div>
-          <p className="text-darkText font-bold rounded-md uppercase">
+          <p className="text-onPrimary-light font-bold rounded-md uppercase">
             {value?.name}
           </p>
-          <p className="text-darkText font-bold rounded-md uppercase">
+          <p className="text-onPrimary-light font-bold rounded-md uppercase">
             SIZE:{" "}
             {(
               value?.size /

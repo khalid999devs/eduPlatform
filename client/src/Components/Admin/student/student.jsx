@@ -1,10 +1,20 @@
 import { MdSearch } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { fetchStudents } from "../../../axios/global";
+
 function Stundet() {
   const [phone, setPhone] = useState("");
   const [isAdmin] = useOutletContext();
-
+  const [students, setData] = useState([]);
+  const [skip, setskip] = useState(0);
+  const [row, setrow] = useState(10);
+  useEffect(() => {
+    fetchStudents(skip, row, setData).then((res) => {
+      if (res) setData(res.resutl);
+      console.log(students);
+    });
+  }, [skip, row]);
   if (isAdmin)
     return (
       <>
@@ -49,18 +59,18 @@ function Stundet() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="overflow-y-scroll h-64 ">
-                {studentData
+              <tbody className="overflow-y-scroll h-auto ">
+                {students
                   .filter((val) => val.phone.includes(phone))
-                  .map((student, id) => {
+                  .map((student, id, arr) => {
                     return (
                       <StudentList
                         id={id}
                         key={id}
-                        name={student.name}
-                        avatar={student.avatar}
+                        name={student.fullName}
                         email={student.email}
                         phone={student.phone}
+                        arr={arr}
                       />
                     );
                   })}
@@ -75,18 +85,16 @@ function Stundet() {
 }
 
 export default Stundet;
-const StudentList = ({ id, avatar, name, email, phone }) => {
+const StudentList = ({ id, avatar, name, email, phone, arr }) => {
   return (
     <tr
       key={id}
-      className={`hover:bg-gray-500/20 transition-colors duration-100 ease-in border-b ${
-        id != studentData.length - 1
-          ? " border-root_bluish"
-          : "border-transparent"
+      className={`hover:bg-gray-500/20 h-fit row-span-1 transition-colors duration-100 ease-in border-b ${
+        id != arr.length - 1 ? " border-root_bluish" : "border-transparent"
       }`}
     >
       <td className="py-2 text-center">{id + 1}</td>
-      <td className="py-2 text-center flex items-center gap-0 font-semibold my-auto">
+      <td className="py-2 text-center font-semibold ">
         {avatar && (
           <img
             className="w-10 h-10 rounded-full object-cover select-none"
@@ -103,95 +111,3 @@ const StudentList = ({ id, avatar, name, email, phone }) => {
     </tr>
   );
 };
-const studentData = [
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Ervin Howell",
-    email: "Shanna@melissa.tv",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801561691229",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Ervin Howell",
-    email: "Shanna@melissa.tv",
-    phone: "+8801464894449",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801561691229",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Ervin Howell",
-    email: "Shanna@melissa.tv",
-    phone: "+8801464894449",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Ervin Howell",
-    email: "Shanna@melissa.tv",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801464894449",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Ervin Howell",
-    email: "Shanna@melissa.tv",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801464894449",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Ervin Howell",
-    email: "Shanna@melissa.tv",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Ervin Howell",
-    email: "Shanna@melissa.tv",
-    phone: "+8801561691119",
-    avatar: "/avatar.jpg",
-  },
-  {
-    name: "Leanne Graham",
-    email: "Sincere@april.biz",
-    phone: "+8801464894449",
-    avatar: "/avatar.jpg",
-  },
-];

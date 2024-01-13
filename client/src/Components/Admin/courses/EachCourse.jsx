@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import VdoUpload from "./vdoCourse";
 import { useParams } from "react-router-dom";
+import PrimaryButton from "../../Buttons/PrimaryButton";
 
-import { fetchCourse } from "../../../axios/fetchCourses";
+import { fetchCourse, updateCourse } from "../../../axios/global";
 import reqs, { reqImgWrapper } from "../../../assets/requests";
 import { MdFileUpload } from "react-icons/md";
 import axios from "axios";
@@ -10,17 +11,18 @@ function EachCourse() {
   const { id } = useParams();
   const [data, setData] = useState({});
   const [upImg, setUpImg] = useState(null);
-  useEffect(() => {
-    fetchCourse(id, setData);
-  }, [id]);
   const [imgSrc, setImgSrc] = useState(null);
+
+  //image handler to update image
   const handleImg = (e) => {
     setUpImg(e.target.files[0]);
   };
   useEffect(() => {
-    setImgSrc(reqImgWrapper(data?.image));
-    if (upImg) setImgSrc(URL.createObjectURL(upImg));
-  }, [data?.image, upImg]);
+    fetchCourse(id, setData).then(() => {
+      console.log(newData);
+    });
+  }, [id]);
+  // update image
   const updateImage = async () => {
     const imgData = new FormData();
     imgData.append("courseId", data?.id);
@@ -32,40 +34,88 @@ function EachCourse() {
         .then((res) => {
           alert(res.data.msg);
         })
+        .then(() => window.location.reload())
         .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
     }
   };
+
+  //first time fetch data
+  useEffect(() => {
+    setImgSrc(reqImgWrapper(data?.image));
+    if (upImg) setImgSrc(URL.createObjectURL(upImg));
+  }, [data?.image, upImg]);
+
   return (
-    <div className="w-auto h-4/5 p-5 overflow-auto relative ">
+    <div className="w-auto h-1/2 p-5 overflow-auto relative ">
       {/* course id */}
       <h2 className=" text-center font-semibold capitalize mb-10 text-3xl sticky -top-5 bg-slate-100 backdrop-blur px-10 z-10">
         course id: {data?.id}
       </h2>
       {/* course basic info */}
-      <div className="flex items-start gap-2 text-left w-3/4 mx-auto" id="info">
-        <div className="grid grid-cols-2 items-center w-fit mx-auto">
+      <div className="flex items-start gap-2 text-left w-4/5 mx-auto" id="info">
+        <div className="grid grid-cols-3 items-start w-fit mx-auto">
           <label className="capitalize" htmlFor="">
             title:
           </label>
-          <input className="font-semibold p-2" value={data?.title} />
+          <input
+            className="adminInputBox"
+            value={data?.title}
+            type="text"
+            onChange={(e) =>
+              setData((pre) => ({ ...pre, title: e.target.value }))
+            }
+          />
           <label className="capitalize" htmlFor="">
             price:
           </label>
-          <input className="font-semibold p-2" value={data?.price} />
+          <input
+            className="adminInputBox"
+            value={data?.price}
+            type="number"
+            onChange={(e) =>
+              setData((pre) => ({ ...pre, price: e.target.value }))
+            }
+          />
           <label className="capitalize" htmlFor="">
             tags:
           </label>
-          <input className="font-semibold p-2" value={data?.tags} />
+          <input
+            className="adminInputBox"
+            value={data?.tags}
+            onChange={(e) =>
+              setData((pre) => ({ ...pre, tags: e.target.value }))
+            }
+          />
           <label className="capitalize" htmlFor="">
             description:
           </label>
-          <input className="font-semibold p-2" value={data?.description} />
+          <textarea
+            className="adminInputBox resize-none"
+            rows={4}
+            value={data?.description}
+            type="text"
+            onChange={(e) =>
+              setData((pre) => ({ ...pre, description: e.target.value }))
+            }
+          />
           <label className="capitalize" htmlFor="">
             Schedule:
           </label>
-          <input className="font-semibold p-2" value={data?.schedule} />
+          <input
+            className="adminInputBox"
+            value={data?.schedule}
+            onChange={(e) =>
+              setData((pre) => ({ ...pre, schedule: e.target.value }))
+            }
+          />
+          <PrimaryButton
+            text={"update"}
+            textClasses={"bg-sky-500 text-white px-4 py-2 rounded-md"}
+            type={"submit"}
+            onClick={() => updateCourse(id, data)}
+          />
         </div>
         <div className="relative w-max mx-auto">
           {imgSrc && (

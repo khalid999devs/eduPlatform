@@ -75,7 +75,7 @@ const Admin = () => {
         setAdminUser,
       }}
     >
-      <div className="bg-transparent p-5 rounded-lg flex justify-between items-start relative h-screen overflow-y-hidden bg-slate-100">
+      <div className="bg-transparent rounded-lg flex justify-between items-start relative h-screen overflow-y-scroll bg-slate-100">
         <AdminNavbar />
 
         <main className="relative h-full transition-all duration-200 ease-in-out mx-auto w-auto flex-1">

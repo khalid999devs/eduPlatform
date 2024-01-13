@@ -45,3 +45,6 @@ html {
   left: 0;
   z-index: 1000;
 }
+.adminInputBox{
+  @apply col-span-2 flex-1 font-semibold px-1 ring-2 ring-offset-0 ring-darkText my-1 outline-none border-none focus:ring-blue-700 focus:rounded-md transition-all
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Coursecard from "../Components/Courses/CourseCard";
 import { useNavigate } from "react-router-dom";
-import { fetchCourses } from "../axios/fetchCourses";
+import { fetchCourses } from "../axios/global";
 
 const AllCourses = () => {
   const navigate = useNavigate();

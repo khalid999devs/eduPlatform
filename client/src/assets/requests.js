@@ -30,6 +30,9 @@ const reqs = {
   GET_SINGLE_COURSE: "/api/course/get-pub-course",
   CREATE_COURSE: "/api/course/create",
   UPDATE_IMAGE: "/api/course/update-image",
+  DELETE_COURSE: "/api/course/delete-course",
+  UPDATE_COURSE: "/api/course/edit-course",
+  GET_STUDENTS: "/api/client/getAll",
 };
 
 export default reqs;

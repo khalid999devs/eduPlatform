@@ -26,22 +26,13 @@ const AddCourse = () => {
       ratings: 4,
       schedule: courseDetails.schedule,
       demoVideoUrl: courseDetails.demoLink,
-      image: courseDetails.imagefile,
+      courses: courseDetails.imagefile,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-
-    form.append("title", data.title);
-    form.append("description", data.description);
-    form.append("price", data.price);
-    form.append("tags", data.tags);
-    form.append("ratings", data.ratings);
-    form.append("schedule", data.schedule);
-    form.append("demoVideoUrl", data.demoVideoUrl);
-    form.append("courses", data.image);
-    form.append("createdAt", data.createdAt);
-    form.append("updatedAt", data.updatedAt);
-
+    Object.keys(data).forEach((key) => {
+      form.append(`${key}`, data[key]);
+    });
     postCourse(form).then((res) => {
       console.log(res);
     });
@@ -67,7 +58,7 @@ const AddCourse = () => {
                   <FormInput
                     extraclass={"mb-4"}
                     title={"Title"}
-                    placeHolder={"Enter the title"}
+                    placeHolder={"Enter the title [minimum 2 words]"}
                     value={courseDetails.title}
                     handleChange={(e) =>
                       setCourse((pre) => ({ ...pre, title: e.target.value }))

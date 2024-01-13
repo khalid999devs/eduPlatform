@@ -1,22 +1,16 @@
-import { useState } from 'react';
-import SignupForm from '../Components/Account/Client/SignupForm';
-import { Link } from 'react-router-dom';
+import SignupForm from "../Components/Account/Client/SignupForm";
+import { Link } from "react-router-dom";
 
 function ClientSignUp() {
-  const [email, setemail] = useState('');
-  const [pass, setpass] = useState('');
-  function handlesubmit(e) {
-    e.preventDefault();
-  }
   return (
-    <div className=' signin min-h-[60vh] max-w-[750px]  m-auto p-4 mb-24 mt-14'>
+    <div className=" signin min-h-[60vh] max-w-[750px]  m-auto p-4 mb-24 mt-14">
       <SignupForm />
-      <div className='mt-5'>
-        <h1 className='text-center '>
-          Already have an account?{' '}
+      <div className="mt-5">
+        <h1 className="text-center ">
+          Already have an account?{" "}
           <Link
-            to={'/login'}
-            className='text-blue-500 text-center transition-color hover:text-blue-700'
+            to={"/login"}
+            className="text-blue-500 text-center transition-color hover:text-blue-700"
           >
             Sign in
           </Link>

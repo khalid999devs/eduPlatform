@@ -6,7 +6,7 @@ function ChatBox() {
   const [replyId, setReplyId] = useState(null);
 
   return (
-    <div className="bg-transparent max-w-5xl  mx-auto h-full overflow-y-hidden">
+    <div className="bg-transparent max-w-6xl  mx-auto h-4/5 overflow-y-hidden">
       <div className="px-4 pb-0 flex flex-col h-full w-auto">
         <RootSms setReplyId={setReplyId} />
         <InputBox replyId={replyId} />
