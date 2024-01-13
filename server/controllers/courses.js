@@ -312,6 +312,7 @@ const addResource = async (req, res) => {
   }
   const resource = await resources.create({ ...data, courseId: courseId });
   resource.filesUrl = JSON.parse(resource.filesUrl);
+  resource.driveLink = JSON.parse(resource.driveLink);
 
   res.status(201).json({
     succeed: true,

@@ -4,11 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       driveLink: {
         type: DataTypes.TEXT,
-        defaultValue: '{}',
+        defaultValue: '[]',
       },
       filesUrl: {
         type: DataTypes.TEXT,
-        defaultValue: '{}',
+        defaultValue: '[]',
       },
       desc: {
         type: DataTypes.TEXT,

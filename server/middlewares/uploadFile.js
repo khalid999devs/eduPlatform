@@ -20,6 +20,15 @@ const storage = multer.diskStorage({
         `../uploads/${file.fieldname}/${req.body.Title.split(' ').join('_')}`
       );
     }
+    if (file.fieldname === 'questions') {
+      destName = resolve(
+        __dirname,
+        `../uploads/${file.fieldname}/${req.body.title
+          .split(' ')
+          .join('_')
+          .slice(0, 15)}`
+      );
+    }
 
     if (!existsSync(destName)) {
       try {
@@ -29,10 +38,16 @@ const storage = multer.diskStorage({
       }
     }
     let pathName = `uploads/${file.fieldname}`;
-    if (file.fieldname) {
+    if (file.fieldname === 'resources') {
       pathName = `uploads/${file.fieldname}/${req.body.Title.split(' ').join(
         '_'
       )}`;
+    }
+    if (file.fieldname === 'questions') {
+      pathName = `uploads/${file.fieldname}/${req.body.title
+        .split(' ')
+        .join('_')
+        .slice(0, 15)}`;
     }
     cb(null, pathName);
   },

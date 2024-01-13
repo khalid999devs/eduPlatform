@@ -32,7 +32,8 @@ const setExamInfo = async (req, res) => {
 };
 
 const addSingleQuesAns = async (req, res) => {
-  const { category, question, answers, examId, mode, image, mark } = req.body;
+  const { category, question, answers, examId, mode, image, mark, ansType } =
+    req.body;
   const exam = await exams.findByPk(examId);
   if (!exam) {
     throw new NotFoundError('This particular exam could not be found!');
@@ -55,6 +56,7 @@ const addSingleQuesAns = async (req, res) => {
 
   const quesData = {
     id: quesAnsId,
+    ansType,
     category,
     question,
     mark: Number(mark),
