@@ -9,7 +9,6 @@ const {
 const { redis } = require('../utils/redis');
 const mailer = require('../utils/sendMail');
 const cloudinary = require('cloudinary');
-const { JSON } = require('sequelize');
 
 const setExamInfo = async (req, res) => {
   const data = req.body;
@@ -33,7 +32,7 @@ const setExamInfo = async (req, res) => {
 };
 
 const addSingleQuesAns = async (req, res) => {
-  const { title, question, answers, examId, mode, image, mark } = req.body;
+  const { category, question, answers, examId, mode, image, mark } = req.body;
   const exam = await exams.findByPk(examId);
   if (!exam) {
     throw new NotFoundError('This particular exam could not be found!');
@@ -56,7 +55,7 @@ const addSingleQuesAns = async (req, res) => {
 
   const quesData = {
     id: quesAnsId,
-    title: title,
+    category,
     question,
     mark: Number(mark),
   };
