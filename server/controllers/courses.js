@@ -330,7 +330,7 @@ const deleteResource = async (req, res) => {
   const files = JSON.parse(resource.filesUrl);
   if (Object.keys(files).length > 0) {
     Object.keys(files).forEach((prop) => {
-      deleteFile(files[prop]);
+      deleteFile(files[prop]?.url);
     });
   }
   await resource.destroy();
