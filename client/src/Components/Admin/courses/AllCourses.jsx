@@ -11,50 +11,10 @@ function AllCourse() {
   }, []);
   if (isAdmin)
     return (
-      <div className="w-full h-5/6 overflow-y-hidden p-5 mt-20">
-        <hr />
-        <div className="flex justify-center flex-auto overflow-y-scroll w-full max-w-6xl mx-auto h-72 gap-1 items-start my-4 p-2">
-          <table className="w-full bg-slate-300 text-darkText shadow-md cursor-default select-none">
-            {/* title bar */}
-            <thead className="sticky top-0 left-0">
-              <tr className="w-full bg-slate-700 text-white">
-                <th className="p-1">Sl No.</th>
-                <th className="tracking-normal capitalize text-sm px-10 py-2  text-center ">
-                  Course Name
-                </th>
-                <th className={` text-sm px-10 py-2 text-center`}>
-                  Price (BDT)
-                </th>
-                <th className=" text-sm px-10 py-2 text-center">Controls</th>
-              </tr>
-            </thead>
-            <tbody className="h-auto bg-red-50 overflow-y-scroll">
-              {data?.map((val, id) => {
-                if (search.length > 0) {
-                  if (val.title?.toLowerCase().includes(search?.toLowerCase()))
-                    return (
-                      <Coursecard
-                        found={true}
-                        key={id}
-                        allData={val}
-                        id={val.id}
-                        sl={id}
-                      />
-                    );
-                } else
-                  return (
-                    <Coursecard
-                      found={false}
-                      key={id}
-                      allData={val}
-                      id={val.id}
-                      sl={id}
-                    />
-                  );
-              })}
-            </tbody>
-          </table>
-          <section className="sticky top-0 right-0 ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md mb-10 flex ">
+      <div className="w-full h-5/6 p-5 flex flex-col xl:flex-row gap-5 items-start ">
+        <div className="h-full">
+          <hr />
+          <section className="float-left ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md my-4 flex">
             <input
               name="titleSrc"
               id="titleSrc"
@@ -67,8 +27,52 @@ function AllCourse() {
               <MdSearch />
             </label>
           </section>
+          <div className="flex justify-center flex-auto overflow-y-scroll w-full max-w-6xl mx-auto h-full gap-1 items-start my-4 px-2  resize">
+            <table className="w-full bg-slate-300 text-darkText shadow-md cursor-default select-none">
+              {/* title bar */}
+              <thead className="sticky top-0 left-0">
+                <tr className="w-full bg-slate-700 text-white">
+                  <th className="p-1">Sl No.</th>
+                  <th className="tracking-normal capitalize text-sm px-10 py-2  text-center ">
+                    Course Name
+                  </th>
+                  <th className={` text-sm px-10 py-2 text-center`}>
+                    Price (BDT)
+                  </th>
+                  <th className=" text-sm px-10 py-2 text-center">Controls</th>
+                </tr>
+              </thead>
+              <tbody className="h-auto bg-red-50 overflow-y-scroll">
+                {data?.map((val, id) => {
+                  if (search.length > 0) {
+                    if (
+                      val.title?.toLowerCase().includes(search?.toLowerCase())
+                    )
+                      return (
+                        <Coursecard
+                          found={true}
+                          key={id}
+                          allData={val}
+                          id={val.id}
+                          sl={id}
+                        />
+                      );
+                  } else
+                    return (
+                      <Coursecard
+                        found={false}
+                        key={id}
+                        allData={val}
+                        id={val.id}
+                        sl={id}
+                      />
+                    );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <hr />
         </div>
-        <hr />
         <Outlet />
       </div>
     );
@@ -93,19 +97,21 @@ const Coursecard = ({ allData, id, sl, found }) => {
       >
         {allData.price}
       </td>
-      <td className="grid grid-cols-3 justify-center items-center font-semibold capitalize text-sm px-10 py-2 border-l-orange-700 border-2 border-transparent ">
-        <Link to={`${id}`}>
-          <button className="bg-green-500 rounded-md text-white capitalize px-3 py-1">
-            visit
-          </button>
+      <td className="flex text-center justify-center items-center gap-3 font-semibold capitalize text-sm px-10 py-2 border-l-orange-700 border-2 border-transparent ">
+        <Link
+          to={`${id}`}
+          className="bg-green-500 rounded-md text-white capitalize px-3 py-1"
+        >
+          visit
         </Link>
-        <Link to={`../chat/${id}`}>
-          <button className="bg-yellow-300 rounded-md text-black capitalize px-3 py-1">
-            Chat
-          </button>
+        <Link
+          to={`../chat/${id}`}
+          className="bg-yellow-300 rounded-md text-black capitalize px-3 py-1"
+        >
+          Chat
         </Link>
         <button
-          className="bg-red-500 rounded-md text-white capitalize px-3 py-1 mx-auto"
+          className="bg-red-500 rounded-md text-white capitalize px-3 py-1 "
           onClick={() => {
             if (
               prompt(

@@ -1,23 +1,18 @@
-function Video() {
+import { AiFillYoutube } from "react-icons/ai";
+function Video({ title, link, length }) {
   return (
-    <>
-      <div className="p-2 w-80 md:w-1/2 xl:w-1/3 rounded-xl border-2 border-dashed border-sky-500  shadow-xl shadow-root_bluish/50 m-5">
-        <iframe
-          className="w-full rounded-xl h-auto aspect-video"
-          width={1600 / 50}
-          height={900 / 50}
-          src="https://www.youtube.com/embed/OXuskB_9uaw?si=CP0aXNtnCxgpTfgv"
-          title="new south indian movies dubbed in hindi 2023 full New Movie| South Movie 2023 Chandramukhi 2"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;"
-          allowfullscreen
-        ></iframe>
-        <p className="my-4 font-semibold text-left text-xl w-autp dark:text-darkText">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
-          consequuntur perferendis pariatur dicta aliquam.
-        </p>
-      </div>
-    </>
+    <div className="grid grid-cols-3 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
+      <p className="text-left">{title}</p>
+      <a
+        className="flex items-center justify-center gap-1 hover:ring-red-500 hover:ring transition-all"
+        href={link}
+        target="_blank"
+        title={link}
+      >
+        <AiFillYoutube fill="red" /> youtube
+      </a>
+      <p className="w-fit">{length}s</p>
+    </div>
   );
 }
 

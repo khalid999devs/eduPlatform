@@ -41,7 +41,7 @@ function Stundet() {
             </form>
           </div>
           {/* sutdent lists */}
-          <div className="flex justify-center flex-auto overflow-y-scroll max-w-6xl w-full mx-auto border border-root_bluish">
+          <div className="flex justify-center overflow-y-scroll max-w-6xl w-full mx-auto border border-root_bluish">
             <table className="w-full bg-slate-300 text-darkText shadow-md cursor-default select-text">
               <thead className="w-full">
                 <tr className="text-darkText text-lg text-left">
@@ -59,7 +59,7 @@ function Stundet() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="overflow-y-scroll h-auto ">
+              <tbody className="overflow-y-scroll ">
                 {students
                   .filter((val) => val.phone.includes(phone))
                   .map((student, id, arr) => {

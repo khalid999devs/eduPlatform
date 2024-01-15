@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import VdoUpload from "./vdoCourse";
+import VdoUpload from "./videos/vdoCourse";
+import Video from "./videos/video";
 import { useParams } from "react-router-dom";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 
-import { fetchCourse, updateCourse } from "../../../axios/global";
+import { adminFCourse, updateCourse } from "../../../axios/global";
 import reqs, { reqImgWrapper } from "../../../assets/requests";
 import { MdFileUpload } from "react-icons/md";
 import axios from "axios";
@@ -18,9 +19,7 @@ function EachCourse() {
     setUpImg(e.target.files[0]);
   };
   useEffect(() => {
-    fetchCourse(id, setData).then(() => {
-      console.log(newData);
-    });
+    adminFCourse(id, setData);
   }, [id]);
   // update image
   const updateImage = async () => {
@@ -48,9 +47,9 @@ function EachCourse() {
   }, [data?.image, upImg]);
 
   return (
-    <div className="w-auto h-1/2 p-5 overflow-auto relative ">
+    <div className="w-auto h-full p-5 overflow-y-scroll overflow-x-hidden resize-y">
       {/* course id */}
-      <h2 className=" text-center font-semibold capitalize mb-10 text-3xl sticky -top-5 bg-slate-100 backdrop-blur px-10 z-10">
+      <h2 className=" text-center font-semibold capitalize mb-10 text-3xl sticky -top-5 bg-slate-100 backdrop-blur px-10 z-10 border-2 border-transparent border-b-black shadow-xl shadow-trans_bluish/20">
         course id: {data?.id}
       </h2>
       {/* course basic info */}
@@ -150,15 +149,29 @@ function EachCourse() {
           )}
         </div>
       </div>
-
+      <div className="grid grid-cols-1 gap-1 justify-center">
+        {/* record video */}
+        <h2 className="text-center text-lg underline font-bold">Recorded Videos</h2>
+        {data?.recordedclasses && (
+          <>
+            {data?.recordedclasses?.map((vid, id) => {
+              return (
+                <Video
+                  key={id}
+                  length={vid.videoLength}
+                  link={vid.videoURL}
+                  title={vid.videoTitle}
+                />
+              );
+            })}
+          </>
+        )}
+      </div>
       <div>
         {/* form for video upload and exam link*/}
-        <VdoUpload />
+        <VdoUpload id={id} />
       </div>
 
-      <div className="flex flex-wrap gap-1 justify-center">
-        {/* record video */}
-      </div>
       <hr />
     </div>
   );
