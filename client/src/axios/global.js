@@ -4,7 +4,7 @@ axios.defaults.baseURL = "http://localhost:8001";
 import { postCourse } from "./postCourse";
 import { adminFCourse, fetchCourse, fetchCourses } from "./fetchCourses";
 import { deleteCourse } from "./deleteCourse";
-import { updateCourse } from "./updateCourse";
+import { updateCourse, deleteClass } from "./updateCourse";
 import { fetchStudents } from "./fetchStudents";
 import { addClass } from "./addRecord";
 
@@ -17,6 +17,7 @@ export {
   fetchStudents,
   postCourse,
   updateCourse,
+  deleteClass,
 };
 // axios.defaults.headers.common['Accept'] = 'application/json';
 // axios.defaults.headers.post['Content-Type'] =

@@ -33,4 +33,31 @@ const updateCourse = async (id, data) => {
     console.log(err);
   }
 };
-export { updateCourse };
+const deleteClass = async (id) => {
+  try {
+    axios
+      .delete(
+        `${reqs.DELETE_CLASS}/${id}`,
+
+        {
+          // /api/course/delete-course/14
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.succeed) alert(`Recorded class ${id} has been DELETED`);
+      })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err.message);
+      });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { updateCourse, deleteClass };

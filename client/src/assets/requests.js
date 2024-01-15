@@ -15,7 +15,7 @@ const reqs = {
   ADMIN_LOGOUT: "/api/admin/logout",
   IS_ADMIN_VALID: "/api/admin/auth",
   ADMIN_VALID_COURSE: "/api/course/valid-admin-course",
-  
+
   //client auth
   CLIENT_REG: "/api/client/reg",
   CLIENT_LOGIN: "/api/client/login",
@@ -25,7 +25,7 @@ const reqs = {
   DELETE_ACCOUNT: "/api/client/deleteAcc",
   RESET_PASS_SET_TOKEN: "/api/client/rPassToken",
   RESET_PASS_OTP_VERIFY: "/api/client/rPassVerify",
-  
+
   //courses
   ADD_RECORD_CLASS: "/api/course/add-recorded-class",
   CREATE_COURSE: "/api/course/create",
@@ -36,6 +36,7 @@ const reqs = {
   UPDATE_COURSE: "/api/course/edit-course",
   UPDATE_IMAGE: "/api/course/update-image",
   ZOOM_CRED: "/api/course/zoom-creds",
+  DELETE_CLASS: "/api/course/delete-recorded-class",
 };
 
 export default reqs;

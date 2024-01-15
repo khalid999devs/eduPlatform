@@ -13,7 +13,7 @@ const deleteCourse = async (id, title) => {
           alert(`Course ID ${id} {${title}} has been deleted`);
       })
       .then(() => {
-        window.location.assign("/admin/course");
+        window.location.assign("/abs-admin/course");
       })
       .catch((err) => {
         console.log(err);

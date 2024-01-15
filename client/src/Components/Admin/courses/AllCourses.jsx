@@ -11,9 +11,8 @@ function AllCourse() {
   }, []);
   if (isAdmin)
     return (
-      <div className="w-full h-5/6 p-5 flex flex-col xl:flex-row gap-5 items-start ">
-        <div className="h-full">
-          <hr />
+      <div className="w-full h-full items-center p-5 flex flex-col xl:flex-row gap-5 xl:items-start ">
+        <div className="h-1/2 w-fit flex flex-col items-center">
           <section className="float-left ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md my-4 flex">
             <input
               name="titleSrc"
@@ -27,8 +26,8 @@ function AllCourse() {
               <MdSearch />
             </label>
           </section>
-          <div className="flex justify-center flex-auto overflow-y-scroll w-full max-w-6xl mx-auto h-full gap-1 items-start my-4 px-2  resize">
-            <table className="w-full bg-slate-300 text-darkText shadow-md cursor-default select-none">
+          <div className="flex justify-center flex-auto overflow-y-scroll w-full min-w-max h-auto gap-1 items-start my-4 px-2  resize">
+            <table className="w-full mx-auto bg-slate-300 text-darkText shadow-md cursor-default select-none">
               {/* title bar */}
               <thead className="sticky top-0 left-0">
                 <tr className="w-full bg-slate-700 text-white">
@@ -43,35 +42,40 @@ function AllCourse() {
                 </tr>
               </thead>
               <tbody className="h-auto bg-red-50 overflow-y-scroll">
-                {data?.map((val, id) => {
-                  if (search.length > 0) {
-                    if (
-                      val.title?.toLowerCase().includes(search?.toLowerCase())
-                    )
+                {data
+                  ?.sort((a, b) => {
+                    if (a.createdAt < b.createdAt) return 1;
+                    if (a.createdAt > b.createdAt) return -1;
+                    if (a.createdAt == b.createdAt) return 0;
+                  })
+                  ?.map((val, id) => {
+                    if (search.length > 0) {
+                      if (
+                        val.title?.toLowerCase().includes(search?.toLowerCase())
+                      )
+                        return (
+                          <Coursecard
+                            found={true}
+                            key={id}
+                            allData={val}
+                            id={val.id}
+                            sl={id}
+                          />
+                        );
+                    } else
                       return (
                         <Coursecard
-                          found={true}
+                          found={false}
                           key={id}
                           allData={val}
                           id={val.id}
                           sl={id}
                         />
                       );
-                  } else
-                    return (
-                      <Coursecard
-                        found={false}
-                        key={id}
-                        allData={val}
-                        id={val.id}
-                        sl={id}
-                      />
-                    );
-                })}
+                  })}
               </tbody>
             </table>
           </div>
-          <hr />
         </div>
         <Outlet />
       </div>

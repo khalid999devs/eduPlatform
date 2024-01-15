@@ -11,6 +11,7 @@ const addClass = async (id, data) => {
         console.log(res.data);
         if (res.data.succeed) {
           alert(res.data.msg);
+          window.location.reload();
         }
       })
       .catch((err) => {

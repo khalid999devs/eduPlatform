@@ -49,8 +49,8 @@ function EachCourse() {
   return (
     <div className="w-auto h-full p-5 overflow-y-scroll overflow-x-hidden resize-y">
       {/* course id */}
-      <h2 className=" text-center font-semibold capitalize mb-10 text-3xl sticky -top-5 bg-slate-100 backdrop-blur px-10 z-10 border-2 border-transparent border-b-black shadow-xl shadow-trans_bluish/20">
-        course id: {data?.id}
+      <h2 className=" text-center font-semibold capitalize mb-10 text-2xl sticky -top-5 bg-slate-100 backdrop-blur px-10 z-10 border-2 border-transparent border-b-black shadow-xl shadow-trans_bluish/20">
+        course Title: {data?.title}
       </h2>
       {/* course basic info */}
       <div className="flex items-start gap-2 text-left w-4/5 mx-auto" id="info">
@@ -149,23 +149,43 @@ function EachCourse() {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-1 justify-center">
+      <div className="grid grid-cols-1 gap-1 justify-center mt-10">
         {/* record video */}
-        <h2 className="text-center text-lg underline font-bold">Recorded Videos</h2>
-        {data?.recordedclasses && (
+        <h2 className="text-center text-lg underline font-bold">
+          Recorded Videos
+        </h2>
+        <p className="inline-block text-left w-fit mx-0">Total Class: {data?.recordedclasses?.length}</p>
+        {data?.recordedclasses.length != 0 ?(<div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
+          <b>Serial No.</b>
+          <b className="border-l-2 border-blue-600">Class Title</b>
+          <b className="border-l-2 border-blue-600">Class Link</b>
+          <b className="border-l-2 border-blue-600">Duration</b>
+        </div>): null}
+        {data?.recordedclasses.length != 0 ? (
           <>
-            {data?.recordedclasses?.map((vid, id) => {
-              return (
-                <Video
-                  key={id}
-                  length={vid.videoLength}
-                  link={vid.videoURL}
-                  title={vid.videoTitle}
-                />
-              );
-            })}
+            {data?.recordedclasses
+              ?.sort((a, b) => {
+                let x = a.createdAt;
+                let y = b.createdAt;
+                if (x > y) return -1;
+                if (x < y) return 1;
+                if (x == y) return 0;
+              })
+              ?.map((vid, uid) => {
+                return (
+                  <Video
+                    key={uid}
+                    id={vid.id}
+                    sl={uid + 1}
+                    length={vid.videoLength}
+                    link={vid.videoURL}
+                    title={vid.videoTitle}
+                    desc={vid.desc}
+                  />
+                );
+              })}
           </>
-        )}
+        ): null}
       </div>
       <div>
         {/* form for video upload and exam link*/}
