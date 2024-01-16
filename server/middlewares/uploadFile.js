@@ -5,8 +5,7 @@ const { BadRequestError } = require('../errors');
 //file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    console.log(file);
-    const validFields = /students|courses|resources|questions/;
+    const validFields = /students|courses|resources|questions|examsAns/;
     if (!file.fieldname) {
       return cb(null, true);
     }
@@ -14,14 +13,20 @@ const storage = multer.diskStorage({
     if (!isFieldValid) {
       cb(new Error(`Field name didn't match`));
     }
+    let mathRand = Math.ceil(Math.random() * 10).toString();
     let destName = resolve(__dirname, `../uploads/${file.fieldname}`);
-    if (file.fieldname === 'resources') {
+
+    if (file.fieldname === 'examsAns') {
+      destName = resolve(
+        __dirname,
+        `../uploads/${file.fieldname}/exam@${req.examId}/stu@${req.user.id}`
+      );
+    } else if (file.fieldname === 'resources') {
       destName = resolve(
         __dirname,
         `../uploads/${file.fieldname}/${req.body.Title.split(' ').join('_')}`
       );
-    }
-    if (file.fieldname === 'questions') {
+    } else if (file.fieldname === 'questions') {
       destName = resolve(
         __dirname,
         `../uploads/${file.fieldname}/${req.body.title
@@ -40,12 +45,16 @@ const storage = multer.diskStorage({
     }
 
     let pathName = `uploads/${file.fieldname}`;
-    if (file.fieldname === 'resources') {
+    if (file.fieldname === 'examsAns') {
+      pathName = resolve(
+        __dirname,
+        `../uploads/${file.fieldname}/exam@${req.examId}/stu@${req.user.id}`
+      );
+    } else if (file.fieldname === 'resources') {
       pathName = `uploads/${file.fieldname}/${req.body.Title.split(' ').join(
         '_'
       )}`;
-    }
-    if (file.fieldname === 'questions') {
+    } else if (file.fieldname === 'questions') {
       pathName = `uploads/${file.fieldname}/${req.body.title
         .split(' ')
         .join('_')
@@ -55,10 +64,12 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     let type = file.mimetype.split('/');
-    const fileExt = type[type.length - 1];
+    let fileExt = type[type.length - 1];
 
     let fileName = '';
-    if (file.fieldname === 'students') {
+    if (file.fieldname === 'examsAns') {
+      fileName = `ansfile_${req.body.examId}_${req.user.id}_@${Date.now()}`;
+    } else if (file.fieldname === 'students') {
       let { fullName, name } = req.body;
 
       if (fullName) {
@@ -74,9 +85,10 @@ const storage = multer.diskStorage({
       fileName =
         req.body.title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
     } else if (file.fieldname === 'resources') {
-      fileName = req.body.Title.split(' ').join('_');
+      fileName = req.body.Title.split(' ').join('_') + `_${Date.now()}`;
     } else if (file.fieldname === 'questions') {
-      fileName = req.body.title.split(' ').join('_').slice(0, 15);
+      fileName =
+        req.body.title.split(' ').join('_').slice(0, 15) + `_${Date.now()}`;
     } else {
       fileName = file.fieldname + `-${Date.now()}`;
     }
@@ -88,13 +100,14 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 4 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|pdf|ppt|pptx|docx/;
+    const fileTypes = /jpeg|jpg|png|pdf|ppt|pptx/;
+
     const mimeType = fileTypes.test(file.mimetype);
 
     if (mimeType) {
       return cb(null, true);
     } else {
-      cb(new Error('only jpg,png,jpeg,pdf,ppt,pptx is allowed!'));
+      cb(new Error('only jpg,png,jpeg,pdf,ppt,pptxis allowed!'));
     }
 
     cb(new Error('there was an unknown error'));

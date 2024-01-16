@@ -42,6 +42,60 @@ const setExamInfo = async (req, res) => {
   });
 };
 
+const editExamInfo = async (req, res) => {
+  const data = req.body;
+  const examId = req.params.id;
+  const exam = await exams.findByPk(examId);
+  if (!exam) {
+    throw new NotFoundError('Exam could not be found!');
+  }
+  if (
+    exam.examEndTime !== data.examEndTime ||
+    exam.examStartTime !== data.examStartTime
+  ) {
+    const endTimeDiff = Number(data.examEndTime) - Number(exam.examEndTime);
+    const serverExmEndTime = Number(exam.serverExamEndTime) + endTimeDiff;
+    data.serverExamEndTime = serverExmEndTime.toString();
+  }
+  if (data.quesAns) {
+    data.quesAns = exam.quesAns;
+  }
+
+  exam.set(data);
+  await exam.save();
+
+  exam.quesAns = JSON.parse(exam.quesAns);
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully updated exam info',
+    exam,
+  });
+};
+
+const deleteExamInfo = async (req, res) => {
+  const examId = req.params.id;
+  const exam = await exams.findByPk(examId);
+  if (!exam) {
+    throw new NotFoundError('Exam could not be found!');
+  }
+  const quesAns = JSON.parse(exam.quesAns);
+  try {
+    quesAns.questions.forEach((ques) => {
+      deleteMultipleFiles(ques.images);
+    });
+  } catch (error) {
+    throw new CustomAPIError(error.message);
+  }
+  await redis.del(`question@${examId}`);
+  await exam.destroy();
+
+  res.json({
+    msg: 'Successfully deleted the exam',
+    succeed: true,
+  });
+};
+
 const addSingleQuesAns = async (req, res) => {
   const { category, quesOptions, answers, examId, mark, ansType, title } =
     req.body;
@@ -51,7 +105,7 @@ const addSingleQuesAns = async (req, res) => {
     if (req.files?.length > 0) deleteMultipleFiles(req.files);
     throw new NotFoundError('This particular exam could not be found!');
   }
-  console.log(ansType);
+
   if (ansType !== 'file' && ansType !== 'options') {
     if (req.files?.length > 0) deleteMultipleFiles(req.files);
 
@@ -115,7 +169,7 @@ const addSingleQuesAns = async (req, res) => {
     id: quesAnsId,
     quesAns: answers ? JSON.parse(answers) : [],
   });
-  redis.set(`question@${examId}`, JSON.stringify(quesAns));
+  await redis.set(`question@${examId}`, JSON.stringify(quesAns));
 
   exam.quesAns = JSON.stringify(quesAns);
   await exam.save();
@@ -124,6 +178,44 @@ const addSingleQuesAns = async (req, res) => {
   res.status(201).json({
     succeed: true,
     msg: 'Successfully added the question',
+    exam,
+  });
+};
+
+const deleteSingleQuesAns = async (req, res) => {
+  const { questionId, examId } = req.body;
+  const exam = await exams.findByPk(examId);
+  if (!exam) {
+    throw new UnauthorizedError('Wrong exam Id provided');
+  }
+  const questionAns = JSON.parse(exam.quesAns);
+
+  try {
+    questionAns.questions.forEach((ques) => {
+      if (ques.id === questionId && ques.images?.length > 0) {
+        deleteMultipleFiles(ques.images);
+      }
+    });
+  } catch (error) {
+    throw new CustomAPIError(error.message);
+  }
+  questionAns.questions = questionAns.questions.filter(
+    (singleQ) => singleQ.id !== questionId
+  );
+  questionAns.answers = questionAns.answers.filter(
+    (singleA) => singleA.id !== questionId
+  );
+
+  await redis.set(`question@${examId}`, JSON.stringify(questionAns));
+  exam.quesAns = JSON.stringify(questionAns);
+
+  await exam.save();
+
+  exam.quesAns = questionAns;
+
+  res.json({
+    msg: 'Successfully deleted the question and answer',
+    succeed: true,
     exam,
   });
 };
@@ -158,6 +250,7 @@ const getAllQues = async (req, res) => {
 
 const addStuAns = async (req, res) => {
   const { fullAns, examId } = req.body;
+  fullAns.clientId = req.user.id;
   let newLength;
   try {
     newLength = await redis.rpush(
@@ -175,5 +268,38 @@ const addStuAns = async (req, res) => {
     submittedNo: newLength,
   });
 };
+const addStuAnsFiles = async (req, res) => {
+  const { ansInfo, examId } = req.body;
 
-module.exports = { setExamInfo, addSingleQuesAns, getAllQues, addStuAns };
+  const finalAns = JSON.parse(ansInfo);
+  finalAns.images = req.files;
+
+  let newLength;
+  try {
+    newLength = await redis.rpush(
+      `stuAnsFiles@${examId}`,
+      JSON.stringify(finalAns)
+    );
+  } catch (error) {
+    deleteMultipleFiles(req.files);
+    throw new CustomAPIError(
+      `${error.message || 'Something wrong happened. Please try again!'}`
+    );
+  }
+  res.json({
+    succeed: true,
+    msg: 'Thank you. We have got your answer',
+    submittedNo: newLength,
+  });
+};
+
+module.exports = {
+  setExamInfo,
+  addSingleQuesAns,
+  getAllQues,
+  addStuAns,
+  deleteSingleQuesAns,
+  editExamInfo,
+  deleteExamInfo,
+  addStuAnsFiles,
+};

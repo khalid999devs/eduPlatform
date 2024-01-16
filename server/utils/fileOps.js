@@ -2,7 +2,11 @@ const deleteFile = require('./deleteFile');
 
 const deleteMultipleFiles = (files) => {
   files.forEach((file) => {
-    deleteFile(file.path);
+    if (file.path) {
+      deleteFile(file.path);
+    } else if (file.url) {
+      deleteFile(file.url);
+    }
   });
 };
 
