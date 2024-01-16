@@ -7,10 +7,7 @@ function Video({ sl, id, title = "", link = "", length = Number, desc = "" }) {
     setToggle((pre) => !pre);
   };
   return (
-    <div
-      key={sl}
-      className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center"
-    >
+    <div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
       <p
         className="text-center hover:cursor-pointer hover:bg-rose-400 w-10 h-10 flex items-center justify-center rounded-full mx-auto"
         type="button"

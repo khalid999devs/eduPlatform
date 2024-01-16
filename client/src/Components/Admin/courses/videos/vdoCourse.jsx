@@ -12,10 +12,7 @@ const VdoUpload = ({ id }) => {
     videoLength: 30,
     desc: "Instant here 2 lorem ipsum doonor sit maet\nmobeui derum ipsum donot idsum",
   });
-  useEffect(() => {
-    const desc = rcrdData.desc;
-    console.log(desc.split("\n"));
-  }, [rcrdData.desc]);
+
   return (
     <div className="form-container  flex justify-center items-start flex-wrap mb-16 pt-16 dark:text-white">
       {/* recorded class */}

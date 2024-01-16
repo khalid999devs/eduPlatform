@@ -1,7 +1,7 @@
 import { MdSearch } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { fetchStudents } from "../../../axios/global";
+import { fetchCourse, fetchStudents } from "../../../axios/global";
 
 function Stundet() {
   const [phone, setPhone] = useState("");

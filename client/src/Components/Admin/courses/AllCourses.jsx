@@ -15,9 +15,9 @@ function AllCourse() {
         <div className="h-1/2 w-fit flex flex-col items-center">
           <section className="float-left ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md my-4 flex">
             <input
+              className="border-0 outline-none  bg-transparent"
               name="titleSrc"
               id="titleSrc"
-              className="border-0 outline-none"
               type="text"
               placeholder="Enter Course Name"
               onChange={(e) => setSrc(e.target.value)}

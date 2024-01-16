@@ -3,10 +3,13 @@ import VdoUpload from "./videos/vdoCourse";
 import Video from "./videos/video";
 import { useParams } from "react-router-dom";
 import PrimaryButton from "../../Buttons/PrimaryButton";
+import { MdFileUpload } from "react-icons/md";
+import { FcDatabase } from "react-icons/fc";
+import { HiChevronRight, HiChevronDown } from "react-icons/hi2";
 
 import { adminFCourse, updateCourse } from "../../../axios/global";
-import reqs, { reqImgWrapper } from "../../../assets/requests";
-import { MdFileUpload } from "react-icons/md";
+import reqs, { reqImgWrapper, reqPdfWrapper } from "../../../assets/requests";
+
 import axios from "axios";
 function EachCourse() {
   const { id } = useParams();
@@ -149,27 +152,31 @@ function EachCourse() {
           )}
         </div>
       </div>
+      {/* map recorded video */}
       <div className="grid grid-cols-1 gap-1 justify-center mt-10">
-        {/* record video */}
         <h2 className="text-center text-lg underline font-bold">
           Recorded Videos
         </h2>
-        <p className="inline-block text-left w-fit mx-0">Total Class: {data?.recordedclasses?.length}</p>
-        {data?.recordedclasses.length != 0 ?(<div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
-          <b>Serial No.</b>
-          <b className="border-l-2 border-blue-600">Class Title</b>
-          <b className="border-l-2 border-blue-600">Class Link</b>
-          <b className="border-l-2 border-blue-600">Duration</b>
-        </div>): null}
-        {data?.recordedclasses.length != 0 ? (
+        <p className="inline-block text-left w-fit mx-0">
+          Total Class: {data?.recordedclasses?.length}
+        </p>
+        {data?.recordedclasses?.length != 0 ? (
+          <div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
+            <b>Serial No.</b>
+            <b className="border-l-2 border-blue-600">Class Title</b>
+            <b className="border-l-2 border-blue-600">Class Link</b>
+            <b className="border-l-2 border-blue-600">Duration</b>
+          </div>
+        ) : null}
+        {data?.recordedclasses?.length != 0 ? (
           <>
             {data?.recordedclasses
               ?.sort((a, b) => {
                 let x = a.createdAt;
                 let y = b.createdAt;
-                if (x > y) return -1;
-                if (x < y) return 1;
-                if (x == y) return 0;
+                if (x > y) return 1;
+                else if (x < y) return -1;
+                else if (x == y) return 0;
               })
               ?.map((vid, uid) => {
                 return (
@@ -185,16 +192,62 @@ function EachCourse() {
                 );
               })}
           </>
-        ): null}
+        ) : null}
       </div>
+      {/* upload recorded video */}
       <div>
         {/* form for video upload and exam link*/}
         <VdoUpload id={id} />
       </div>
-
-      <hr />
+      {/* course resources */}
+      <div>
+        <h1 className="text-center text-darkText font-semibold text-2xl py-2">
+          Course Resources{" "}
+          <FcDatabase className=" inline-block text-purple-600 " />
+        </h1>
+        {data?.resources &&
+          data?.resources?.map((ele, eid) => {
+            return <Resource ele={ele} key={eid} />;
+          })}
+      </div>
     </div>
   );
 }
+const Resource = ({ ele }) => {
+  const [drop, setDrop] = useState(false);
 
+  return (
+    <section
+      key={ele?.id}
+      className="text-sm grid items-start justify-normal gap-2 m-2 select-none"
+    >
+      <p
+        className="flex gap-1 font-bold hover:underline cursor-default"
+        onClick={() => {
+          setDrop((pre) => !pre);
+        }}
+      >
+        {!drop ? (
+          <HiChevronRight className="font-bold text-lg " />
+        ) : (
+          <HiChevronDown />
+        )}{" "}
+        {ele?.Title}
+      </p>
+      {drop &&
+        ele?.filesUrl?.map((val, uid) => {
+          return (
+            <a
+              key={val?.id}
+              className="underline mx-14 w-fit"
+              href={`${reqPdfWrapper(val?.url)}`}
+              target="_blank"
+            >
+              {val?.id}
+            </a>
+          );
+        })}
+    </section>
+  );
+};
 export default EachCourse;
