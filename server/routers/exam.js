@@ -9,9 +9,10 @@ const {
 const adminValidate = require('../middlewares/adminTokenVerify');
 const clientValidate = require('../middlewares/clientTokenVerify');
 const upload = require('../middlewares/uploadFile');
+const { uploadMemory } = require('../middlewares/uploadMemory');
 
 router.post('/add-exam', adminValidate, setExamInfo);
-router.post(
+router.put(
   '/add-single-ques-ans',
   adminValidate,
   upload.array('questions'),

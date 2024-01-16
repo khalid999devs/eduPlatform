@@ -5,7 +5,8 @@ const { BadRequestError } = require('../errors');
 //file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const validFields = /students|courses|resources/;
+    console.log(file);
+    const validFields = /students|courses|resources|questions/;
     if (!file.fieldname) {
       return cb(null, true);
     }
@@ -37,6 +38,7 @@ const storage = multer.diskStorage({
         console.log(error);
       }
     }
+
     let pathName = `uploads/${file.fieldname}`;
     if (file.fieldname === 'resources') {
       pathName = `uploads/${file.fieldname}/${req.body.Title.split(' ').join(
@@ -72,8 +74,9 @@ const storage = multer.diskStorage({
       fileName =
         req.body.title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
     } else if (file.fieldname === 'resources') {
-      fileName =
-        req.body.Title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
+      fileName = req.body.Title.split(' ').join('_');
+    } else if (file.fieldname === 'questions') {
+      fileName = req.body.title.split(' ').join('_').slice(0, 15);
     } else {
       fileName = file.fieldname + `-${Date.now()}`;
     }
@@ -85,7 +88,7 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 4 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|pdf|ppt|pptx/;
+    const fileTypes = /jpeg|jpg|png|pdf|ppt|pptx|docx/;
     const mimeType = fileTypes.test(file.mimetype);
 
     if (mimeType) {
