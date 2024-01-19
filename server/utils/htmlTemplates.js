@@ -1,7 +1,9 @@
 const htmlCreator = (mode, data) => {
-  let subject = '',
-    body = '',
-    text = '';
+  let subject = data.info.subject,
+    body = data.info.body;
+  text = data.info.text;
+
+  let client = data.client;
 
   if (mode === 'par') {
     (subject = `Registration Successful!`),
@@ -19,6 +21,11 @@ const htmlCreator = (mode, data) => {
     subject = `Course purchase successful!`;
     body = `
     <p>Dear ${client.fullName}, your purchase for course: ${info.courseName} is successful</p>
+    `;
+  } else if (mode === 'custom') {
+    subject = subject;
+    body = `
+    <p>Dear ${client.fullName}, ${data.info.body}</p>
     `;
   }
 

@@ -9,3 +9,5 @@
 {type:"Success",numbers:"01771470882",message:"Your http://localhost:5173/ OTP code is 1514",fullTime:"1-12-2023 ,time-23:43"},
 {type:"Success",numbers:"01988892068",message:"You purchase for Example Course 3 is successful. Your order id is: #6 ",fullTime:"6-1-2024 ,time-2:41"},
 {type:"Success",numbers:"01988892068",message:"You purchase for Example Course 5 is successful. Your order id is: #3 ",fullTime:"9-1-2024 ,time-5:24"},
+{type:"Success",numbers:"01771470882",message:"Hello, This is test SMS",fullTime:"19-1-2024 ,time-22:46"},
+{type:"Success",numbers:"01771470882",message:"Hello, This is test SMS",fullTime:"19-1-2024 ,time-22:46"},

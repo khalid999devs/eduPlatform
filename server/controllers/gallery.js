@@ -1,9 +1,9 @@
-const { Gallery } = require('../models');
-const { BadRequestError } = require('../errors');
+const { galleries } = require('../models');
+const { BadRequestError, NotFoundError } = require('../errors');
 const deleteFile = require('../utils/deleteFile');
 
 const findTotal = async () => {
-  return await Gallery.count();
+  return await galleries.count();
 };
 
 const addGalleryImage = async (req, res) => {
@@ -12,10 +12,10 @@ const addGalleryImage = async (req, res) => {
     rows: rows ? rows : 1,
     cols: cols ? cols : 1,
     order: order ? order : Number(await findTotal()) + 1,
-    BigImage: req.files.gallery[0].path,
+    bigImage: req.files.gallery[0].path,
     thumbnail: req.files.thumbnail[0].path,
   };
-  const createdResult = await Gallery.create(data);
+  const createdResult = await galleries.create(data);
 
   res.status(201).json({ succeed: true, result: createdResult });
 };
@@ -29,29 +29,32 @@ const updateGalleryImg = async (req, res) => {
     cols: cols ? cols : 1,
     order: order ? order : Number(await findTotal()) + 1,
   };
-  const metaData = await Gallery.update(dataToUpdate, { where: { id: id } });
+  const metaData = await galleries.update(dataToUpdate, { where: { id: id } });
   if (metaData[0] < 1) {
     return res.json({ succeed: false, msg: 'wrong id entered' });
   }
-  res.json({ succeed: true, msg: 'successfully updated' });
+  res.json({ succeed: true, msg: 'successfully updated', dataToUpdate });
 };
 
 const deleteImg = async (req, res) => {
   const id = req.params.id;
-  const targetImage = await Gallery.findByPk(id);
+  const targetImage = await galleries.findByPk(id);
+  if (!targetImage) {
+    throw new NotFoundError('Wrong Id provided. Could not find any image! ');
+  }
 
   if (targetImage) {
-    const BigImageFile = targetImage.dataValues.BigImage;
+    const BigImageFile = targetImage.dataValues.bigImage;
     const Thumbnail = targetImage.dataValues.thumbnail;
     deleteFile(BigImageFile);
     deleteFile(Thumbnail);
   }
-  await Gallery.destroy({ where: { id: id } });
+  await galleries.destroy({ where: { id: id } });
   res.json({ succeed: true, msg: 'delete succeed' });
 };
 
 const getGalleryImages = async (req, res) => {
-  const images = await Gallery.findAll({ order: [['order', 'ASC']] });
+  const images = await galleries.findAll({ order: [['order', 'ASC']] });
   res.json({ succeed: true, result: images });
 };
 

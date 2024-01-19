@@ -5,7 +5,8 @@ const { BadRequestError } = require('../errors');
 //file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const validFields = /students|courses|resources|questions|examsAns/;
+    const validFields =
+      /students|courses|resources|questions|examsAns|gallery|thumbnail/;
     if (!file.fieldname) {
       return cb(null, true);
     }
