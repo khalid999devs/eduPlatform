@@ -43,7 +43,7 @@ const Coursecard = ({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-3xl font-bold  text-white mr-10 ">
-              {price || `2000 tk`}
+              {price || `2000`} TK
             </span>
             <Link
               to={`/courses/${id}`}

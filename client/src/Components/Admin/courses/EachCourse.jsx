@@ -161,11 +161,10 @@ function EachCourse() {
           Total Class: {data?.recordedclasses?.length}
         </p>
         {data?.recordedclasses?.length != 0 ? (
-          <div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
+          <div className="grid grid-cols-3 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
             <b>Serial No.</b>
             <b className="border-l-2 border-blue-600">Class Title</b>
             <b className="border-l-2 border-blue-600">Class Link</b>
-            <b className="border-l-2 border-blue-600">Duration</b>
           </div>
         ) : null}
         {data?.recordedclasses?.length != 0 ? (

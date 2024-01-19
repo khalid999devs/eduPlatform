@@ -99,7 +99,7 @@ const Coursecard = ({ allData, id, sl, found }) => {
       <td
         className={`font-semibold tracking-normal capitalize text-sm text-left px-10 py-2 `}
       >
-        {allData.price}
+        {allData.price} TK
       </td>
       <td className="flex text-center justify-center items-center gap-3 font-semibold capitalize text-sm px-10 py-2 border-l-orange-700 border-2 border-transparent ">
         <Link

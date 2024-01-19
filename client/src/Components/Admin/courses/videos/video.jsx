@@ -1,13 +1,19 @@
 import { useState } from "react";
 import { AiFillYoutube } from "react-icons/ai";
 import { deleteClass } from "../../../../axios/global";
-function Video({ sl, id, title = "", link = "", length = Number, desc = "" }) {
+import YouTubePlayer from "../../../YTPlayer/YTPlayer";
+function Video({ sl, id, title = "", link = "", desc = "" }) {
   const [toggle, setToggle] = useState(false);
+  const [showVid, setShowVid] = useState(false);
   const handleToggle = () => {
     setToggle((pre) => !pre);
   };
+  const handleVideo = () => {
+    setShowVid((pre) => !pre);
+  };
+  const vidLink = link.slice(17, 17 + 11);
   return (
-    <div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
+    <div className="grid grid-cols-3 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
       <p
         className="text-center hover:cursor-pointer hover:bg-rose-400 w-10 h-10 flex items-center justify-center rounded-full mx-auto"
         type="button"
@@ -15,16 +21,15 @@ function Video({ sl, id, title = "", link = "", length = Number, desc = "" }) {
       >
         <b>{sl}</b>
       </p>
-      <p className="text-left">{title}</p>
-      <a
-        className="flex items-center justify-center gap-1 hover:ring-red-500 hover:ring transition-all"
-        href={link}
+      <p className="text-left pl-5">{title}</p>
+      <span
+        className="flex items-center justify-center gap-1 hover:ring-red-500 hover:ring transition-all cursor-default"
         target="_blank"
         title={link}
+        onClick={handleVideo}
       >
         <AiFillYoutube fill="red" /> youtube
-      </a>
-      <p className="text-center"> {length}s</p>
+      </span>
 
       <div
         className={`grid-cols-4 grid col-span-4 items-center border-t-2 border-t-black mt-2 overflow-y-hidden transition-all duration-300 ${
@@ -56,6 +61,15 @@ function Video({ sl, id, title = "", link = "", length = Number, desc = "" }) {
           Delete
         </button>
       </div>
+      {showVid && (
+        <YouTubePlayer
+          key={vidLink + id}
+          id={id}
+          videoId={vidLink}
+          handleVideo={handleVideo}
+          showVid={showVid}
+        />
+      )}
     </div>
   );
 }

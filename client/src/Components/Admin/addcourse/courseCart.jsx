@@ -75,7 +75,7 @@ const Coursecard = ({ title, short, imagefile, cPrice }) => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-2xl uppercase font-bold  text-white mr-10 ">
-                {cPrice}
+                {cPrice} TK
               </span>
               <a
                 href="#"

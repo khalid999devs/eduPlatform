@@ -26,7 +26,7 @@ const FixedCard = ({ cardDetails: { id = 1, rating = 5, img, price } }) => {
           </div>
           {/* <div className="flex items-center justify-between"> */}
           <span className="mb-10 flex text-3xl font-bold  text-white mr-10 ">
-            {price || ` 2000 tk`}
+            {price || ` 2000`} TK
           </span>
           <a
             href={`courses/${id}/enroll`}

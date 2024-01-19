@@ -27,6 +27,7 @@ import Stundet from "./Components/Admin/student/student.jsx";
 import AllCourse from "./Components/Admin/courses/AllCourses.jsx";
 import AdminChat from "./Pages/Admin/Chat.jsx";
 import EachCourse from "./Pages/admin/EachCourse.jsx";
+import YouTubePlayer from "./Components/YTPlayer/YTPlayer.jsx";
 
 // import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
 // import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
