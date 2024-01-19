@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       filesUrl: {
         type: DataTypes.TEXT,
-        defaultValue: '{}',
+        defaultValue: '[]',
       },
       likes: {
         type: DataTypes.INTEGER,

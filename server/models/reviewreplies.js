@@ -10,10 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      filesUrl: {
-        type: DataTypes.TEXT,
-        defaultValue: '{}',
-      },
+
       likes: {
         type: DataTypes.INTEGER,
         defaultValue: 0,

@@ -6,7 +6,7 @@ const { BadRequestError } = require('../errors');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const validFields =
-      /students|courses|resources|questions|examsAns|gallery|thumbnail/;
+      /students|courses|resources|questions|examsAns|gallery|thumbnail|discussions/;
     if (!file.fieldname) {
       return cb(null, true);
     }
@@ -26,6 +26,14 @@ const storage = multer.diskStorage({
       destName = resolve(
         __dirname,
         `../uploads/${file.fieldname}/${req.body.Title.split(' ').join('_')}`
+      );
+    } else if (file.fieldname === 'discussions') {
+      destName = resolve(
+        __dirname,
+        `../uploads/${file.fieldname}/${req.body.question
+          .split(' ')
+          .join('_')
+          .slice(0, 10)}`
       );
     } else if (file.fieldname === 'questions') {
       destName = resolve(
@@ -55,6 +63,11 @@ const storage = multer.diskStorage({
       pathName = `uploads/${file.fieldname}/${req.body.Title.split(' ').join(
         '_'
       )}`;
+    } else if (file.fieldname === 'discussions') {
+      pathName = `uploads/${file.fieldname}/${req.body.question
+        .split(' ')
+        .join('_')
+        .slice(0, 10)}`;
     } else if (file.fieldname === 'questions') {
       pathName = `uploads/${file.fieldname}/${req.body.title
         .split(' ')
@@ -87,6 +100,10 @@ const storage = multer.diskStorage({
         req.body.title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
     } else if (file.fieldname === 'resources') {
       fileName = req.body.Title.split(' ').join('_') + `_${Date.now()}`;
+    } else if (file.fieldname === 'discussions') {
+      fileName = `${
+        req.body.question.split(' ').join('_').slice(0, 10) + `_${Date.now()}`
+      }`;
     } else if (file.fieldname === 'questions') {
       fileName =
         req.body.title.split(' ').join('_').slice(0, 15) + `_${Date.now()}`;

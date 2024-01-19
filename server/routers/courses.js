@@ -15,6 +15,12 @@ const {
   deleteResource,
   deleteCourse,
 } = require('../controllers/courses');
+const {
+  startDiscussion,
+  addReviewData,
+  addReplyToReview,
+  addReplyToDiscussion,
+} = require('../controllers/discussAndReview');
 const adminValidate = require('../middlewares/adminTokenVerify');
 const clientValidate = require('../middlewares/clientTokenVerify');
 const upload = require('../middlewares/uploadFile');
@@ -42,6 +48,36 @@ router.post(
   upload.array('resources'),
   addResource
 );
+//discussion part
+router.post(
+  '/add-discussion-ques-client',
+  clientValidate,
+  upload.array('discussions'),
+  startDiscussion
+);
+router.post(
+  '/add-discussion-ques-admin',
+  adminValidate,
+  upload.array('discussions'),
+  startDiscussion
+);
+router.post(
+  '/add-discussion-reply-client',
+  clientValidate,
+  upload.array('discussions'),
+  addReplyToDiscussion
+);
+router.post(
+  '/add-discussion-reply-admin',
+  adminValidate,
+  upload.array('discussions'),
+  addReplyToDiscussion
+);
+
+//reviews
+router.post('/add-review', clientValidate, addReviewData);
+router.post('/add-review-reply-client', clientValidate, addReplyToReview);
+router.post('/add-review-reply-admin', adminValidate, addReplyToReview);
 
 router.patch('/edit-recorded-class/:id', adminValidate, editRecordedClass);
 

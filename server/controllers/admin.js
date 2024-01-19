@@ -1,5 +1,5 @@
 const { hashSync, compare } = require('bcryptjs');
-const { Admin, PageSettings } = require('../models');
+const { Admin } = require('../models');
 const { sign } = require('jsonwebtoken');
 const {
   NotFoundError,

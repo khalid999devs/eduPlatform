@@ -1,4 +1,4 @@
-const { courses, exams, clientexams } = require('../models');
+const { courses, exams, clientexams, clientcourses } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -17,6 +17,8 @@ const {
   areArraysEqualSet,
   fromArrayToObjIdArr,
 } = require('../utils/utilFunc');
+const { Op } = require('sequelize');
+const { writeFileSync } = require('fs');
 
 const setExamInfo = async (req, res) => {
   const data = req.body;
@@ -588,6 +590,14 @@ const getExam = async (req, res) => {
 
 const getExamInfosClient = async (req, res) => {
   const { courseId, mode, examId } = req.body;
+  let isClientHasCourse = await clientcourses.findOne({
+    where: { [Op.and]: [{ courseId: courseId }, { clientId: req.user.id }] },
+  });
+  if (!isClientHasCourse) {
+    throw new UnauthorizedError(
+      'You do not have permission to access this course! Please Enroll first.'
+    );
+  }
 
   let result;
   if (mode === 'all') {

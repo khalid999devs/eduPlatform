@@ -16,3 +16,5 @@
 {succeed:true,fullTime:"19-1-2024 ,time-22:29",mode:"custom",email:"bdentrkw@gmail.com"},
 {succeed:true,fullTime:"19-1-2024 ,time-22:32",mode:"custom",email:"bdentrkw@gmail.com"},
 {succeed:true,fullTime:"19-1-2024 ,time-22:41",mode:"custom",email:"bdentrkw@gmail.com"},
+{succeed:true,fullTime:"20-1-2024 ,time-0:7",mode:"order",email:"bdentrkw@gmail.com"},
+{succeed:true,fullTime:"20-1-2024 ,time-0:10",mode:"order",email:"bdentrkw@gmail.com"},
