@@ -1,4 +1,4 @@
-const { courses, exams } = require('../models');
+const { courses, exams, clientexams } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -10,6 +10,13 @@ const { redis } = require('../utils/redis');
 const mailer = require('../utils/sendMail');
 const cloudinary = require('cloudinary');
 const { deleteMultipleFiles } = require('../utils/fileOps');
+const cron = require('node-cron');
+const {
+  mergeArraysToObjKey,
+  fromArrayToObjId,
+  areArraysEqualSet,
+  fromArrayToObjIdArr,
+} = require('../utils/utilFunc');
 
 const setExamInfo = async (req, res) => {
   const data = req.body;
@@ -226,6 +233,9 @@ const getAllQues = async (req, res) => {
 
   if (!allQuesAns) {
     const exam = await exams.findByPk(examId);
+    if (!exam) {
+      throw new NotFoundError('Could not found the exam!');
+    }
     allQuesAns = exam.quesAns;
     if (!allQuesAns) {
       throw new BadRequestError('Could not found any question!');
@@ -236,7 +246,7 @@ const getAllQues = async (req, res) => {
   if (mode === 'question') {
     result = parsedRes.questions;
   } else if (mode === 'answer') {
-    result = parsedRes;
+    result = mergeArraysToObjKey(parsedRes.questions, parsedRes.answers, 'id');
   } else {
     throw new UnauthorizedError('Wrong mode value provided!');
   }
@@ -272,7 +282,8 @@ const addStuAnsFiles = async (req, res) => {
   const { ansInfo, examId } = req.body;
 
   const finalAns = JSON.parse(ansInfo);
-  finalAns.images = req.files;
+  finalAns.clientId = req.user.id;
+  finalAns.files = req.files;
 
   let newLength;
   try {
@@ -293,6 +304,316 @@ const addStuAnsFiles = async (req, res) => {
   });
 };
 
+async function processEvaluation(evaluationType) {
+  const allExams = await exams.findAll({ where: { isCronClosed: 0 } });
+  const currentTime = Date.now();
+
+  if (allExams.length < 1) {
+    return { msg: 'No exam to evaluate!', succeed: false };
+  }
+
+  if (allExams.length > 0) {
+    const targetExams =
+      evaluationType === 'auto'
+        ? allExams.filter(
+            (exam) => Number(exam.serverExamEndTime) < currentTime
+          )
+        : evaluationType === 'manual'
+        ? allExams
+        : [];
+
+    for (const exam of targetExams) {
+      const quesAns = JSON.parse(exam.quesAns);
+      let stuAnswers = await redis.lrange(`stuAnswers@${exam.id}`, 0, -1);
+      let stuAnsFiles = await redis.lrange(`stuAnsFiles@${exam.id}`, 0, -1);
+      let stuAnsFilesObj = {};
+
+      if (stuAnsFiles?.length > 0) {
+        stuAnsFiles = stuAnsFiles.map((stuAnsFile) => JSON.parse(stuAnsFile));
+        stuAnsFilesObj = fromArrayToObjId(stuAnsFiles, 'questionId');
+      }
+
+      if (stuAnswers?.length > 0) {
+        const oAllQuesAnsObj = mergeArraysToObjKey(
+          quesAns.questions,
+          quesAns.answers,
+          'id'
+        );
+        stuAnswers = stuAnswers.map((stuAnswer) => JSON.parse(stuAnswer));
+
+        stuAnswers = stuAnswers.map((stuAnswerObj) => {
+          const stuAnswersObjAll = fromArrayToObjId(
+            stuAnswerObj.answers,
+            'questionId'
+          );
+
+          let score = 0;
+          const ansArr = [];
+          let isFileChecked = null;
+          let otherData = {};
+
+          Object.values(oAllQuesAnsObj).forEach((oQuesAnsObj) => {
+            const targetStuAns = stuAnswersObjAll[oQuesAnsObj.id] || {};
+
+            let mark = oQuesAnsObj.mark;
+            let files = [];
+            if (stuAnsFilesObj[oQuesAnsObj.id]) {
+              targetStuAns.questionId =
+                stuAnsFilesObj[oQuesAnsObj.id].questionId;
+              targetStuAns.isCorrect = false;
+
+              isFileChecked = 0;
+              files = stuAnsFilesObj[oQuesAnsObj.id].files?.map((file) => {
+                return {
+                  originalname: file.originalname,
+                  path: file.path,
+                  filename: file.filename,
+                };
+              });
+            }
+            if (targetStuAns) {
+              if (
+                areArraysEqualSet(oQuesAnsObj.quesAns, targetStuAns.optionsId)
+              ) {
+                score = score + mark;
+                targetStuAns.isCorrect = true;
+              } else {
+                targetStuAns.isCorrect = false;
+              }
+            }
+
+            ansArr.push({
+              ...targetStuAns,
+              mark,
+              files,
+            });
+
+            otherData.examName = exam.name;
+            otherData.topic = exam.topic;
+            otherData.category = oQuesAnsObj.category;
+          });
+
+          return {
+            courseId: stuAnswerObj.courseId,
+            examId: stuAnswerObj.examId,
+            clientId: stuAnswerObj.clientId,
+            answers: JSON.stringify(ansArr),
+            score: score,
+            isFileChecked: isFileChecked,
+            otherData: JSON.stringify(otherData),
+          };
+        });
+        // await clientexams.destroy({ where: { examId: exam.id } });
+        await clientexams.bulkCreate(stuAnswers);
+        exam.isCronClosed = 1;
+      }
+      if (!(stuAnsFiles?.length > 0)) {
+        exam.isFinalClosed = 1;
+      }
+      await exam.save();
+
+      await redis.del(`stuAnsFiles@${exam.id}`);
+      await redis.del(`stuAnswers@${exam.id}`);
+      await redis.del(`question@${exam.id}`);
+      //for loop finishes here
+    }
+  }
+}
+
+cron.schedule('0 0 0 * * *', async () => {
+  try {
+    await processEvaluation('auto');
+  } catch (error) {
+    const stringError = JSON.stringify(error);
+    writeFileSync(
+      './logs/failed/cronErrors.txt',
+      `{succeed:false,fullTime:"${Date.now()}",error:${stringError}},\n`,
+      {
+        encoding: 'utf8',
+        flag: 'a+',
+        mode: 0o666,
+      }
+    );
+  }
+});
+
+const manualEvaluateQuiz = async (req, res) => {
+  try {
+    const metaObj = await processEvaluation('manual');
+
+    let result = await clientexams.findAll();
+    result = result.map((singleClientExam) => {
+      return {
+        ...singleClientExam.dataValues,
+        answers: JSON.parse(singleClientExam.answers),
+        otherData: JSON.parse(singleClientExam.otherData),
+      };
+    });
+
+    res.json({
+      succeed: true,
+      msg: 'Successfully done evaluation',
+      result: metaObj?.succeed === false ? [] : result,
+      ...metaObj,
+    });
+  } catch (error) {
+    console.log(error);
+    throw new CustomAPIError(error.message);
+  }
+};
+
+async function getSingleClientExmResult(examId, clientId, examResults) {
+  if (!examId) {
+    throw new BadRequestError('Please provide the exam ID! ');
+  }
+  examResults = await clientexams.findOne({
+    where: { examId: examId, clientId: clientId },
+  });
+  if (!examResults) {
+    throw new NotFoundError(
+      'Did not found this particular exam data! You did not give the exam or evaluation is pending!'
+    );
+  }
+  examResults.answers = JSON.parse(examResults.answers);
+  examResults.otherData = JSON.parse(examResults.otherData);
+  const exam = await exams.findOne({ where: { id: examId } });
+  let quesAns = JSON.parse(exam.quesAns);
+
+  const mergedQuesAns = mergeArraysToObjKey(
+    quesAns.questions,
+    quesAns.answers,
+    'id'
+  );
+  examResults.dataValues.quesAns = mergedQuesAns;
+  return examResults;
+}
+
+//For client profile exam results view
+const getExamResultClient = async (req, res) => {
+  const { mode, examId } = req.body;
+  const clientId = req.user.id;
+  //mode= all | single
+
+  let examResults = [];
+  let msg = 'Success';
+  if (mode === 'all') {
+    examResults = await clientexams.findAll({
+      where: { clientId: clientId },
+      attributes: { exclude: ['answers'] },
+    });
+
+    examResults = examResults.map((examResult) => {
+      return {
+        ...examResult.dataValues,
+        otherData: JSON.parse(examResult.otherData),
+      };
+    });
+    examResults = fromArrayToObjIdArr(examResults, 'courseId'); //complex operation
+    msg = 'Successful. Object Key is courseId';
+  } else if (mode === 'single') {
+    examResults = await getSingleClientExmResult(examId, clientId, examResults);
+  } else {
+    throw new BadRequestError('Wrong mode value entered');
+  }
+
+  res.json({
+    succeed: true,
+    msg,
+    result: examResults,
+  });
+};
+
+const getExamResultAdmin = async (req, res) => {
+  const { clientId, examId, mode } = req.body;
+
+  let examResults = [];
+  let msg = 'Success';
+
+  if (mode === 'all') {
+    examResults = await clientexams.findAll({
+      where: { examId: examId },
+      attributes: { exclude: ['answers'] },
+    });
+
+    examResults = examResults.map((examResult) => {
+      return {
+        ...examResult.dataValues,
+        otherData: JSON.parse(examResult.otherData),
+      };
+    });
+  } else if (mode === 'single') {
+    examResults = await getSingleClientExmResult(examId, clientId, examResults);
+  } else {
+    throw new BadRequestError('Wrong mode value entered');
+  }
+
+  res.json({
+    succeed: true,
+    result: examResults,
+    msg,
+  });
+};
+
+const getExam = async (req, res) => {
+  const { mode, examId } = req.body;
+  //mode=all | single
+
+  let result;
+  let msg = '';
+  if (mode === 'single') {
+    if (!examId) {
+      throw new BadRequestError('ExamId must be provided in this case!');
+    }
+    const exam = await exams.findOne({ where: { id: examId } });
+    if (!exam) {
+      throw new NotFoundError('Could not find exam!');
+    }
+    exam.quesAns = JSON.parse(exam.quesAns);
+    result = exam;
+  } else if (mode === 'all') {
+    let allExams = await exams.findAll({
+      attributes: { exclude: ['quesAns', 'serverExamEndTime'] },
+    });
+
+    result = fromArrayToObjIdArr(allExams, 'courseId');
+    msg = 'Success! Key is courseId';
+  }
+
+  res.json({
+    succeed: true,
+    msg,
+    result,
+  });
+};
+
+const getExamInfosClient = async (req, res) => {
+  const { courseId, mode, examId } = req.body;
+
+  let result;
+  if (mode === 'all') {
+    const allExams = await exams.findAll({
+      where: { courseId: courseId },
+      attributes: { exclude: ['quesAns', 'serverExamEndTime'] },
+    });
+    result = allExams;
+  } else if (mode === 'single') {
+    const exam = await exams.findOne({
+      where: { id: examId },
+      attributes: { exclude: ['serverExamEndTime', 'quesAns'] },
+    });
+    if (!exam) {
+      throw new NotFoundError('No exam found');
+    }
+    result = exam;
+  }
+
+  res.json({
+    succeed: true,
+    msg: 'Successful',
+    result,
+  });
+};
+
 module.exports = {
   setExamInfo,
   addSingleQuesAns,
@@ -302,4 +623,9 @@ module.exports = {
   editExamInfo,
   deleteExamInfo,
   addStuAnsFiles,
+  manualEvaluateQuiz,
+  getExamResultClient,
+  getExamResultAdmin,
+  getExam,
+  getExamInfosClient,
 };

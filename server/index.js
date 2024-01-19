@@ -41,6 +41,7 @@ const faqRouter = require('./routers/faq');
 const courseRouter = require('./routers/courses');
 const orderRouter = require('./routers/orders');
 const examRouter = require('./routers/exam');
+const galleryRouter = require('./routers/gallery');
 
 app.use('/api/admin', adminRouter);
 app.use('/api/contact', contactRouter);
@@ -49,6 +50,7 @@ app.use('/api/faq', faqRouter);
 app.use('/api/course', courseRouter);
 app.use('/api/order', orderRouter);
 app.use('/api/exam', examRouter);
+app.use('/api/gallery', galleryRouter);
 
 //notfound and errors
 const errorHandlerMiddleWare = require('./middlewares/errorHandler');

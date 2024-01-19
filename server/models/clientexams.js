@@ -12,11 +12,20 @@ module.exports = (sequelize, DataTypes) => {
       },
       answers: {
         type: DataTypes.TEXT,
-        defaultValue: '{}',
+        defaultValue: '[]',
       },
       score: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      isFileChecked: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: null,
+      },
+      otherData: {
+        type: DataTypes.TEXT,
+        defaultValue: '{}',
       },
     },
     { timestamps: true }

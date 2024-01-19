@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
     if (file.fieldname === 'examsAns') {
       destName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/exam@${req.examId}/stu@${req.user.id}`
+        `../uploads/${file.fieldname}/exam@${req.body.examId}/stu@${req.user.id}`
       );
     } else if (file.fieldname === 'resources') {
       destName = resolve(
@@ -48,7 +48,7 @@ const storage = multer.diskStorage({
     if (file.fieldname === 'examsAns') {
       pathName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/exam@${req.examId}/stu@${req.user.id}`
+        `../uploads/${file.fieldname}/exam@${req.body.examId}/stu@${req.user.id}`
       );
     } else if (file.fieldname === 'resources') {
       pathName = `uploads/${file.fieldname}/${req.body.Title.split(' ').join(

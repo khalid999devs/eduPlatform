@@ -9,11 +9,22 @@ const {
   editExamInfo,
   deleteExamInfo,
   addStuAnsFiles,
+  manualEvaluateQuiz,
+  getExamResultClient,
+  getExamResultAdmin,
+  getExam,
+  getExamInfosClient,
 } = require('../controllers/exam');
 const adminValidate = require('../middlewares/adminTokenVerify');
 const clientValidate = require('../middlewares/clientTokenVerify');
 const upload = require('../middlewares/uploadFile');
 const { uploadMemory } = require('../middlewares/uploadMemory');
+
+router.get('/manual-evaluate-quiz-exams', adminValidate, manualEvaluateQuiz);
+router.post('/get-exam-results-client', clientValidate, getExamResultClient);
+router.post('/get-exam-results-admin', adminValidate, getExamResultAdmin);
+router.post('/get-exam-admin', adminValidate, getExam);
+router.post('/get-exam-info-client', clientValidate, getExamInfosClient);
 
 router.post('/add-exam', adminValidate, setExamInfo);
 router.put(
