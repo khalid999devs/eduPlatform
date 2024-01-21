@@ -19,6 +19,7 @@ const { redis } = require('../utils/redis');
 const mailer = require('../utils/sendMail');
 const deleteFile = require('../utils/deleteFile');
 const { deleteMultipleFiles } = require('../utils/fileOps');
+const { JSON } = require('sequelize');
 
 const startDiscussion = async (req, res) => {
   let { question, courseId } = req.body;
@@ -346,6 +347,65 @@ const addReplyToReview = async (req, res) => {
   });
 };
 
+//for valid course users
+const getAllValidDiscussions = async (req, res) => {
+  const courseId = req.params.id;
+  const user = req.user || req.admin;
+
+  if (user.role !== 'admin') {
+    const hasClientCourse = await clientcourses.findOne({
+      where: { courseId, clientId: user.id },
+    });
+    if (!hasClientCourse) {
+      throw new UnauthorizedError(
+        'You are not authorized to access the discussions!'
+      );
+    }
+  }
+
+  const allDiscWithRply = await discussions.findAll({
+    where: { courseId },
+    include: { model: commentreplies },
+  });
+
+  // result.user = JSON.parse(result.user);
+  // result.filesUrl = JSON.parse(result.filesUrl);
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully got discussions.',
+    result: allDiscWithRply,
+  });
+};
+
+//for valid course users
+const getAllValidReviews = async (req, res) => {
+  const courseId = req.params.id;
+  const user = req.user || req.admin;
+
+  if (user.role !== 'admin') {
+    const hasClientCourse = await clientcourses.findOne({
+      where: { courseId, clientId: user.id },
+    });
+    if (!hasClientCourse) {
+      throw new UnauthorizedError(
+        'You are not authorized to access the reviews!'
+      );
+    }
+  }
+
+  const allRevWithRply = await reviews.findAll({
+    where: { courseId },
+    include: { model: reviewreplies },
+  });
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully got discussions.',
+    result: allRevWithRply,
+  });
+};
+
 module.exports = {
   startDiscussion,
   addReviewData,
@@ -353,4 +413,6 @@ module.exports = {
   addReplyToDiscussion,
   editDiscussion,
   deleteDiscussion,
+  getAllValidDiscussions,
+  getAllValidReviews,
 };

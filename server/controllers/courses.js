@@ -115,16 +115,21 @@ const getPubSingleCourse = async (req, res) => {
   const courseId = req.params.id;
   const course = await courses.findByPk(courseId, {
     attributes: { exclude: ['classInfo'] },
+    include: { model: reviews },
   });
   if (!course) {
     throw new NotFoundError('Could not find course. Wrong Id Provided');
   }
   course.instructor = JSON.parse(course.instructor);
+  const result = course.dataValues;
+  result.reviews = result.reviews.map((review) => {
+    return { ...review.dataValues, user: JSON.parse(review.dataValues.user) };
+  });
 
   res.status(200).json({
     succeed: true,
     msg: 'Course found',
-    course,
+    course: result,
   });
 };
 

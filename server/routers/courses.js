@@ -22,6 +22,8 @@ const {
   addReplyToDiscussion,
   editDiscussion,
   deleteDiscussion,
+  getAllValidDiscussions,
+  getAllValidReviews,
 } = require('../controllers/discussAndReview');
 const adminValidate = require('../middlewares/adminTokenVerify');
 const clientValidate = require('../middlewares/clientTokenVerify');
@@ -40,6 +42,19 @@ router.get('/get-pub-course/:id', getPubSingleCourse);
 router.get('/get-pub-courses', getPubAllCourses);
 router.get('/valid-course/:id', clientValidate, getCourseByUser);
 router.get('/valid-admin-course/:id', adminValidate, getCourseByUser);
+//discussions and reviews
+router.get(
+  '/get-valid-discussions-admin/:id',
+  adminValidate,
+  getAllValidDiscussions
+);
+router.get(
+  '/get-valid-discussions-client/:id',
+  clientValidate,
+  getAllValidDiscussions
+);
+router.get('/get-valid-reviews-client/:id', clientValidate, getAllValidReviews);
+router.get('/get-valid-reviews-admin/:id', adminValidate, getAllValidReviews);
 
 // router.post('/zoom-creds', getZoomCreds);
 router.post('/zoom-creds', clientValidate, getZoomCreds);
