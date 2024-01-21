@@ -20,6 +20,8 @@ const {
   addReviewData,
   addReplyToReview,
   addReplyToDiscussion,
+  editDiscussion,
+  deleteDiscussion,
 } = require('../controllers/discussAndReview');
 const adminValidate = require('../middlewares/adminTokenVerify');
 const clientValidate = require('../middlewares/clientTokenVerify');
@@ -80,9 +82,15 @@ router.post('/add-review-reply-client', clientValidate, addReplyToReview);
 router.post('/add-review-reply-admin', adminValidate, addReplyToReview);
 
 router.patch('/edit-recorded-class/:id', adminValidate, editRecordedClass);
+//discussion
+router.put('/edit-discussion-client', clientValidate, editDiscussion);
+router.put('/edit-discussion-admin', adminValidate, editDiscussion);
 
 router.delete('/delete-recorded-class/:id', adminValidate, deleteRecordedClass);
 router.delete('/delete-resource/:id', adminValidate, deleteResource);
 router.delete('/delete-course/:id', adminValidate, deleteCourse);
+//discussion
+router.delete('/delete-discussion-client', clientValidate, deleteDiscussion);
+router.delete('/delete-discussion-admin', adminValidate, deleteDiscussion);
 
 module.exports = router;

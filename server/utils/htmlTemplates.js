@@ -22,6 +22,15 @@ const htmlCreator = (mode, data) => {
     body = `
     <p>Dear ${client.fullName}, your purchase for course: ${info.courseName} is successful</p>
     `;
+  } else if (mode === 'questionReply') {
+    (subject = `Someone replied to your question or discussion!`),
+      (body = `
+      <p>Dear ${client.fullName}, you have a new reply ${
+        'from ' + data.info.senderName || ''
+      } to your question or discussion, "${
+        data.info.discussionTitle
+      }" in the course, "${data.info.courseTitle}"</p>
+    `);
   } else if (mode === 'custom') {
     subject = subject;
     body = `

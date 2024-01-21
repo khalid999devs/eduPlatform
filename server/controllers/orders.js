@@ -64,7 +64,6 @@ const createOrder = async (req, res) => {
   const notification = await notifications.create({
     title: 'New purchase made',
     message: `A new purchase for ${course.title} was made by ${user.userName}`,
-    clientId: req.user.id,
   });
 
   //sending sms and mail

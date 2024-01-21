@@ -28,9 +28,11 @@ const storage = multer.diskStorage({
         `../uploads/${file.fieldname}/${req.body.Title.split(' ').join('_')}`
       );
     } else if (file.fieldname === 'discussions') {
+      const discStr = req.body.question || req.body.reply;
+
       destName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/${req.body.question
+        `../uploads/${file.fieldname}/${discStr
           .split(' ')
           .join('_')
           .slice(0, 10)}`
@@ -64,7 +66,8 @@ const storage = multer.diskStorage({
         '_'
       )}`;
     } else if (file.fieldname === 'discussions') {
-      pathName = `uploads/${file.fieldname}/${req.body.question
+      const discStr = req.body.question || req.body.reply;
+      pathName = `uploads/${file.fieldname}/${discStr
         .split(' ')
         .join('_')
         .slice(0, 10)}`;
@@ -101,8 +104,9 @@ const storage = multer.diskStorage({
     } else if (file.fieldname === 'resources') {
       fileName = req.body.Title.split(' ').join('_') + `_${Date.now()}`;
     } else if (file.fieldname === 'discussions') {
+      const discStr = req.body.question || req.body.reply;
       fileName = `${
-        req.body.question.split(' ').join('_').slice(0, 10) + `_${Date.now()}`
+        discStr.split(' ').join('_').slice(0, 10) + `_${Date.now()}`
       }`;
     } else if (file.fieldname === 'questions') {
       fileName =

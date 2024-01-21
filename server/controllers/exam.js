@@ -370,6 +370,7 @@ async function processEvaluation(evaluationType) {
                   originalname: file.originalname,
                   path: file.path,
                   filename: file.filename,
+                  destination: file.destination,
                 };
               });
             }

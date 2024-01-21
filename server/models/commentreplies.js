@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         defaultValue: '{}',
       },
+      mentionedUser: {
+        type: DataTypes.TEXT,
+        defaultValue: '{}',
+      },
       reply: {
         type: DataTypes.TEXT,
         allowNull: false,
