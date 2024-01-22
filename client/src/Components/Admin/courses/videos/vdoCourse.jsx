@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MdVideoLibrary } from "react-icons/md";
-import { MdStickyNote2 } from "react-icons/md";
-import Exams from "../exams/exams";
 import { addClass } from "../../../../axios/global";
 
 const VdoUpload = ({ id }) => {
-  const [file, setFile] = useState(null);
   const [rcrdData, setRcd] = useState({
     videoURL: "",
     videoTitle: "",
@@ -103,15 +100,6 @@ const VdoUpload = ({ id }) => {
             Submit
           </button>
         </form>
-      </div>
-
-      <div className="flex flex-col">
-        {/* exam links */}
-        <h1 className="text-center text-darkText font-semibold text-2xl mb-6">
-          Exam Board{" "}
-          <MdStickyNote2 className=" inline-block text-purple-600 " />
-        </h1>
-        <Exams />
       </div>
     </div>
   );

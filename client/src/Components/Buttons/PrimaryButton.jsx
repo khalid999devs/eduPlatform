@@ -12,13 +12,13 @@ const PrimaryButton = ({
   return (
     <button
       className={
-        `px-5 py-2.5 text-md text-primary flex flex-row gap-2 uppercase items-center font-medium rounded-md transition-transform hover:scale-105 ${
-          disabled && ' opacity-30'
+        `px-5 py-2.5 text-md text-primary flex flex-row gap-2 uppercase items-center justify-center font-medium rounded-md transition-transform hover:scale-105 ${
+          disabled && "cursor-not-allowed opacity-30 disabled:hover:scale-100"
         }` + ` ${classes}`
       }
       onClick={onClick}
       disabled={disabled || false}
-      type={type || 'button'}
+      type={type || "button"}
       {...props}
     >
       {children ? (

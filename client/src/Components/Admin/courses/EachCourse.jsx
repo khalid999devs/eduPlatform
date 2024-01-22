@@ -3,7 +3,7 @@ import VdoUpload from "./videos/vdoCourse";
 import Video from "./videos/video";
 import { useParams } from "react-router-dom";
 import PrimaryButton from "../../Buttons/PrimaryButton";
-import { MdFileUpload } from "react-icons/md";
+import { MdFileUpload, MdStickyNote2 } from "react-icons/md";
 import { FcDatabase } from "react-icons/fc";
 import { HiChevronRight, HiChevronDown } from "react-icons/hi2";
 
@@ -11,6 +11,7 @@ import { adminFCourse, updateCourse } from "../../../axios/global";
 import reqs, { reqImgWrapper, reqPdfWrapper } from "../../../assets/requests";
 
 import axios from "axios";
+import Exam from "./exams/Exam";
 function EachCourse() {
   const { id } = useParams();
   const [data, setData] = useState({});
@@ -197,6 +198,14 @@ function EachCourse() {
       <div>
         {/* form for video upload and exam link*/}
         <VdoUpload id={id} />
+      </div>
+      {/* exam section */}
+      <div className="flex flex-col">
+        <h1 className="text-center text-darkText font-semibold text-2xl mb-6">
+          Exam Board{" "}
+          <MdStickyNote2 className=" inline-block text-purple-600 " />
+        </h1>
+        <Exam />
       </div>
       {/* course resources */}
       <div>

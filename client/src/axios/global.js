@@ -7,9 +7,12 @@ import { deleteCourse } from "./deleteCourse";
 import { updateCourse, deleteClass } from "./updateCourse";
 import { fetchStudents } from "./fetchStudents";
 import { addClass } from "./addRecord";
+import { addExam } from "./addExam";
+import { getExamAdmin } from "./fetchExams";
 
 export {
   addClass,
+  addExam,
   adminFCourse,
   deleteCourse,
   fetchCourse,
@@ -18,6 +21,7 @@ export {
   postCourse,
   updateCourse,
   deleteClass,
+  getExamAdmin,
 };
 // axios.defaults.headers.common['Accept'] = 'application/json';
 // axios.defaults.headers.post['Content-Type'] =

@@ -8,13 +8,15 @@ function FormInput({
   handleChange,
   id,
   type,
+  name,
   box,
-  required,
+  min,
+  required = true,
 }) {
   return (
     <div className={`w-full px-3 ${extraclass}`}>
       <label
-        className="flex uppercase tracking-wide text-gray-300 text-xs font-bold mb-2"
+        className="flex uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
         htmlFor={id}
       >
         {title}
@@ -24,6 +26,7 @@ function FormInput({
           rows={4}
           className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 resize-none"
           id={id}
+          name={name}
           value={value}
           type="textarea"
           aria-rowcount={4}
@@ -36,10 +39,12 @@ function FormInput({
           className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           id={id}
           value={value}
+          name={name}
           type={type}
           placeholder={placeHolder}
           required={required ? required : false}
           onChange={handleChange}
+          min={min}
         />
       )}
     </div>

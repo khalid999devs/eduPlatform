@@ -37,6 +37,10 @@ const reqs = {
   UPDATE_IMAGE: "/api/course/update-image",
   ZOOM_CRED: "/api/course/zoom-creds",
   DELETE_CLASS: "/api/course/delete-recorded-class",
+
+  //exams
+  ADD_EXAM: "/api/exam/add-exam",
+  GET_EXAM_ADMIN: "/api/exam/get-exam-admin",
 };
 
 export default reqs;
