@@ -1,31 +1,31 @@
-import { Outlet } from 'react-router-dom';
-import Navbar from './Components/Nav/Navbar';
-import FooterMain from './Components/Footer/FooterMain';
-import { createContext, useContext, useEffect, useState } from 'react';
-import './axios/global';
-import { useFetch } from './Custom_hooks/useFetch';
-import reqs from './assets/requests';
-import axios from 'axios';
+import { Outlet } from "react-router-dom";
+import Navbar from "./Components/Nav/Navbar";
+import FooterMain from "./Components/Footer/FooterMain";
+import { createContext, useContext, useEffect, useState } from "react";
+import "./axios/global";
+import { useFetch } from "./Custom_hooks/useFetch";
+import reqs from "./assets/requests";
+import axios from "axios";
 
-const Context = createContext('');
+const Context = createContext("");
 
 function App() {
   const [user, setUser] = useState({
     id: 0,
-    name: '',
-    email: '',
-    phone: '',
-    userName: '',
-    avatar: '',
-    img: '',
-    role: '',
-    address: '',
+    name: "",
+    email: "",
+    phone: "",
+    userName: "",
+    avatar: "",
+    img: "",
+    role: "",
+    address: "",
     enrolledCourses: [],
   });
   const [loading, setLoading] = useState(false);
 
   const [settings, setSettings] = useState({
-    redirect: '',
+    redirect: "",
   });
   const [contextTrigger, setContextTrigger] = useState(false);
 
@@ -33,13 +33,12 @@ function App() {
     axios
       .get(reqs.CLIENT_LOGOUT, { withCredentials: true })
       .then((res) => {
-        console.log(res.data, '');
         if (res.data.succeed) {
           setUser((user) => {
             return {
               ...user,
-              userName: '',
-              username: '',
+              userName: "",
+              username: "",
             };
           });
         } else {
@@ -74,7 +73,6 @@ function App() {
     axios
       .get(reqs.IS_CLIENT_VALID, { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
         if (res.data.succeed) {
           setClientUser(res.data.result);
         }
@@ -99,10 +97,10 @@ function App() {
         setClientUser,
       }}
     >
-      <div className='w-full min-h-screen bg-primary-main'>
+      <div className="w-full min-h-screen bg-primary-main">
         <Navbar />
 
-        <div className='m-auto max-w-6xl w-[100%]'>
+        <div className="m-auto max-w-6xl w-[100%]">
           <Outlet />
         </div>
 

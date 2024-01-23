@@ -3,7 +3,7 @@ import { BsCloudUploadFill } from "react-icons/bs";
 function FormInput({
   extraclass,
   title,
-  value,
+  value = "",
   placeHolder,
   handleChange,
   id,
@@ -50,7 +50,7 @@ function FormInput({
     </div>
   );
 }
-function FileInput({ value, change, extraClass }) {
+function FileInput({ value = "", change, extraClass }) {
   return (
     <div
       className={`upload mb-6 mx-3 outline-2 bg-purple-50 dark:bg-purple-900/30 outline-dotted outline-purple-600 p-3 rounded-lg transition-colors ${extraClass}`}

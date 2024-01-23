@@ -19,7 +19,6 @@ const updateCourse = async (id, data) => {
         }
       )
       .then((res) => {
-        console.log(res.data);
         if (res.data.succeed) alert(`Course ID ${id} has been UPDATED`);
       })
       .then(() => {
@@ -45,7 +44,6 @@ const deleteClass = async (id) => {
         }
       )
       .then((res) => {
-        console.log(res.data);
         if (res.data.succeed) alert(`Recorded class ${id} has been DELETED`);
       })
       .then(() => {

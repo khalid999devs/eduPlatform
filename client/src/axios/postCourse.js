@@ -10,7 +10,6 @@ const postCourse = async (data) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data.succeed) alert("New course has been added");
       })
       .then(() => {

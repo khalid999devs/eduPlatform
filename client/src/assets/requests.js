@@ -28,6 +28,7 @@ const reqs = {
 
   //courses
   ADD_RECORD_CLASS: "/api/course/add-recorded-class",
+  DELETE_CLASS: "/api/course/delete-recorded-class",
   CREATE_COURSE: "/api/course/create",
   DELETE_COURSE: "/api/course/delete-course",
   GET_COURSES: "/api/course/get-pub-courses",
@@ -36,11 +37,15 @@ const reqs = {
   UPDATE_COURSE: "/api/course/edit-course",
   UPDATE_IMAGE: "/api/course/update-image",
   ZOOM_CRED: "/api/course/zoom-creds",
-  DELETE_CLASS: "/api/course/delete-recorded-class",
 
   //exams
   ADD_EXAM: "/api/exam/add-exam",
+  ADD_SINGLE_QUES: "/api/exam/add-single-ques-ans",
+  DELETE_EXAM: "/api/exam/delete-exam-info",
   GET_EXAM_ADMIN: "/api/exam/get-exam-admin",
+  GET_QUES_ADMIN: "/api/exam/get-all-ques-admin",
+  GET_EXAM_CLIENT: "/api/exam/get-exam-info-client",
+  DEL_SINGLE_QUES: "/api/exam/delete-single-ques",
 };
 
 export default reqs;

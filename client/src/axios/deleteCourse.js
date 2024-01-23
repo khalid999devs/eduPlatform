@@ -8,7 +8,6 @@ const deleteCourse = async (id, title) => {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data.succeed)
           alert(`Course ID ${id} {${title}} has been deleted`);
       })
