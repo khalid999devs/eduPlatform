@@ -28,6 +28,7 @@ const reqs = {
 
   //courses
   ADD_RECORD_CLASS: "/api/course/add-recorded-class",
+  ADD_RESOURCES: "/api/course/add-resource",
   DELETE_CLASS: "/api/course/delete-recorded-class",
   CREATE_COURSE: "/api/course/create",
   DELETE_COURSE: "/api/course/delete-course",

@@ -280,9 +280,12 @@ const AddQuestion = ({ eid }) => {
             onChange={(e) => setOpt(e.target.value.split(",", 4))}
           />
           <p className="text-xs flex flex-wrap break-words">
-            {opt.map((e) => {
+            {opt.map((e, i) => {
               return (
-                <span className="m-1 p-1 rounded-sm bg-slate-200 text-black">
+                <span
+                  key={`${e}${i}`}
+                  className="m-1 p-1 rounded-sm bg-slate-200 text-black"
+                >
                   {e}
                 </span>
               );
@@ -307,9 +310,12 @@ const AddQuestion = ({ eid }) => {
             onChange={(e) => setAns(e.target.value.split(",", 4))}
           />
           <p className="text-xs flex flex-wrap break-words">
-            {ans.map((e) => {
+            {ans.map((e, i) => {
               return (
-                <span className="m-1 p-1 rounded-sm bg-slate-200 text-black">
+                <span
+                  key={`${e}${i}${i}`}
+                  className="m-1 p-1 rounded-sm bg-slate-200 text-black"
+                >
                   {e}
                 </span>
               );
@@ -380,8 +386,9 @@ const AddQuestion = ({ eid }) => {
         {showQues ? "Hide" : "Show"} Questions
       </button>
       {/* show all question in current exam */}
+
       {showQues ? (
-        <div className="grid grid-cols-2 gap-2 justify-center">
+        <div className={`grid grid-cols-2 gap-2 justify-center `}>
           {data.questions.length != 0
             ? data.questions.map((quest, id) => {
                 return (
@@ -404,7 +411,7 @@ const AddQuestion = ({ eid }) => {
                           x = prompt(
                             `Delete ques ? [${quest.title}, qid:${quest.id}] (yes/no)`
                           );
-                          if (x.toLocaleLowerCase() == "yes") {
+                          if (x?.toLocaleLowerCase() == "yes") {
                             deleteQuestion(quest.id, eid);
                           } else alert("Failed");
                         }}

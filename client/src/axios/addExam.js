@@ -21,7 +21,6 @@ const addExam = async (data) => {
   }
 };
 const addSingleQues = async (data) => {
-  console.log(data);
   try {
     axios
       .put(reqs.ADD_SINGLE_QUES, data, {
@@ -32,8 +31,10 @@ const addSingleQues = async (data) => {
       })
       .then((res) => {
         if (res.data.succeed) {
-          alert(res.data.msg);
-          window.location.reload();
+          alert(
+            res.data.msg +
+              " reload the page to see update.\nRECOMMENDED TO RELOAD PAGE AFTER ADDING A FEW QUESTIONS. "
+          );
         }
       })
       .catch((err) => {

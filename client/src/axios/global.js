@@ -8,6 +8,7 @@ import { updateCourse, deleteClass } from "./updateCourse";
 import { fetchStudents } from "./fetchStudents";
 import { addClass } from "./addRecord";
 import { addExam, addSingleQues } from "./addExam";
+import { addResources } from "./addResource";
 import { getExamAdmin, getSingleExamAdmin } from "./fetchExams";
 import { deleteExam, deleteQuestion } from "./deleteExam";
 
@@ -15,6 +16,7 @@ export {
   addClass,
   addExam,
   addSingleQues,
+  addResources,
   adminFCourse,
   deleteCourse,
   deleteClass,
