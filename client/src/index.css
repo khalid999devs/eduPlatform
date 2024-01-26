@@ -62,3 +62,38 @@ html {
 .adminInputBox {
   @apply font-semibold px-1 py-2 ring-2 ring-offset-0 ring-darkText my-1 outline-none border-none focus:ring-blue-700 focus:rounded-md transition-all h-fit
 }
+
+form.gallery-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5pt;
+}
+
+form.gallery-form section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10pt;
+  font-size: 1.25rem;
+  border: 2px solid #9d29f050;
+  padding: 0pt 5pt;
+  height: max-content;
+  margin-bottom: 5pt;
+  border-radius: 5pt;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
+form.gallery-form section label {
+  font-size: 1rem;
+
+}
+
+form.gallery-form section input {
+  font-size: 1rem;
+  padding: 4pt;
+  flex: 1 1 auto;
+  outline: none;
+  border: none;
+  background-color: transparent;
+}

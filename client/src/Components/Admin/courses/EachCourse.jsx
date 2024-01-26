@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 import { MdFileUpload, MdInfo, MdStickyNote2 } from "react-icons/md";
 import { FcDatabase } from "react-icons/fc";
-import { HiChevronRight, HiChevronDown } from "react-icons/hi2";
+import { HiChevronRight } from "react-icons/hi2";
 
 import {
   addResources,

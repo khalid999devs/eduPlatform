@@ -141,7 +141,17 @@ function AdminLogin({ children }) {
         )}
       </>
     );
-  else return <p>You are logged in as admin</p>;
+  else
+    return (
+      <div className="w-auto mt-20">
+        <p className="text-center text-base">
+          You are logged in as{" "}
+          <span className="text-green-500 text-xl font-semibold uppercase mx-1 font-mono p-1 rounded-md bg-slate-200">
+            admin
+          </span>{" "}
+        </p>
+      </div>
+    );
 }
 
 export default AdminLogin;

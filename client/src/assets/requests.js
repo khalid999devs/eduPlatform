@@ -39,6 +39,12 @@ const reqs = {
   UPDATE_IMAGE: "/api/course/update-image",
   ZOOM_CRED: "/api/course/zoom-creds",
 
+  //gallery
+  ADD_IMAGE_G: "/api/gallery/addImage",
+  DELETE_IMAGE_G: "/api/gallery/delete",
+  GET_IMAGE_G: "/api/gallery/",
+  UPDATE_IMAGE_G: "/api/gallery/update",
+
   //exams
   ADD_EXAM: "/api/exam/add-exam",
   ADD_SINGLE_QUES: "/api/exam/add-single-ques-ans",
@@ -47,6 +53,9 @@ const reqs = {
   GET_QUES_ADMIN: "/api/exam/get-all-ques-admin",
   GET_EXAM_CLIENT: "/api/exam/get-exam-info-client",
   DEL_SINGLE_QUES: "/api/exam/delete-single-ques",
+
+  //faqs
+  FAQ: "/api/faq",
 };
 
 export default reqs;

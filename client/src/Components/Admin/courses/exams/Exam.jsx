@@ -496,7 +496,7 @@ const ExamLists = () => {
             return (
               <div
                 className="mx-5 text-base group hover:ring hover:ring-violet-500 transition p-2 rounded focus:ring focus:ring-violet-500 ring ring-transparent"
-                key={ele.id}
+                key={`${ele.id}${ele.name}`}
               >
                 <div className="text-white w-auto max-w-xs h-fit flex items-center space-x-2">
                   <p className="w-full rounded-full text-left px-5 bg-purple-500 transition-colors group-hover:bg-purple-700">
@@ -512,7 +512,7 @@ const ExamLists = () => {
                         `Delete exam ? [${ele.name}, eid:${ele.id}] (yes/no)`
                       );
                       if (x.toLocaleLowerCase() == "yes") {
-                        deleteExam(ele.id);
+                        deleteExam(ele?.id);
                       } else alert("Failed");
                     }}
                   >
