@@ -406,15 +406,16 @@ const AddQuestion = ({ eid }) => {
                       <button
                         className="hover:bg-purple-400 rounded-full p-1 text-xl opacity-0 group-[ques]:group-hover:opacity-100 transition"
                         type="button"
-                        onClick={(e) => {
-                          let x = "";
-                          x = prompt(
-                            `Delete ques ? [${quest.title}, qid:${quest.id}] (yes/no)`
-                          );
-                          if (x?.toLocaleLowerCase() == "yes") {
-                            deleteQuestion(quest.id, eid);
-                          } else alert("Failed");
-                        }}
+                        onClick={(e) =>
+                          deleteQuestion(quest.id, eid).then(() => {
+                            setQues("");
+                            setAns([]);
+                            setOpt([]);
+                            setAnsType(ansTypes[0]);
+                            setFiles(null);
+                            setMark(0);
+                          })
+                        }
                       >
                         <MdDelete className="text-xl text-red-600 hover:text-black rounded-full" />
                       </button>
@@ -424,9 +425,10 @@ const AddQuestion = ({ eid }) => {
                       {quest?.images?.map((img, iid) => {
                         return (
                           <li
-                            className="flex justify-center items-center"
+                            className="flex justify-center items-start p-2"
                             key={`${img?.originamName} + ${iid}`}
                           >
+                            <span>{quest?.quesOptions[iid]?.title}. </span>
                             <img
                               className="aspect-square border border-black p-1 rounded-md"
                               width={150}

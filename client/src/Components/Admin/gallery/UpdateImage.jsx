@@ -31,7 +31,8 @@ const UpdateImage = () => {
           Update Image Gallery
         </h2>
         <form
-          className="gallery-form"
+          // className="gallery-form"
+          style={{ display: "none" }}
           onSubmit={(e) => {
             e.preventDefault();
             const fData = data;
@@ -139,7 +140,7 @@ const UpdateImage = () => {
               return (
                 <section
                   key={image.createdAt}
-                  className={`group overflow-hidden rounded-md border m-0 border-black transition-all ${
+                  className={`overflow-hidden rounded-md border m-0 border-black transition-all ${
                     id == image.id
                       ? "ring ring-offset-2 ring-indigo-500"
                       : "ring ring-offset-0 ring-transparent"
@@ -149,19 +150,19 @@ const UpdateImage = () => {
                   }}
                 >
                   <img
-                    className={`bg-white hidden group-hover:block shadow-md aspect-auto`}
+                    className={`bg-white shadow-md aspect-auto`}
                     width={400}
                     height={400 / 4}
                     src={reqImgWrapper(image?.bigImage)}
                     alt={`photo${imgId + 1}.jpg`}
                   />
-                  <img
+                  {/* <img
                     className={`bg-white  shadow-md aspect-auto group-hover:hidden`}
                     width={400}
                     height={400 / 4}
                     src={reqImgWrapper(image?.thumbnail)}
                     alt={`photo${imgId + 1}.jpg`}
-                  />
+                  /> */}
                 </section>
               );
             })}

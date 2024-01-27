@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputBox from "./inputBox";
 import RootSms from "./rootsms";
+import { admin } from "../../../axios/discussion";
+const fetchChat = (id, setChats) => {
+  admin.getDiscussion(id, setChats);
+};
 
-function ChatBox() {
+function ChatBox({ courseId, isAdmin }) {
   const [replyId, setReplyId] = useState(null);
-
+  const [chats, setChats] = useState([]);
+  useEffect(() => {
+    fetchChat(courseId, setChats);
+  }, [courseId]);
   return (
-    <div className="bg-transparent max-w-6xl  mx-auto h-4/5 overflow-y-hidden">
+    <div className="bg-trans_bluish/0 rounded-md py-1 max-w-6xl  mx-auto h-full overflow-y-hidden">
       <div className="px-4 pb-0 flex flex-col h-full w-auto">
-        <RootSms setReplyId={setReplyId} />
-        <InputBox replyId={replyId} />
+        <RootSms setReplyId={setReplyId} chats={chats} isAdmin={isAdmin} />
+        <InputBox replyId={replyId} cid={courseId} />
       </div>
     </div>
   );

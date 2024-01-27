@@ -243,7 +243,7 @@ function EachCourse() {
           ) : (
             <>
               <p className="scale-150 text-red-500 text-center">
-                No course found
+                No Resource found
               </p>
             </>
           )}
@@ -254,7 +254,7 @@ function EachCourse() {
 }
 export const tabSwitcher = () => {
   const tabs = ["info", "record", "exam", "resource"];
-  const [currentTab, setCurTab] = useState(tabs[3]);
+  const [currentTab, setCurTab] = useState(tabs[0]);
 
   return {
     currentTab,

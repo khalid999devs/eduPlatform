@@ -54,6 +54,12 @@ const reqs = {
   GET_EXAM_CLIENT: "/api/exam/get-exam-info-client",
   DEL_SINGLE_QUES: "/api/exam/delete-single-ques",
 
+  //discussions
+  ADD_DISC_ADMIN: "/api/course/add-discussion-ques-admin",
+  DEL_DISC_ADMIN: "/api/course/delete-discussion-admin",
+  EDIT_DISC_ADMIN: "/api/course/edit-discussion-admin",
+  GET_DISC_ADMIN: "/api/course/get-valid-discussions-admin",
+
   //faqs
   FAQ: "/api/faq",
 };

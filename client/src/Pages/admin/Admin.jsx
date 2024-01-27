@@ -77,7 +77,6 @@ const Admin = () => {
     >
       <div className="w-screen h-screen p-2 overflow-hidden bg-slate-100 text-xs">
         <AdminNavbar />
-
         {!isAdmin && <ErrorPage />}
         <main className="h-4/5 transition-all duration-200 ease-in-out mx-auto w-auto flex-1">
           <Outlet context={[isAdmin, user]} />
@@ -88,7 +87,7 @@ const Admin = () => {
 };
 export const ErrorPage = () => {
   return (
-    <div className="w-auto mt-20">
+    <div className="w-auto mt-0">
       <p className="text-center text-base">
         Login as{" "}
         <span className="text-rose-500 text-xl font-semibold uppercase mx-1 font-mono p-1 rounded-md bg-slate-200">

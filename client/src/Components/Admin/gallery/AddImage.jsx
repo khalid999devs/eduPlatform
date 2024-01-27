@@ -9,7 +9,11 @@ const AddImage = () => {
     order: "",
   });
   function handleImage(e) {
-    setData((pre) => ({ ...pre, [e.target.name]: e.target.files[0] }));
+    setData((pre) => ({
+      ...pre,
+      gallery: e.target.files[0],
+      thumbnail: e.target.files[0],
+    }));
   }
   function handleChange(e) {
     setData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
@@ -42,7 +46,7 @@ const AddImage = () => {
             accept="image/png, image/jpg,image/jpeg"
           />
         </section>
-        <section>
+        {/* <section>
           <label htmlFor="thumb">Thumbnail: </label>
           <input
             type="file"
@@ -52,8 +56,8 @@ const AddImage = () => {
             onChange={handleImage}
             accept="images/*"
           />
-        </section>
-        <section>
+        </section> */}
+        {/* <section>
           <label htmlFor="rows">Rows: </label>
           <input
             type="text"
@@ -85,7 +89,7 @@ const AddImage = () => {
             placeholder="Order"
             onChange={handleChange}
           />
-        </section>
+        </section> */}
         <button
           className="bg-blue-400 px-3 py-2 text-white rounded-sm"
           type="submit"
