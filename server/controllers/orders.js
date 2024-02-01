@@ -18,64 +18,90 @@ const deleteFile = require('../utils/deleteFile');
 const { Op } = require('sequelize');
 const sendSMS = require('../utils/sendSMS');
 
+const SSLCommerzPayment = require('sslcommerz-lts');
+const store_id = process.env.SSLCMZ_STORE_ID;
+const store_passwd = process.env.SSLCMZ_STORE_PASS;
+const is_live = false; //true for live, false for sandbox
+
 const paymentInit = async (req, res) => {
-   const paymentInfo = req.body;
+  const paymentData = req.body;
+  const course = await courses.findByPk(paymentData.courseId);
+  if (!course) {
+    throw new NotFoundError(
+      'Course not found! Please Enter valid informations! '
+    );
+  }
+  const trans_id = `${req.user.id}${Date.now().toString().slice(-4)}${Math.ceil(
+    Math.random() * 100
+  )}`;
 
-   const data = {
-     store_id: process.env.SSLCOMMERZ_STORE_ID,
-     store_passwd: process.env.SSLCOMMERZ_STORE_PASSWORD,
-     total_amount: paymentInfo.total_amount,
-     currency: paymentInfo.currency,
-     tran_id: paymentInfo.tran_id,
-     success_url: 'http://yourdomain.com/success', // Replace with your success URL
-     fail_url: 'http://yourdomain.com/fail', // Replace with your failure URL
-     cancel_url: 'http://yourdomain.com/cancel', // Replace with your cancel URL
-     ipn_url: 'http://yourdomain.com/ipn', // Replace with your IPN (Instant Payment Notification) URL
-     ...paymentInfo, // Spread the rest of the payment info
-   };
+  const data = {
+    total_amount: course.estimatedPrice,
+    currency: paymentData.currType,
+    tran_id: trans_id, // use unique tran_id for each api call
+    success_url: `http://localhost:${process.env.PORT}/api/order/validate-payment/${trans_id}`,
+    fail_url: 'http://localhost:3030/fail',
+    cancel_url: 'http://localhost:3030/cancel',
+    ipn_url: 'http://localhost:3030/ipn',
+    shipping_method: 'Courier',
+    product_name: 'Computer.',
+    product_category: 'Electronic',
+    product_profile: 'general',
+    cus_name: paymentData.name,
+    cus_email: 'customer@example.com',
+    cus_add1: paymentData.address,
+    cus_add2: 'Dhaka',
+    cus_city: 'Dhaka',
+    cus_state: 'Dhaka',
+    cus_postcode: paymentData.postCode,
+    cus_country: 'Bangladesh',
+    cus_phone: paymentData.phone,
+    cus_fax: '01711111111',
+    ship_name: 'Customer Name',
+    ship_add1: 'Dhaka',
+    ship_add2: 'Dhaka',
+    ship_city: 'Dhaka',
+    ship_state: 'Dhaka',
+    ship_postcode: 1000,
+    ship_country: 'Bangladesh',
+  };
+  const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
+  sslcz
+    .init(data)
+    .then(async (apiResponse) => {
+      // Redirect the user to payment gateway
+      let GatewayPageURL = apiResponse.GatewayPageURL;
+      res.json({
+        succeed: true,
+        msg: 'Successfully initialized payment',
+        url: GatewayPageURL,
+      });
 
-   const sslcommerzUrl = 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php'; // Use sandbox for testing and switch to live URL in production
-   try {
-     const response = await axios.post(sslcommerzUrl, data);
-     res.json(response.data);
-   } catch (error) {
-     console.error('Error initiating payment session:', error);
-     res.status(500).json({ error: 'Internal Server Error' });
-   }
+      const orderData = {
+        courseId: paymentData.courseId,
+        clientId: req.user.id,
+        paymentInfo: JSON.stringify({
+          paidStatus: false,
+          ...paymentData,
+          trnasactionId: trans_id,
+        }),
+      };
+      await orders.create(orderData);
+    })
+    .catch((err) => {
+      console.log(err);
+      throw new CustomAPIError(err.message);
+    });
 };
 
-const validatePayment=async(req,res)=>{
-  const val_id = req.body.val_id; // Value provided by SSLCommerz in the callback
-  const validationUrl = `https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?val_id=${val_id}&store_id=${process.env.SSLCOMMERZ_STORE_ID}&store_passwd=${process.env.SSLCOMMERZ_STORE_PASSWORD}&format=json`; // Use sandbox for testing and switch to live URL in production
-
-  try {
-    const response = await axios.get(validationUrl);
-    if (
-      response.data.status === 'VALID' ||
-      response.data.status === 'VALIDATED'
-    ) {
-      // Payment is valid and confirmed by SSLCommerz
-      // Handle post-payment processes (e.g., update order status, send confirmation email)
-      res.json({
-        status: 'success',
-        message: 'Payment validated successfully',
-        data: response.data,
-      });
-    } else {
-      // Payment validation failed
-      res.json({
-        status: 'failure',
-        message: 'Payment validation failed',
-        data: response.data,
-      });
-    }
-  } catch (error) {
-    console.error('Error validating payment:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-}
+const validatePayment = async (req, res) => {
+  const transId = req.params.tranId;
+};
 
 const createOrder = async (req, res) => {
+  const trans_Id = req.params.tranId;
+  console.log(trans_Id);
+
   const { courseId, paymentInfo } = req.body;
   const id = req.user.id;
   const isOrderExist = await orders.findOne({
@@ -184,4 +210,10 @@ const clientInvoices = async (req, res) => {
   });
 };
 
-module.exports = { createOrder, getAllOrdersAdmin, clientInvoices };
+module.exports = {
+  createOrder,
+  getAllOrdersAdmin,
+  clientInvoices,
+  paymentInit,
+  validatePayment,
+};

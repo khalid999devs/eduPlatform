@@ -3,54 +3,120 @@ import { useParams } from 'react-router-dom';
 import { fetchCourse } from '../../axios/fetchCourses';
 import { ContextConsumer } from '../../App';
 import ValuedInput from '../Form/ValuedInput';
+import OptionField from '../Form/OptionField';
+import { currencyOptions } from '../../assets/utils';
+import Input from '../Form/Input';
+import axios from 'axios';
+import reqs from '../../assets/requests';
 
 const EnrollCourse = () => {
-  const { user } = ContextConsumer();
+  const { user, contextTrigger } = ContextConsumer();
   const { id: courseId } = useParams();
-  const { reqData, setReqData } = useState({
-    address: user?.address,
+  const [reqData, setReqData] = useState({
+    name: '',
+    address: '',
+    phone: '',
+    postCode: '',
+    currType: 'BDT',
   });
-  const paymentInfo = {
-    total_amount: '',
-    currency: 'BDT', // or your preferred currency
-    tran_id: '', // generate a unique id for each transaction
-    cus_name: '',
-    cus_email: '',
-    cus_add1: '',
-    cus_city: '',
-    cus_state: '',
-    cus_postcode: '',
-    cus_country: '',
-    cus_phone: '',
-  };
+
   const [data, setData] = useState({});
   useEffect(() => {
     fetchCourse(courseId, setData);
   }, []);
 
+  useEffect(() => {
+    setReqData({
+      name: user.name || '',
+      address: user.address || '',
+      phone: user.phone || '',
+      postCode: user.address?.split('@')[1] || '',
+      currType: currencyOptions[0].value,
+    });
+  }, [user]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (
+      reqData.name &&
+      reqData.address &&
+      reqData.currType &&
+      reqData.postCode &&
+      reqData.phone
+    ) {
+      const payData = {
+        ...reqData,
+        courseId: data.id,
+        email: user.email,
+      };
+      axios
+        .post(reqs.PAYMENT_INIT, payData, { withCredentials: true })
+        .then((res) => {
+          // console.log(res.data);
+          if (res.data.succeed) {
+            window.location.replace(res.data.url);
+          }
+        });
+    } else {
+      alert("please make sure you've filled all the fields.");
+    }
   };
+
   const handleChange = (e) => {
     setReqData((reqData) => {
-      return { ...reqData, [e.target.name]: [e.target.value] };
+      return { ...reqData, [e.target.name]: e.target.value };
     });
   };
 
-  console.log(data, user);
   return (
     <div className='min-h-screen w-full'>
       <div className='min-w-[400px] mt-16  p-2 m-auto flex items-center justify-center'>
         <form onSubmit={handleSubmit}>
           <div className='w-full flex flex-column sm:flex-row gap-12'>
-            <div className='flex flex-col gap-10 items-end justify-start'>
+            <div className='flex flex-col gap-3 items-end justify-start'>
+              <ValuedInput
+                label={'Name'}
+                inputProps={{
+                  value: reqData?.name,
+                  onChange: handleChange,
+                  name: 'name',
+                  placeholder: 'name',
+                }}
+              />
               <ValuedInput
                 label={'Address'}
                 inputProps={{
-                  value: user?.address,
+                  value: reqData?.address,
                   onChange: handleChange,
                   name: 'address',
+                  placeholder: 'area, district, country',
                 }}
+              />
+              <ValuedInput
+                label={'Phone'}
+                inputProps={{
+                  value: reqData?.phone,
+                  onChange: handleChange,
+                  name: 'phone',
+                  placeholder: '01XXXXXXXXX',
+                }}
+              />
+              <ValuedInput
+                label={'Post Code'}
+                inputProps={{
+                  value: reqData?.postCode,
+                  onChange: handleChange,
+                  name: 'postCode',
+                  placeholder: '3452',
+                }}
+              />
+
+              <OptionField
+                id={'currencySelect'}
+                label={'Currency'}
+                setValue={handleChange}
+                optionsObjs={currencyOptions}
+                name={'currType'}
               />
             </div>
             <div className='flex flex-col gap-10 items-center justify-start'>
@@ -59,8 +125,14 @@ const EnrollCourse = () => {
                   <h1 className='text-2xl font-bold'>
                     {data.title || 'Course title'}
                   </h1>
-                  <p>Price: BDT {data.price || 'N/A'}</p>
-                  <p>Net amount: BDT {data.price || 'N/A'}</p>
+                  <p>
+                    Price: {data.price && reqData.currType}{' '}
+                    {data.price || 'N/A'}
+                  </p>
+                  <p>
+                    Net amount: {data.price && reqData.currType}{' '}
+                    {data.price || 'N/A'}
+                  </p>
                 </div>
 
                 {data.price && (
@@ -68,7 +140,7 @@ const EnrollCourse = () => {
                     type='Submit'
                     className='bg-onPrimary-main text-white text-md px-6 py-4 rounded-md mt-6'
                   >
-                    Pay BDT ${data.price}
+                    Pay {reqData.currType} {data.estimatedPrice}
                   </button>
                 )}
               </div>

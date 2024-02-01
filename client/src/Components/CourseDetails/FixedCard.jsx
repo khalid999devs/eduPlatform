@@ -31,7 +31,7 @@ const FixedCard = ({ cardDetails: { id = 1, rating = 5, img, price } }) => {
           </span>
 
           <Link
-            to={`/course/${id}/enroll`}
+            to={`/courses/${id}/enroll`}
             className='mb-5 block text-black  font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-yellow-300 hover:bg-yellow-400 hover:text-black '
           >
             Enroll now <FaAngleRight className='inline-block' />{' '}

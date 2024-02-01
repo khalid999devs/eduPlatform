@@ -87,7 +87,7 @@ const getUser = async (req, res) => {
   let extraInfo = {};
   extraInfo = await clients.findOne({
     where: { id: id },
-    attributes: ['fullName', 'image', 'email', 'phone'],
+    attributes: ['fullName', 'image', 'email', 'phone', 'address'],
     include: {
       model: clientcourses,
     },
