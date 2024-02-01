@@ -41,9 +41,6 @@ const reqs = {
   //exams
   ADD_EXAM: '/api/exam/add-exam',
   GET_EXAM_ADMIN: '/api/exam/get-exam-admin',
-
-  //order
-  PAYMENT_INIT: '/api/order/pay-init',
 };
 
 export default reqs;

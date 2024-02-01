@@ -1,4 +1,3 @@
-import { raw_msg_data } from "./chat";
 import Card from "./smsCard";
 
 const showTime = (time) => {
@@ -12,22 +11,24 @@ const showTime = (time) => {
     return "Yesterday";
   } else return `${time.getDate()}-${time.getMonth()}-${time.getFullYear()}`;
 };
-const RootSms = ({ setReplyId }) => {
+const RootSms = ({ setReplyId, chats = [], isAdmin }) => {
   return (
     <div className="flex-1 overflow-y-scroll pr-2">
-      {raw_msg_data
+      {chats
         .sort((a, b) => {
-          if (a.time.getTime() < b.time.getTime()) return -1;
-          else if (a.time.getTime() > b.time.getTime()) return 1;
+          let x = a.createdAt;
+          let y = b.createdAt;
+          if (x < y) return -1;
+          else if (x > y) return 1;
           else return 0;
         })
         .map((msg, id) => {
-          let preDate = id > 0 ? raw_msg_data[id - 1].time.getTime() : 0;
+          let user = chats[0] ? JSON.parse(msg?.user) : "";
+          let preTime = new Date(id > 0 ? chats[id - 1].createdAt : 0);
+          let preDate = `${preTime.getDate()}-${preTime.getMonth()}-${preTime.getFullYear()}`;
+          let msgTime = new Date(msg?.createdAt);
 
-          //time short_key
-          let time = msg.time.getTime();
-          let hh = msg.time.getHours();
-          let mm = msg.time.getMinutes();
+          let msgDate = `${msgTime.getDate()}-${msgTime.getMonth()}-${msgTime.getFullYear()}`;
 
           //return component
           return (
@@ -35,25 +36,24 @@ const RootSms = ({ setReplyId }) => {
               className="flex flex-col items-center w-auto mx-auto my-2"
               key={id}
             >
+              {/* show date */}
               <div
                 className={`date flex items-center gap-1 w-auto text-center ${
-                  preDate == time ? "hidden" : ""
+                  preDate == msgDate ? "hidden" : ""
                 }`}
               >
                 <p className="w-fit text-slate-400/70 my-5 text-sm">
-                  {showTime(msg.time)}
-                  <span className="px-2 text-xs">
-                    {(hh < 10 ? `0${hh}` : hh) +
-                      " : " +
-                      (mm < 10 ? `0${mm}` : mm)}
-                  </span>
+                  {showTime(msgTime)}
                 </p>
               </div>
               <Card
                 key={id}
-                sender={msg.sender}
-                isTeacher={msg.isTeacher}
-                message={msg.message}
+                sender={user?.fullName}
+                isTeacher={user?.role}
+                message={msg.question}
+                sentTime={msg?.createdAt}
+                files={JSON.parse(msg?.filesUrl)}
+                isAdmin={isAdmin}
                 handleReply={() => setReplyId(id)}
               />
             </div>

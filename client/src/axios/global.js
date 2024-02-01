@@ -7,21 +7,28 @@ import { deleteCourse } from "./deleteCourse";
 import { updateCourse, deleteClass } from "./updateCourse";
 import { fetchStudents } from "./fetchStudents";
 import { addClass } from "./addRecord";
-import { addExam } from "./addExam";
-import { getExamAdmin } from "./fetchExams";
+import { addExam, addSingleQues } from "./addExam";
+import { addResources } from "./addResource";
+import { getExamAdmin, getSingleExamAdmin } from "./fetchExams";
+import { deleteExam, deleteQuestion } from "./deleteExam";
 
 export {
   addClass,
   addExam,
+  addSingleQues,
+  addResources,
   adminFCourse,
   deleteCourse,
+  deleteClass,
+  deleteExam,
+  deleteQuestion,
   fetchCourse,
   fetchCourses,
   fetchStudents,
-  postCourse,
-  updateCourse,
-  deleteClass,
   getExamAdmin,
+  getSingleExamAdmin,
+  updateCourse,
+  postCourse,
 };
 // axios.defaults.headers.common['Accept'] = 'application/json';
 // axios.defaults.headers.post['Content-Type'] =

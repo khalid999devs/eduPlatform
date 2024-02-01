@@ -8,7 +8,6 @@ const addClass = async (id, data) => {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data.succeed) {
           alert(res.data.msg);
           window.location.reload();

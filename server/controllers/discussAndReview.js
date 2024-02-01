@@ -7,19 +7,18 @@ const {
   Admin,
   reviewreplies,
   commentreplies,
-} = require('../models');
+} = require("../models");
 const {
   BadRequestError,
   UnauthenticatedError,
   NotFoundError,
   UnauthorizedError,
   CustomAPIError,
-} = require('../errors');
-const { redis } = require('../utils/redis');
-const mailer = require('../utils/sendMail');
-const deleteFile = require('../utils/deleteFile');
-const { deleteMultipleFiles } = require('../utils/fileOps');
-const { JSON } = require('sequelize');
+} = require("../errors");
+const { redis } = require("../utils/redis");
+const mailer = require("../utils/sendMail");
+const deleteFile = require("../utils/deleteFile");
+const { deleteMultipleFiles } = require("../utils/fileOps");
 
 const startDiscussion = async (req, res) => {
   let { question, courseId } = req.body;
@@ -30,7 +29,7 @@ const startDiscussion = async (req, res) => {
     ? JSON.stringify(req.admin)
     : undefined;
   if (!user) {
-    throw new UnauthorizedError('User could not found!');
+    throw new UnauthorizedError("User could not found!");
   }
 
   if (req.user) {
@@ -39,7 +38,7 @@ const startDiscussion = async (req, res) => {
     });
     if (!hasClientCourse) {
       throw new UnauthorizedError(
-        'You are not authorized to start discussion here. please Enroll first'
+        "You are not authorized to start discussion here. please Enroll first"
       );
     }
   }
@@ -48,7 +47,7 @@ const startDiscussion = async (req, res) => {
     where: { id: Number(courseId) },
   });
   if (!course) {
-    throw new NotFoundError('Course not found');
+    throw new NotFoundError("Course not found");
   }
 
   let filesUrl = [];
@@ -91,14 +90,14 @@ const startDiscussion = async (req, res) => {
   if (req.user) {
     await notifications.create({
       clientId: req.user?.id,
-      title: 'New question created',
+      title: "New question created",
       message: `A new question was created in ${course.title}`,
     });
   }
 
   res.status(201).json({
     succeed: true,
-    msg: 'Successfully created a question in discussion',
+    msg: "Successfully created a question in discussion",
     alldisscussions,
   });
 };
@@ -112,7 +111,7 @@ const addReplyToDiscussion = async (req, res) => {
     ? JSON.stringify(req.admin)
     : undefined;
   if (!user) {
-    throw new UnauthorizedError('User could not found!');
+    throw new UnauthorizedError("User could not found!");
   }
 
   if (req.user) {
@@ -124,14 +123,14 @@ const addReplyToDiscussion = async (req, res) => {
         deleteMultipleFiles(req.files);
       }
       throw new UnauthorizedError(
-        'You are not authorized to start discussion here. please Enroll first'
+        "You are not authorized to start discussion here. please Enroll first"
       );
     }
   }
 
   const course = await courses.findByPk(courseId);
   if (!course) {
-    throw new NotFoundError('Course not found');
+    throw new NotFoundError("Course not found");
   }
 
   let filesUrl = [];
@@ -157,7 +156,7 @@ const addReplyToDiscussion = async (req, res) => {
       deleteMultipleFiles(req.files);
     }
     throw new NotFoundError(
-      'The discussion was not found user this course. Please provide correct info!'
+      "The discussion was not found user this course. Please provide correct info!"
     );
   }
 
@@ -190,33 +189,33 @@ const addReplyToDiscussion = async (req, res) => {
   ) {
     await notifications.create({
       clientId: req.user?.id,
-      title: 'New Question Reply added',
+      title: "New Question Reply added",
       message: `You have a new question reply in ${course?.title}`,
     });
   } else {
     const targetUser = result.user;
     await notifications.create({
       clientId: targetUser.id,
-      title: 'New question reply received',
+      title: "New question reply received",
       message: `${
-        req.user ? req.user.ullName : 'An admin'
+        req.user ? req.user.ullName : "An admin"
       } replied to your discussion in ${course?.title}`,
     });
     mailer(
       {
         info: {
-          subject: '',
-          body: '',
+          subject: "",
+          body: "",
           discussionTitle: result.question,
           courseTitle: course.title,
-          senderName: req.user ? req.user.fullName : 'Admin',
+          senderName: req.user ? req.user.fullName : "Admin",
         },
         client: {
           fullName: targetUser.fullName,
           email: targetUser.email,
         },
       },
-      'questionReply'
+      "questionReply"
     ).catch((err) => {
       console.log(err);
     });
@@ -224,24 +223,24 @@ const addReplyToDiscussion = async (req, res) => {
 
   res.status(201).json({
     succeed: true,
-    msg: 'Question reply added successfully',
+    msg: "Question reply added successfully",
     discussion: result,
   });
 };
 
 const editDiscussion = async (req, res) => {
-  console.log('Discussion edited');
+  console.log("Discussion edited");
   res.json({
     succeed: true,
-    msg: 'Discussion edited. Future upgrade feature!',
+    msg: "Discussion edited. Future upgrade feature!",
   });
 };
 
 const deleteDiscussion = async (req, res) => {
-  console.log('Discussion deleted');
+  console.log("Discussion deleted");
   res.json({
     succeed: true,
-    msg: 'Discussion deleted. Future upgrade feature!',
+    msg: "Discussion deleted. Future upgrade feature!",
   });
 };
 
@@ -249,7 +248,7 @@ const addReviewData = async (req, res) => {
   const { rating, comment, courseId } = req.body;
   const user = req.user ? JSON.stringify(req.user) : undefined;
   if (!user) {
-    throw new UnauthorizedError('User could not found!');
+    throw new UnauthorizedError("User could not found!");
   }
 
   if (req.user) {
@@ -258,13 +257,13 @@ const addReviewData = async (req, res) => {
     });
     if (!hasClientCourse) {
       throw new UnauthorizedError(
-        'You are not authorized to review here. please Enroll first'
+        "You are not authorized to review here. please Enroll first"
       );
     }
   }
   const course = await courses.findByPk(courseId);
   if (!course) {
-    throw new NotFoundError('Course not found!');
+    throw new NotFoundError("Course not found!");
   }
 
   let allPreviousRevs = await await reviews.findAll({
@@ -293,7 +292,7 @@ const addReviewData = async (req, res) => {
   //notification update
   await notifications.create({
     clientId: req.user.id,
-    title: 'New review added',
+    title: "New review added",
     message: `You have a new review in ${course.title}`,
     courseId: courseId,
   });
@@ -316,7 +315,7 @@ const addReplyToReview = async (req, res) => {
   const { reply, courseId, reviewId } = req.body;
   const course = await courses.findByPk(courseId);
   if (!course) {
-    throw new NotFoundError('Course not found');
+    throw new NotFoundError("Course not found");
   }
   let review = await reviews.findOne({
     where: { id: reviewId },
@@ -324,7 +323,7 @@ const addReplyToReview = async (req, res) => {
   });
 
   if (!review) {
-    throw new NotFoundError('Review not found');
+    throw new NotFoundError("Review not found");
   }
   const replyData = {
     user: JSON.stringify(req.user || req.admin),
@@ -352,13 +351,13 @@ const getAllValidDiscussions = async (req, res) => {
   const courseId = req.params.id;
   const user = req.user || req.admin;
 
-  if (user.role !== 'admin') {
+  if (user.role !== "admin") {
     const hasClientCourse = await clientcourses.findOne({
       where: { courseId, clientId: user.id },
     });
     if (!hasClientCourse) {
       throw new UnauthorizedError(
-        'You are not authorized to access the discussions!'
+        "You are not authorized to access the discussions!"
       );
     }
   }
@@ -373,7 +372,7 @@ const getAllValidDiscussions = async (req, res) => {
 
   res.json({
     succeed: true,
-    msg: 'Successfully got discussions.',
+    msg: "Successfully got discussions.",
     result: allDiscWithRply,
   });
 };
@@ -383,13 +382,13 @@ const getAllValidReviews = async (req, res) => {
   const courseId = req.params.id;
   const user = req.user || req.admin;
 
-  if (user.role !== 'admin') {
+  if (user.role !== "admin") {
     const hasClientCourse = await clientcourses.findOne({
       where: { courseId, clientId: user.id },
     });
     if (!hasClientCourse) {
       throw new UnauthorizedError(
-        'You are not authorized to access the reviews!'
+        "You are not authorized to access the reviews!"
       );
     }
   }
@@ -401,7 +400,7 @@ const getAllValidReviews = async (req, res) => {
 
   res.json({
     succeed: true,
-    msg: 'Successfully got discussions.',
+    msg: "Successfully got discussions.",
     result: allRevWithRply,
   });
 };
