@@ -33,9 +33,7 @@ const AddCourse = () => {
     Object.keys(data).forEach((key) => {
       form.append(`${key}`, data[key]);
     });
-    postCourse(form).then((res) => {
-      console.log(res);
-    });
+    postCourse(form);
   };
   if (isAdmin)
     return (

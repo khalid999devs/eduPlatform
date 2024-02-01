@@ -7,15 +7,18 @@
 * {
   font-family: 'Poppins', sans-serif;
 }
+
 html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-::-webkit-scrollbar{
+
+::-webkit-scrollbar {
   width: 5pt;
   background: #0d1d41bb;
   border-radius: 50pt;
 }
-::-webkit-scrollbar-thumb{
+
+::-webkit-scrollbar-thumb {
   width: 100%;
   background-color: #d86d6d;
   border-radius: 50pt
@@ -23,7 +26,7 @@ html {
 
 /* login form create class*/
 .create {
-  @apply grid grid-cols-1 border rounded-xl gap-2 mx-auto  ring-offset-4;
+  @apply grid grid-cols-1 border rounded-xl gap-2 mx-auto ring-offset-4;
   /* box-shadow: 0 0 40px -15px #251c9bb0; */
 }
 
@@ -31,7 +34,7 @@ html {
   @apply gap-3 flex items-center mx-auto;
 }
 
-.create > section {
+.create>section {
   @apply mb-4 w-full flex justify-between flex-col items-start md:flex-row;
 }
 
@@ -39,11 +42,11 @@ html {
   @apply text-sm;
 }
 
-.create > section > input {
+.create>section>input {
   @apply border-0 outline-none p-2.5 rounded-md bg-slate-900/40 text-yellow-50;
 }
 
-.create > section > input:focus {
+.create>section>input:focus {
   @apply border-0 outline-none;
 }
 
@@ -55,6 +58,42 @@ html {
   left: 0;
   z-index: 1000;
 }
-.adminInputBox{
-  @apply col-span-2 flex-1 font-semibold px-1 ring-2 ring-offset-0 ring-darkText my-1 outline-none border-none focus:ring-blue-700 focus:rounded-md transition-all
+
+.adminInputBox {
+  @apply font-semibold px-1 py-2 ring-2 ring-offset-0 ring-darkText my-1 outline-none border-none focus:ring-blue-700 focus:rounded-md transition-all h-fit
+}
+
+form.gallery-form {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 5pt;
+}
+
+form.gallery-form section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10pt;
+  font-size: 1.25rem;
+  border: 2px solid #9d29f050;
+  padding: 0pt 5pt;
+  height: max-content;
+  margin-bottom: 5pt;
+  border-radius: 5pt;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
+form.gallery-form section label {
+  font-size: 1rem;
+
+}
+
+form.gallery-form section input {
+  font-size: 1rem;
+  padding: 4pt;
+  flex: 1 1 auto;
+  outline: none;
+  border: none;
+  background-color: transparent;
 }
