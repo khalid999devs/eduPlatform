@@ -2,67 +2,30 @@ import { useState, createContext, useContext, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Nav from "../../Components/ClientDashboard/Nav";
 import Header from "../../Components/ClientDashboard/Header";
-import { ContextConsumer } from "../../App";
+import { getClient } from "../../axios/getClientInfo";
 
 const ProfileContext = createContext("");
 
 const Dashboard = () => {
-  const { user } = ContextConsumer();
   const [userProfile, setUserProfile] = useState({
-    name: "Example FullName",
-    username: "example012",
+    id: 0,
+    userName: "",
+    fullName: "",
     email: "",
-    mobileNo: "",
-    avatar: "",
-    img: "",
-    address: "",
-    fbId: "",
-    enrolledCourses: [
+    role: "",
+    image: "",
+    phone: "",
+    clientcourses: [
       {
-        name: "Chemistry course 1",
-        id: "chemi1",
-        img: "",
-        deadline: "",
-        rating: 5,
-        progress: 30,
-      },
-    ],
-    activeCourses: [
-      {
-        name: "Chemistry course 1",
-        id: "chemi1",
-        img: "",
-        deadline: "",
-        rating: 5,
-        progress: 30,
-      },
-      {
-        name: "Chemistry course 2",
-        id: "chemi2",
-        img: "",
-        deadline: "",
-        rating: 5,
-        progress: 40,
-      },
-      {
-        name: "Chemistry course 3",
-        id: "chemi3",
-        img: "",
-        deadline: "",
-        rating: 4,
-        progress: 50,
+        id: 0,
+        courseId: 0,
+        clinetId: 0,
       },
     ],
   });
   useEffect(() => {
-    setUserProfile((preDate) => ({
-      ...preDate,
-      name: user?.name,
-      email: user?.email,
-      mobileNo: user?.phone,
-      avatar: user?.image,
-      username: user?.userName,
-    }));
+    getClient(setUserProfile).then((_) => {});
+    console.log("bhbhb");
   }, []);
 
   return (
@@ -77,7 +40,7 @@ const Dashboard = () => {
         <div className="grid md:grid-cols-[auto,1fr]">
           <Nav />
           <div className="pt-6 md:pl-6 w-full">
-            <Outlet />
+            <Outlet context={userProfile} />
           </div>
         </div>
       </div>

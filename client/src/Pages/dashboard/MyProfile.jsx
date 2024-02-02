@@ -1,11 +1,9 @@
 import { useState } from "react";
 import ValuedInput from "../../Components/Form/ValuedInput";
-import { ProfileContextConsumer } from "./Dashboard";
 import PrimaryButton from "../../Components/Buttons/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 
 const MyProfile = () => {
-  const { userProfile } = ProfileContextConsumer();
   const navigate = useNavigate();
   const [profileInfo, setProfileInfo] = useState({
     name: "",
@@ -25,15 +23,12 @@ const MyProfile = () => {
     const data = profileInfo;
     console.log(data);
   };
-  useState(() => {
-    setProfileInfo((pre) => userProfile);
-  }, [userProfile]);
 
   return (
     <div className="w-full">
-      <div className="flex flex-col gap-5 mb-6 w-full">
+      <div className="flex flex-col gap-5 mb-6 w-full" aria-disabled>
         <h1 className="text-xl font-medium ">My Profile</h1>
-        <form className="p-2">
+        <form className="p-2 opacity-50 pointer-events-none relative select-none">
           <div className=" flex w-full flex-col lg:grid lg:grid-cols-2 gap-6 max-w-md md:w-full lg:max-w-full lg:gap-8 mb-10">
             <ValuedInput
               label={"Full Name"}
@@ -91,17 +86,22 @@ const MyProfile = () => {
               props={{ type: "Submit" }}
               onClick={handleSubmit}
             />
-            <PrimaryButton
-              text={"Change Password"}
-              classes={"border border-secondary-dark text-secondary-dark"}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/change-pass");
-              }}
-            />
+          </div>
+          {/* alert box */}
+          <div className="ring ring-rose-500 rounded-md p-14 text-center absolute top-1/2 translate-x-1/4 bg-white -translate-y-1/2">
+            <p className="text-red-500">Will be available soon</p>
           </div>
         </form>
-        <div className="px-3 mt-1 w-full"></div>
+        <div className="mt-1 w-full">
+          <PrimaryButton
+            text={"Change Password"}
+            classes={"border border-secondary-dark text-secondary-dark"}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/change-pass");
+            }}
+          />
+        </div>
       </div>
     </div>
   );

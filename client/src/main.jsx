@@ -14,6 +14,7 @@ import MyProfile from "./Pages/dashboard/MyProfile.jsx";
 import EnrolledCourses from "./Pages/dashboard/EnrolledCourses.jsx";
 import AllCourses from "./Pages/AllCourses.jsx";
 import Coursedetails from "./Pages/CourseDetails.jsx";
+import CourseClientdetails from "./Pages/CourseClientDetails.jsx";
 import ChangePass from "./Pages/Password/ChangePass.jsx";
 import About from "./Pages/About.jsx";
 import PaymentHistory from "./Pages/dashboard/PaymentHistory.jsx";
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
       {
         path: "/courses/:id",
         element: <Coursedetails />,
+      },
+      {
+        path: "/courses/onClientReq/:id",
+        element: <CourseClientdetails />,
       },
       {
         path: "/courses/:id/enroll",
