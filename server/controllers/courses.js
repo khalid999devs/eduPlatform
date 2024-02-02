@@ -178,7 +178,7 @@ const getCourseByUser = async (req, res) => {
     where: { id: courseId },
     attributes: { exclude: ['classInfo'] },
   });
-  if (adminId) {
+  if (adminId || userId) {
     course = await courses.findOne({
       where: { id: courseId },
       include: [
@@ -197,7 +197,10 @@ const getCourseByUser = async (req, res) => {
     course.resources.forEach((resource) => {
       resource.filesUrl = JSON.parse(resource.filesUrl);
     });
-    course.classInfo = JSON.parse(course.classInfo);
+    if (adminId) course.classInfo = JSON.parse(course.classInfo);
+    else if (userId) {
+      delete course.dataValues['classInfo'];
+    }
   }
   if (!course) {
     throw new NotFoundError('No course found!');
