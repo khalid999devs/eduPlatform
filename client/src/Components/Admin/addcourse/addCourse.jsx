@@ -22,11 +22,17 @@ const AddCourse = () => {
       title: courseDetails.title,
       description: courseDetails.desc,
       price: courseDetails.cPrice,
+      estimatedPrice: courseDetails.cPrice,
       tags: courseDetails.tags,
       ratings: 4,
       schedule: courseDetails.schedule,
       demoVideoUrl: courseDetails.demoLink,
       courses: courseDetails.imagefile,
+      instructor: JSON.stringify({
+        name: "New instructor",
+        desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex laborum a, quam natus sunt error unde consequatur hic, numquam odit.",
+        title: "chemistry sir",
+      }),
       createdAt: new Date(),
       updatedAt: new Date(),
     };

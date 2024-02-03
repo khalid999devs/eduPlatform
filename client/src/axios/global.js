@@ -14,7 +14,13 @@ import { fetchStudents } from "./fetchStudents";
 import { addClass } from "./addRecord";
 import { addExam, addSingleQues } from "./addExam";
 import { addResources } from "./addResource";
-import { getExamAdmin, getSingleExamAdmin } from "./fetchExams";
+import {
+  getExamAdmin,
+  getSingleExamAdmin,
+  getAllExamClient,
+  getQuesClient,
+  getSingleExamClient
+} from "./fetchExams";
 import { deleteExam, deleteQuestion } from "./deleteExam";
 
 export {
@@ -31,6 +37,9 @@ export {
   fetchCourse,
   fetchCourses,
   fetchStudents,
+  getAllExamClient,
+  getQuesClient,
+  getSingleExamClient,
   getExamAdmin,
   getSingleExamAdmin,
   updateCourse,

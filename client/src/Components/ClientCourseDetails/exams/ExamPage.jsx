@@ -1,117 +1,85 @@
-import React, { useReducer, useState } from "react";
-import Timer from "./Timer";
+import React, { useEffect, useReducer, useState } from "react";
+import { getAllExamClient } from "../../../axios/global";
+import { Link } from "react-router-dom";
 
-const questions = [
-  {
-    id: 0,
-    question: "What is the capital of France?",
-    options: ["London", "Madrid", "Barline", "Paris"],
-    correctAnswer: ["Paris", "Madrid"],
-  },
-  {
-    id: 1,
-    question: "What is the largest planet in our solar system?",
-    options: ["Earth", "Mars", "Jupiter", "Venus"],
-    correctAnswer: ["Jupiter"],
-  },
-];
-const initialState = questions.map((val) => {
-  return { answer: [] };
-});
-
-function ExamPage() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  function reducer(state, action) {
-    switch (action.type) {
-      case "answer":
-        return state?.map((ans, id) => {
-          if (id === action.qId)
-            if (!ans.answer.includes(action.ans))
-              state[action.qId].answer.push(action.ans);
-          return { ...ans };
-        });
-      default:
-        throw new Error("404 error!");
-    }
-  }
-
-  // set finish time
-  const lastTime = new Date("2023-12-26T20:00:00");
-  const [differ, setDif] = useState(null);
-  useState(() => {
-    let loop = setInterval(() => {
-      const curTime = new Date();
-      setDif((pre) => lastTime - curTime);
-    }, 1000);
-    return () => clearInterval(loop);
+function ExamPage({ cid }) {
+  const [data, setdata] = useState([]);
+  useEffect(() => {
+    getAllExamClient(cid, setdata);
   }, []);
+  // set finish time
+
   return (
-    <div className="bg-gray-100 min-h-full flex items-center flex-col justify-center relative">
-      {/*it will show remainder timer  */}
-      <Timer preTime={lastTime.getTime()} />{" "}
-      <div className="bg-white p-4 rounded shadow-md w-96">
-        <h1 className="text-xl font-bold mb-4">MCQ Exam</h1>
-        {questions.map((ques, id) => (
-          <div key={id}>
-            <h2 className="text-lg mt-5 font-semibold">
-              {id + 1}. {ques.question}
-            </h2>
+    <div className="min-h-full flex items-center flex-col justify-center relative">
+      <div>
+        <h1 className="text-3xl font-bold text-center mt-5 mb-10">Exam Lists</h1>
+        {data?.map((exam, eid) => {
+          return (
+            <div
+              key={`eid${eid}`}
+              className="bg-yellow-100 relative p-4 rounded-md my-10 hover:bg-yellow-200/80"
+            >
+              <p className="font-bold">{exam?.name}</p>
+              <p className="font-semibold">
+                {exam?.topic}{" "}
+                <span className="uppercase text-sm">({exam?.category})</span>
+              </p>
+              <span className="absolute top-2 right-2 text-red-500 font-semibold">
+                Mark: {exam?.totalMarks}
+              </span>
 
-            <ul className="my-1">
-              {ques.options.map((option, index) => {
-                return (
-                  <li
-                    key={index}
-                    className="flex items-center gap-2 space-y-1 cursor-pointer hover:bg-secondary-main rounded-md transition-colors p-1"
-                    onClick={() => {
-                      if (differ > 0)
-                        dispatch({
-                          type: "answer",
-                          qId: id,
-                          ans: option,
-                        });
-                    }}
-                    aria-disabled={differ < 0}
-                  >
-                    <span
-                      className={`p-px text-black ring-black w-5 h-5 flex justify-center items-center ring-1 rounded-full ${
-                        state[ques.id]?.answer !== option
-                          ? "bg-white"
-                          : "bg-secondary-main"
-                      }`}
-                    >
-                      {index + 1}
-                    </span>
-                    <label
-                      className="block pointer-events-none"
-                      htmlFor={option + index}
-                    >
-                      {option}
-                    </label>
-                    <input
-                      type="radio"
-                      hidden
-                      name="options"
-                      id={option + index}
-                      value={option}
-                      checked={state[ques.id]?.answer === option}
-                      className="mr-2"
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+              <p>Exam Starting time: {showTime(exam?.examStartTime)}</p>
+              <p>Exam Ending time: {showTime(exam?.examEndTime)}</p>
 
-        {differ > 0 ? (
-          <button className="bg-onPrimary-main ring ring-slate-500 rounded-sm text-primary-main px-4 py-2 text-base mt-5">
-            Submit
-          </button>
-        ) : null}
+              <Link to={`exam/${exam?.id}`}>
+                <button
+                  type="button"
+                  className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                >
+                  Take Exam
+                </button>
+              </Link>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
+}
+
+function showTime(time) {
+  const date = new Date(time);
+  return `${addZero(date.getDate())}-${addZero(date.getMonth() + 1)}-${addZero(
+    date.getFullYear()
+  )} at ${printTime(date.getHours(), date.getMinutes())}`;
+}
+function addZero(e) {
+  return e < 10 ? `0${e}` : e;
+}
+function printTime(hh, mm) {
+  return `${addZero(checkHours(hh).time)}:${addZero(mm)}  ${
+    checkHours(hh).format
+  }`;
+}
+function checkHours(hour) {
+  if (hour == 0) {
+    return {
+      time: 12,
+      format: "AM",
+    };
+  }
+  if (hour > 0 && hour <= 12) {
+    return {
+      time: hour,
+      format: hour == 12 ? "PM" : "AM",
+    };
+  }
+  if (hour > 12 && hour <= 23) {
+    return {
+      time: hour - 12,
+      format: "PM",
+    };
+  }
 }
 
 export default ExamPage;

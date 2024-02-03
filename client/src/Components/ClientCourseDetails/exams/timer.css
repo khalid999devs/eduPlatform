@@ -1,7 +1,7 @@
 .timer {
-    @apply bg-secondary-main/75 text-black p-2 text-2xl rounded-md uppercase;
+    @apply bg-secondary-main/75 text-black p-2  rounded-md uppercase;
 }
 
 .dot {
-    @apply text-2xl font-extrabold;
+    @apply  font-extrabold;
 }

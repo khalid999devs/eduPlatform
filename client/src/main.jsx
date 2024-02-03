@@ -18,16 +18,16 @@ import CourseClientdetails from "./Pages/CourseClientDetails.jsx";
 import ChangePass from "./Pages/Password/ChangePass.jsx";
 import About from "./Pages/About.jsx";
 import PaymentHistory from "./Pages/dashboard/PaymentHistory.jsx";
-
 import AdminDashboard from "./Pages/admin/AdminDashboard.jsx";
 import Admin from "./Pages/admin/Admin.jsx";
 import AdminLogin from "./Pages/admin/AdminLogin.jsx";
 import AdminCourse from "./Pages/admin/AdminCourse.jsx";
+import AdminChat from "./Pages/Admin/Chat.jsx";
+import EachCourse from "./Pages/admin/EachCourse.jsx";
+
 import AddCourse from "./Components/Admin/addcourse/addCourse.jsx";
 import Stundet from "./Components/Admin/student/student.jsx";
 import AllCourse from "./Components/Admin/courses/AllCourses.jsx";
-import AdminChat from "./Pages/Admin/Chat.jsx";
-import EachCourse from "./Pages/admin/EachCourse.jsx";
 import EnrollCourse from "./Components/CourseDetails/EnrollCourse.jsx";
 import Gallery from "./Components/Admin/gallery/index.jsx";
 import AddImage from "./Components/Admin/gallery/AddImage.jsx";
@@ -35,6 +35,7 @@ import UpdateImage from "./Components/Admin/gallery/UpdateImage.jsx";
 import FAQPage from "./Components/Admin/faq/index.jsx";
 import AddFaq from "./Components/Admin/faq/AddFaq.jsx";
 import UpdateFaq from "./Components/Admin/faq/UpdateFaq.jsx";
+import MCQExam from './Components/ClientCourseDetails/exams/MCQExam.jsx'
 // import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
 // import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
 
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
       {
         path: "/courses/onClientReq/:id",
         element: <CourseClientdetails />,
+      },
+      {
+        path: "/courses/onClientReq/:cid/exam/:examid",
+        element: <MCQExam />,
       },
       {
         path: "/courses/:id/enroll",

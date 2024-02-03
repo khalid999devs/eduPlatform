@@ -2,7 +2,7 @@ import FixedCard from "../Components/CourseDetails/FixedCard";
 import CourseInfo from "../Components/ClientCourseDetails/CourseInfo";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchCourse } from "../axios/fetchCourses";
+import { clientFCourse } from "../axios/fetchCourses";
 import { ContextConsumer } from "../App";
 
 const CourseClientdetails = () => {
@@ -11,12 +11,12 @@ const CourseClientdetails = () => {
 
   const [data, setData] = useState({});
   useEffect(() => {
-    fetchCourse(id, setData);
-  }, []);
-  console.log(data);
+    clientFCourse(id, setData);
+  }, [id]);
+
   return (
     <div className="px-3 w-full m-auto my-10 relative">
-      {!user?.succeed && (
+      {/* {!user?.enrolledCourses.find(() => ({ courseId: id })) && (
         <FixedCard
           cardDetails={{
             id: data?.id,
@@ -25,16 +25,10 @@ const CourseClientdetails = () => {
             price: data?.price,
           }}
         />
+      )} */}
+      {user?.enrolledCourses.find(() => ({ courseId: id })) && (
+        <CourseInfo courseInfo={data} />
       )}
-      <CourseInfo
-        courseInfo={{
-          title: data?.title,
-          desc: data?.description,
-          schedule: data?.schedule,
-          demoLink: data?.demoVideoUrl,
-          instruct: data?.instructor,
-        }}
-      />
     </div>
   );
 };

@@ -48,13 +48,33 @@ const getSingleExamAdmin = async (setData, eid) => {
     alert(error);
   }
 };
-
-const getExamClient = async (mode, setData, id) => {
+const getSingleExamClient = async (cid, eid, setData) => {
   try {
     axios
       .post(
         reqs.GET_EXAM_CLIENT,
-        { mode: mode },
+        { mode: "single", examId: eid, courseId: cid },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        console.log(res.data.msg);
+        if (res.data.succeed) setData(res.data.result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (error) {
+    alert(error);
+  }
+};
+const getAllExamClient = async (courseId, setData) => {
+  try {
+    axios
+      .post(
+        reqs.GET_EXAM_CLIENT,
+        { courseId: courseId, mode: "all" },
         {
           withCredentials: true,
         }
@@ -62,6 +82,7 @@ const getExamClient = async (mode, setData, id) => {
       .then((res) => {
         if (res.data.succeed) {
           // setData(res.data?.result?.[id]);
+          setData(res.data.result);
         }
       })
       .catch((err) => {
@@ -71,4 +92,33 @@ const getExamClient = async (mode, setData, id) => {
     alert(error);
   }
 };
-export { getExamAdmin, getExamClient, getSingleExamAdmin };
+const getQuesClient = async (examId, mode, setData) => {
+  try {
+    axios
+      .post(
+        reqs.GET_QUES_CLIENT,
+        { mode: mode, examId: examId },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        if (res.data.succeed) {
+          // setData(res.data?.result?.[id]);
+          setData(res.data.result);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (error) {
+    alert(error);
+  }
+};
+export {
+  getExamAdmin,
+  getQuesClient,
+  getAllExamClient,
+  getSingleExamAdmin,
+  getSingleExamClient,
+};

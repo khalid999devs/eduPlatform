@@ -5,31 +5,30 @@ import { MdOutlineSlowMotionVideo } from "react-icons/md";
 import { PiNotePencil, PiNotebook, PiVideoBold } from "react-icons/pi";
 import StudentCoursePage from "./StudentCoursePage";
 import { ContextConsumer } from "../../App";
+import { useParams } from "react-router-dom";
 
 const CourseInfo = ({
   courseInfo = { title: "", desc: "", schedule: "", demoLink: "" },
 }) => {
   const { user } = ContextConsumer();
-  if (user?.succeed) return <StudentCoursePage />;
+  const { id } = useParams();
+  if (user?.enrolledCourses.find(() => ({ courseId: id })))
+    return <StudentCoursePage courseInfo={courseInfo} />;
   else
     return (
       <div className="left-side md:w-3/5">
         {/* course title........... */}
         <h1 className="text-left text-4xl font-bold mb-10 ">
-          {courseInfo.title || "Lorem ipsum dolor sit amet consectetur."}
+          {courseInfo.title}
         </h1>
         {/* course description- long.... */}
-        <p className="text-left mb-10">
-          {courseInfo.desc ||
-            `Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nobis
-        quaerat rem ullam quibusdam atque mollitia explicabo tenetur totam quas!`}
-        </p>
+        <p className="text-left mb-10">{courseInfo.desc}</p>
         {/* schedule section */}
         <div className="flex flex-col gap-6 my-16">
           <h4 className=" text-left text-xl border-l-4 border-secondary-dark px-5  flex items-center">
             <AiOutlineSchedule className="inline-block text-4xl text-secondary-dark mr-5" />
             {/* this scehdule section is dynamic ................*/}
-            Schedule: {courseInfo.schedule || `Sat,Mon,Wed | 10:30 pm`}
+            Schedule: {courseInfo.schedule}
           </h4>
           {/* demo video section */}
           <h4 className=" text-left text-xl border-l-4 border-violet-400 px-5 flex items-center ">

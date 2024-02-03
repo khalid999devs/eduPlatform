@@ -20,7 +20,7 @@ const CourseProCard = ({ id }) => {
       key={`cid${id}`}
       className="max-w-md md:max-w-full w-full overflow-hidden rounded-md cursor-pointer transition-transform hover:scale-[101%] hover:shadow-md border md:grid md:grid-cols-[1fr,2fr] md:gap-1"
       onClick={() => {
-        navigate(`/courses/onClientReq?=${id}`);
+        navigate(`/courses/onClientReq/${id}`);
       }}
     >
       <div className="w-full grid md:h-full">

@@ -11,9 +11,7 @@ import Notes from "./notes/note";
 import { useReducer } from "react";
 import ChatBox from "./Discussion/chat";
 import RecordVideo from "./Records/Record";
-const StudentCoursePage = ({
-  courseInfo = { title: "", desc: "", schedule: "", demoLink: "" },
-}) => {
+const StudentCoursePage = ({ courseInfo = {} }) => {
   const [state, dispatch] = useReducer(reducer, "details");
   function reducer(state, action) {
     switch (action.type) {
@@ -22,8 +20,7 @@ const StudentCoursePage = ({
       default:
         return state;
     }
-  }
-
+  } 
   return (
     <div className={`left-side ${state == "chat" ? "h-[75vh] mb-10" : ""}`}>
       <nav
@@ -89,20 +86,16 @@ const StudentCoursePage = ({
         <div>
           {/* course title........... */}
           <h1 className="text-left text-4xl font-bold mb-10 ">
-            {courseInfo.title || "Lorem ipsum dolor sit amet consectetur."}
+            {courseInfo.title}
           </h1>
           {/* course description- long.... */}
-          <p className="text-left mb-10">
-            {courseInfo.desc ||
-              `Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nobis
-        quaerat rem ullam quibusdam atque mollitia explicabo tenetur totam quas!`}
-          </p>
+          <p className="text-left mb-10">{courseInfo.desc}</p>
           {/* schedule section */}
           <div className="flex flex-col gap-6 my-16">
             <h4 className=" text-left text-xl border-l-4 border-secondary-dark px-5  flex items-center">
               <AiOutlineSchedule className="inline-block text-4xl text-secondary-dark mr-5" />
               {/* this scehdule section is dynamic ................*/}
-              Schedule: {courseInfo.schedule || `Sat,Mon,Wed | 10:30 pm`}
+              Schedule: {courseInfo.schedule}
             </h4>
           </div>
           {/* course component section */}
@@ -112,23 +105,24 @@ const StudentCoursePage = ({
             </h1>{" "}
             <hr className="mb-10 " />
             <div className="border-gray-700 bg-onPrimary-main text-primary-main rounded-lg p-5 mb-10 flex flex-col gap-10">
-              <ZoomLink />
-              <hr />
+              {/* <ZoomLink /> */}
+              {/* <hr /> */}
               {/* <ExamLinks /> */}
 
-              <Notes />
+              <Notes notes={courseInfo?.resources} />
             </div>
           </div>
         </div>
       )}
-      {state == "record" && <RecordVideo />}
-      {state == "chat" && <ChatBox />}
+      {state == "record" && <RecordVideo rcdClass={courseInfo?.recordedclasses} />}
+      {state == "chat" && <ChatBox courseId={courseInfo?.id} isAdmin={false} />}
       {state == "exam" && (
         <div className="p-5">
-          <ExamPage />
+          <ExamPage cid={courseInfo?.id} />
         </div>
       )}
     </div>
   );
 };
+
 export default StudentCoursePage;

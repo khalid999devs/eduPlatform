@@ -29,15 +29,21 @@ const GeneralInfo = () => {
       <div className="flex flex-col gap-5 mb-6 w-full">
         <h1 className="text-xl font-medium ">In Progress Courses</h1>
         <div className="flex flex-col gap-6 w-full">
-          {userProfile?.clientcourses?.map((course, value) => {
-            return (
-              <CourseProCard
-                key={value}
-                img={course.img || "/Images/cardPH.jpg"}
-                id={course?.courseId}
-              />
-            );
-          })}
+          {userProfile?.clientcourses?.length > 0 ? (
+            userProfile?.clientcourses?.map((course, value) => {
+              return (
+                <CourseProCard
+                  key={value}
+                  img={course.img || "/Images/cardPH.jpg"}
+                  id={course?.courseId}
+                />
+              );
+            })
+          ) : (
+            <p className="text-center text-xl text-slate-800 font-extrabold tracking-wider mt-4 opacity-90">
+              Empty
+            </p>
+          )}
         </div>
       </div>
     </div>
