@@ -12,14 +12,19 @@ import { deleteCourse } from "./deleteCourse";
 import { updateCourse, deleteClass } from "./updateCourse";
 import { fetchStudents } from "./fetchStudents";
 import { addClass } from "./addRecord";
-import { addExam, addSingleQues } from "./addExam";
+import {
+  addExam,
+  addSingleQues,
+  addStudentAns,
+  addStdFilesAns,
+} from "./addExam";
 import { addResources } from "./addResource";
 import {
   getExamAdmin,
   getSingleExamAdmin,
   getAllExamClient,
   getQuesClient,
-  getSingleExamClient
+  getSingleExamClient,
 } from "./fetchExams";
 import { deleteExam, deleteQuestion } from "./deleteExam";
 
@@ -27,6 +32,8 @@ export {
   addClass,
   addExam,
   addSingleQues,
+  addStudentAns,
+  addStdFilesAns,
   addResources,
   adminFCourse,
   clientFCourse,

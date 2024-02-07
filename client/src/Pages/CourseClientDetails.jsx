@@ -16,7 +16,7 @@ const CourseClientdetails = () => {
 
   return (
     <div className="px-3 w-full m-auto my-10 relative">
-      {/* {!user?.enrolledCourses.find(() => ({ courseId: id })) && (
+      {!user?.enrolledCourses.find(() => ({ courseId: id })) && (
         <FixedCard
           cardDetails={{
             id: data?.id,
@@ -25,10 +25,8 @@ const CourseClientdetails = () => {
             price: data?.price,
           }}
         />
-      )} */}
-      {user?.enrolledCourses.find(() => ({ courseId: id })) && (
-        <CourseInfo courseInfo={data} />
       )}
+      <CourseInfo courseInfo={data} />
     </div>
   );
 };

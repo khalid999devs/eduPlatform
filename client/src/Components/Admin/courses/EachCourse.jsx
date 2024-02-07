@@ -56,7 +56,7 @@ function EachCourse() {
   }, [data?.image, upImg]);
 
   return (
-    <div className="w-full h-full p-5 overflow-y-scroll overflow-x-hidden">
+    <div className="w-full h-full p-5">
       {/* course id */}
       <h2 className=" text-center font-semibold capitalize mb-10 text-2xl sticky -top-5 bg-slate-100 backdrop-blur px-10 z-10 border-2 border-transparent border-b-black shadow-xl shadow-trans_bluish/20">
         course Title: {data?.title}

@@ -75,7 +75,7 @@ const Admin = () => {
         setAdminUser,
       }}
     >
-      <div className="w-screen h-screen p-2 overflow-hidden bg-slate-100 text-xs">
+      <div className="w-screen min-h-screen mx-auto max-w-[1600px] max-h-screen p-2 overflow-hidden overflow-y-auto bg-slate-100 text-xs">
         <AdminNavbar />
         {!isAdmin && <ErrorPage />}
         <main className="h-4/5 transition-all duration-200 ease-in-out mx-auto w-auto flex-1">

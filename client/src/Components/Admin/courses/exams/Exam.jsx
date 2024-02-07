@@ -141,17 +141,23 @@ const SelectDropdown = ({
   setIsOpen,
   selectedOption,
   handleSelectOption,
+  disabled = false,
 }) => {
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div className="relative w-full inline-block mb-4">
+    <div
+      className={`relative w-full inline-block mb-4 ${
+        disabled ? "grayscale pointer-events-none" : ""
+      }`}
+    >
       <div className="flex w-full items-center ">
         <button
           onClick={handleToggleDropdown}
           type="button"
+          disabled={disabled || false}
           className="bg-white border border-gray-300 px-4 py-2 rounded-md flex items-center space-x-2 focus:outline-none w-full justify-between"
         >
           <span className="uppercase">
@@ -199,7 +205,7 @@ const SelectDropdown = ({
   );
 };
 
-const AddQuestion = ({ eid }) => {
+const AddQuestion = ({ eid, category }) => {
   const [data, setData] = useState({ questions: [] });
   const [showQues, toggleQues] = useState(false);
   const [ques, setQues] = useState("");
@@ -215,6 +221,11 @@ const AddQuestion = ({ eid }) => {
     setIsOpen(false);
   };
   useEffect(() => {
+    if (category === "written") {
+      setAnsType(ansTypes[1]);
+    }
+  }, [category]);
+  useEffect(() => {
     getSingleExamAdmin(setData, eid);
   }, [eid]);
   return (
@@ -223,7 +234,7 @@ const AddQuestion = ({ eid }) => {
         Add question
       </h3>
       <form
-        className="grid-cols-3 grid justify-center gap-1 my-3"
+        className="grid grid-cols-3 gap-1 my-3"
         onSubmit={(e) => {
           e.preventDefault();
           const form = new FormData();
@@ -249,7 +260,14 @@ const AddQuestion = ({ eid }) => {
           for (let i = 0; i < files.length; i++) {
             form.append("questions", files[i]);
           }
-          addSingleQues(form);
+          addSingleQues(form).then(() => {
+            setQues("");
+            setAns([]);
+            setOpt([]);
+            setAnsType(category === "quiz" ? ansTypes[0] : ansTypes[1]);
+            setFiles(null);
+            setMark(0);
+          });
         }}
       >
         {/* question title */}
@@ -268,7 +286,11 @@ const AddQuestion = ({ eid }) => {
           {/* <p className="text-xs flex flex-wrap break-words m-1">{ques}</p> */}
         </section>
         {/* question option */}
-        <section className="grid border p-2 rounded-md shadow space-y-2">
+        <section
+          className={`grid border p-2 rounded-md shadow space-y-2 ${
+            category === "written" ? "hidden" : ""
+          }`}
+        >
           <label htmlFor="opt">Options: </label>
           <input
             className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
@@ -293,7 +315,11 @@ const AddQuestion = ({ eid }) => {
           </p>
         </section>
         {/* question answer */}
-        <section className="grid border p-2 rounded-md shadow space-y-2">
+        <section
+          className={`grid border p-2 rounded-md shadow space-y-2 ${
+            category === "written" ? "hidden" : ""
+          }`}
+        >
           <label htmlFor="ans">
             Answer:{" "}
             <span className="text-red-500 text-xs">
@@ -348,6 +374,7 @@ const AddQuestion = ({ eid }) => {
             selectedOption={ansType}
             setIsOpen={setIsOpen}
             handleSelectOption={handleSelectOption}
+            disabled={category === "written"}
           />
         </section>
         {/* question photo */}
@@ -372,7 +399,7 @@ const AddQuestion = ({ eid }) => {
 
         <button
           className={
-            "col-span-3 bg-purple-500 px-2 py-1 rounded-sm text-white hover:bg-purple-600"
+            "col-span-3 w-1/4 my-4 bg-purple-500 px-2 py-1 rounded-sm text-white hover:bg-purple-600"
           }
           type="submit"
         >
@@ -501,7 +528,7 @@ const ExamLists = () => {
                 key={`${ele.id}${ele.name}`}
               >
                 <div className="text-white w-auto max-w-xs h-fit flex items-center space-x-2">
-                  <p className="w-full rounded-full text-left px-5 bg-purple-500 transition-colors group-hover:bg-purple-700">
+                  <p className="w-full rounded-full text-left px-5 bg-purple-500 transition-colors group-hover:bg-purple-700 font-extrabold">
                     {" "}
                     {id + 1}. {ele?.name}
                   </p>
@@ -521,38 +548,41 @@ const ExamLists = () => {
                     <MdDelete className="text-xl text-red-600 hover:text-black rounded-full" />
                   </button>
                 </div>
-                <ul>
-                  <li className="mx-3 text-blue-900 font-bold">
+                <ul className="grid grid-cols-2 justify-between gap-3 items-start my-2">
+                  <li className="p-2 text-blue-900 font-bold border border-fuchsia-500">
                     Exam Topic: {ele?.topic}
                   </li>
-                  <li className="mx-3 text-yellow-600">
+                  <li className="p-2 text-yellow-600 border border-fuchsia-500">
                     Exam Type: {ele?.category}
                   </li>
-                  <li className="mx-3 text-green-600">
+                  <li className="p-2 text-green-600 border border-fuchsia-500">
                     Exam Start:{" "}
-                    {`DATE: ${exst.getDate()}/${
+                    {`${exst.getDate()}/${
                       exst.getMonth() + 1
-                    }/${exst.getFullYear()}, TIME: ${printTime(
+                    }/${exst.getFullYear()}, ${printTime(
                       exst.getHours(),
                       exst.getMinutes(),
                       exst.getSeconds()
                     )}`}
                   </li>
-                  <li className="mx-3 text-rose-500">
+                  <li className="p-2 text-rose-500 border border-fuchsia-500">
                     Exam End:{" "}
-                    {`DATE: ${exet.getDate()}/${
+                    {`${exet.getDate()}/${
                       exet.getMonth() + 1
-                    }/${exet.getFullYear()}, TIME: ${printTime(
+                    }/${exet.getFullYear()}, ${printTime(
                       exet.getHours(),
                       exet.getMinutes(),
                       exet.getSeconds()
                     )}`}
                   </li>
-                  <li className="mx-3 text-blue-600">
+                  <li className="p-2 text-red-700 border border-fuchsia-500 font-semibold">
+                    Exam Marks: {ele?.totalMarks}
+                  </li>
+                  <li className="p-2 text-blue-600 border border-fuchsia-500">
                     Exam Duration: {duration(exet.getTime(), exst.getTime())}
                   </li>
                 </ul>
-                <AddQuestion eid={ele.id} />
+                <AddQuestion eid={ele.id} category={ele?.category} />
               </div>
             );
           })}

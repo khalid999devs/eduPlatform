@@ -36,6 +36,8 @@ import FAQPage from "./Components/Admin/faq/index.jsx";
 import AddFaq from "./Components/Admin/faq/AddFaq.jsx";
 import UpdateFaq from "./Components/Admin/faq/UpdateFaq.jsx";
 import MCQExam from './Components/ClientCourseDetails/exams/MCQExam.jsx'
+import CQExam from './Components/ClientCourseDetails/exams/CQExam.jsx'
+import ViewQuestion from "./Components/ClientCourseDetails/exams/ViewQuestion.jsx";
 // import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
 // import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
 
@@ -92,8 +94,16 @@ const router = createBrowserRouter([
         element: <CourseClientdetails />,
       },
       {
-        path: "/courses/onClientReq/:cid/exam/:examid",
+        path: "/courses/onClientReq/:cid/exam/quiz/:examid",
         element: <MCQExam />,
+      },
+      {
+        path: "/courses/onClientReq/:cid/exam/written/:examid",
+        element: <CQExam />,
+      },
+      {
+        path: "/courses/onClientReq/:cid/viewQuestion/:examid",
+        element: <ViewQuestion />,
       },
       {
         path: "/courses/:id/enroll",

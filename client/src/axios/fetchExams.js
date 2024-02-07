@@ -93,6 +93,7 @@ const getAllExamClient = async (courseId, setData) => {
   }
 };
 const getQuesClient = async (examId, mode, setData) => {
+  /*question | answer */
   try {
     axios
       .post(
