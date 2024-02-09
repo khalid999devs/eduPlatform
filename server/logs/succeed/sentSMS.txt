@@ -24,3 +24,4 @@
 =======
 {type:"Success",numbers:"01540153659",message:"You purchase for Chemistry Organic is successful. Your order id is: #82445 ",fullTime:"3-2-2024 ,time-22:59"},
 >>>>>>> e397c6b920d7223854defdec3409ed11b1387133
+{type:"Success",numbers:"01540153659",message:"You purchase for jinga lala hu is successful. Your order id is: #109366 ",fullTime:"9-2-2024 ,time-23:21"},

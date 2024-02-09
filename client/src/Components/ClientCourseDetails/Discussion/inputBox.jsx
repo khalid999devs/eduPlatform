@@ -2,7 +2,13 @@ import { useState } from "react";
 import { MdClose, MdPhoto, MdSend } from "react-icons/md";
 import { FaFileAlt } from "react-icons/fa";
 import { client } from "../../../axios/discussion";
-function InputBox({ replyId, setReplyId,cid, replyMsg }) {
+function InputBox({
+  replyId,
+  setReplyId,
+  cid,
+  replyMsg,
+  
+}) {
   const [inputValue, setInputValue] = useState("");
   const [rows, setRows] = useState(1);
   const [selectedImage, chooseImgs] = useState([]);
@@ -12,7 +18,7 @@ function InputBox({ replyId, setReplyId,cid, replyMsg }) {
     const lines = event.target.value.split("\n");
     setRows(Math.min(3, lines.length));
   }
- 
+
   function sendChat(e) {
     e.preventDefault();
     const fData = new FormData();
@@ -25,7 +31,7 @@ function InputBox({ replyId, setReplyId,cid, replyMsg }) {
     client.addDiscussion(fData).then(() => {
       setInputValue("");
       setRows(1);
-      chooseImgs([]);
+      chooseImgs([]); 
     });
   }
   function replyChat(e) {
@@ -91,7 +97,10 @@ function InputBox({ replyId, setReplyId,cid, replyMsg }) {
           : null}
       </div>
       {/* msg input part */}
-      <form className="w-full flex items-center gap-2" onSubmit={replyId > -1 ? replyChat : sendChat}>
+      <form
+        className="w-full flex items-center gap-2"
+        onSubmit={replyId > -1 ? replyChat : sendChat}
+      >
         <div
           className={`flex flex-1 items-center gap-3 p-2.5 dark:bg-stone-900/30 bg-stone-800/70 text-white border-gray-300 flex-grow outline-none border-0 ring-[1.5px] ring-blue-500 ${
             rows > 1 ? "rounded-lg" : "rounded-full"
@@ -138,9 +147,12 @@ function InputBox({ replyId, setReplyId,cid, replyMsg }) {
       </form>
       {/* reply box */}
       {replyId >= 0 ? (
-        <div className="w-1/3 absolute left-5 border-l-4 border-l-root_bluish/70 rounded-lg bottom-full backdrop-blur-md z-0 bg-blue-500/50 bg-opacity-50 dark:text-white min-h-[2rem] text-left p-2 text-xs text-opacity-20 overflow-hidden max-h-20 break-words truncate" onClick={()=>{
-          setReplyId(-1);
-        }}>
+        <div
+          className="w-1/3 absolute left-5 border-l-4 border-l-root_bluish/70 rounded-lg bottom-full backdrop-blur-md z-0 bg-blue-500/50 bg-opacity-50 dark:text-white min-h-[2rem] text-left p-2 text-xs text-opacity-20 overflow-hidden max-h-20 break-words truncate"
+          onClick={() => {
+            setReplyId(-1);
+          }}
+        >
           <span className="font-bold">
             {JSON.parse(replyMsg?.user ? replyMsg?.user : "")?.fullName}
           </span>{" "}

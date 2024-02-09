@@ -14,7 +14,7 @@ const ViewQuestion = () => {
       <h1 className="w-fit mx-auto my-10 font-bold uppercase text-xl">
         Answer sheet
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-center w-fit border border-black mx-auto ">
+      <div className="grid grid-cols-1 md:grid-cols-2 place-items-center w-fit border border-black mx-auto ">
         {Object.keys(data).map((e, id) => {
           const ele = data[e];
           let images = [];
@@ -24,7 +24,7 @@ const ViewQuestion = () => {
           return (
             <section
               key={`quesid${ele?.id}`}
-              className="w-full max-w-sm m-5 p-5 rounded-md ring-4 ring-yellow-400"
+              className="w-[400px] max-w-sm m-5 p-5 rounded-md ring-4 ring-yellow-400"
             >
               {/* question title */}
               <p className="w-full break-all">
@@ -60,13 +60,13 @@ const ViewQuestion = () => {
                   let x = ele?.quesOptions?.find(
                     (e) => e?.id == Number(quesOpt)
                   );
-
+                  console.log(quesOpt);
                   return (
                     <span
-                      key={`qapt${quesOpt}`}
+                      key={`qapt${quesOpt}${oid}`}
                       className="border border-sky-600 p-2 mx-2"
                     >
-                      {x?.title}
+                      {quesOpt}
                     </span>
                   );
                 })}
