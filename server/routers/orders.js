@@ -15,6 +15,6 @@ router.get('/allOrders-admin', adminValidate, getAllOrdersAdmin);
 router.get('/orders-client', clientValidate, clientInvoices);
 
 router.post('/pay-init', clientValidate, paymentInit);
-router.post('/validate-payment/:tranId', createOrder);
+// router.post('/validate-payment/:tranId', validatePayment);
 
 module.exports = router;

@@ -31,6 +31,14 @@ const paymentInit = async (req, res) => {
       'Course not found! Please Enter valid informations! '
     );
   }
+  const id = req.user.id;
+  const isOrderExist = await orders.findOne({
+    where: { [Op.and]: [{ courseId: paymentData.courseId }, { clientId: id }] },
+  });
+  if (isOrderExist) {
+    throw new BadRequestError('You have already purchased this course');
+  }
+
   const trans_id = `${req.user.id}${Date.now().toString().slice(-4)}${Math.ceil(
     Math.random() * 100
   )}`;
@@ -39,10 +47,14 @@ const paymentInit = async (req, res) => {
     total_amount: course.estimatedPrice,
     currency: paymentData.currType,
     tran_id: trans_id, // use unique tran_id for each api call
-    success_url: `http://localhost:${process.env.PORT}/api/order/validate-payment/${trans_id}`,
-    fail_url: 'http://localhost:3030/fail',
-    cancel_url: 'http://localhost:3030/cancel',
-    ipn_url: 'http://localhost:3030/ipn',
+    success_url: `${
+      process.env.SERVER_DOMAIN
+    }/api/order/validate-payment/${trans_id}?cDomain=${encodeURIComponent(
+      paymentData.domOrigin
+    )}&courseId=${paymentData.courseId}&clientId=${req.user.id}`,
+    fail_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/failed`,
+    cancel_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/cancel`,
+    ipn_url: `http://localhost:8001/api/order/ipn-listener`,
     shipping_method: 'Courier',
     product_name: 'Computer.',
     product_category: 'Electronic',
@@ -71,6 +83,8 @@ const paymentInit = async (req, res) => {
     .then(async (apiResponse) => {
       // Redirect the user to payment gateway
       let GatewayPageURL = apiResponse.GatewayPageURL;
+
+      // res.redirect(GatewayPageURL);
       res.json({
         succeed: true,
         msg: 'Successfully initialized payment',
@@ -85,6 +99,7 @@ const paymentInit = async (req, res) => {
           ...paymentData,
           trnasactionId: trans_id,
         }),
+        createdDate: Date.now().toString(),
       };
       await orders.create(orderData);
     })
@@ -94,32 +109,80 @@ const paymentInit = async (req, res) => {
     });
 };
 
-const validatePayment = async (req, res) => {
-  const transId = req.params.tranId;
+const isFromSSLCommerz = async (req, state) => {
+  const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
+  console.log('from isFromsslcommez', req.body);
+  if (req.body?.val_id) {
+    try {
+      const resData = await sslcz.validate({ val_id: req.body.val_id });
+      if (state === 'INFO') {
+        return {
+          isValid: resData.status === 'VALID' || resData.status === 'VALIDATED',
+          resData,
+        };
+      }
+      return resData.status === 'VALID' || resData.status === 'VALIDATED';
+    } catch (error) {
+      console.error('Error validating SSLCommerz- with val_id', error);
+      return false;
+    }
+  } else {
+    const transId = req.params.tranId;
+    try {
+      const resData = await sslcz.transactionQueryByTransactionId({
+        tran_id: transId,
+      });
+
+      if (state === 'INFO') {
+        return {
+          validity:
+            resData.element[0].status === 'VALID' ||
+            resData.element[0].status === 'VALIDATED',
+          resData,
+        };
+      }
+      return (
+        resData.element[0].status === 'VALID' ||
+        resData.element[0].status === 'VALIDATED'
+      );
+    } catch (error) {
+      console.error('Error validating SSLCommerz with transactionId', error);
+      return false;
+    }
+  }
 };
 
-const createOrder = async (req, res) => {
-  const trans_Id = req.params.tranId;
-  console.log(trans_Id);
-
-  const { courseId, paymentInfo } = req.body;
-  const id = req.user.id;
-  const isOrderExist = await orders.findOne({
-    where: { [Op.and]: [{ courseId }, { clientId: id }] },
-  });
-  if (isOrderExist) {
-    throw new BadRequestError('You have already purchased this course');
+const ipnListener = async (req, res) => {
+  console.log('From ipn listener', req.body, req.query, req.params);
+  try {
+    // Validate and process IPN data
+    // const isValid = validateIPNData(req.body);
+    // if (isValid) {
+    //   // Update your backend based on the transaction status
+    //   processIPNData(req.body);
+    //   // Send a success response to SSLCommerz
+    //   res.status(200).send('IPN Received and Processed Successfully');
+    // } else {
+    //   // Invalid IPN data, handle accordingly
+    //   console.error('Invalid IPN Data');
+    //   res.status(400).send('Invalid IPN Data');
+    // }
+    res.send(req.body);
+  } catch (error) {
+    console.error('Error processing IPN:', error);
+    res.status(500).send('Internal Server Error');
   }
+};
 
-  const course = await courses.findByPk(courseId);
-  if (!course) {
-    throw new NotFoundError('Course not found');
-  }
-
-  const user = await clients.findByPk(req.user.id);
-  if (!user) {
-    throw new NotFoundError('user could not found!');
-  }
+const createOrder = async (
+  req,
+  res,
+  trans_Id,
+  courseId,
+  paymentInfo,
+  clientId
+) => {
+  const user = await clients.findByPk(clientId);
 
   const timeMil = Date.now();
   const invoiceNo = `#${
@@ -131,14 +194,17 @@ const createOrder = async (req, res) => {
   //   dueInMil =
   //     timeMil + parseInt(course.durationMonth) * 30 * 24 * 60 * 60 * 1000;
   // }
+  const course = await courses.findByPk(courseId);
   const orderData = {
-    courseId: course.id,
     paymentInfo: paymentInfo ? JSON.stringify(paymentInfo) : '{}',
     createdDate: timeMil,
-    clientId: user.id,
     invoiceNo,
   };
-  const order = await orders.create(orderData);
+  await orders.update(
+    { ...orderData },
+    { where: { courseId: courseId, clientId: user.id } }
+  );
+
   await clientcourses.create({ courseId: course.id, clientId: user.id });
   course.purchased = course.purchased + 1;
   await course.save();
@@ -177,13 +243,29 @@ const createOrder = async (req, res) => {
     },
     'order'
   ).catch((err) => {});
+};
 
-  order.paymentInfo = JSON.parse(order.paymentInfo);
-  res.json({
-    succeed: true,
-    msg: 'Successfully purchased the course. Start learning now!',
-    order,
-  });
+const validatePayment = async (req, res) => {
+  const transId = req.params.tranId;
+  const { cDomain, courseId, clientId } = req.query;
+  console.log('from validate payment success', req.body, req.query, req.params);
+
+  const isValid = await isFromSSLCommerz(req, 'INFO');
+
+  if (isValid.validity) {
+    const paymentInfo = {
+      paidStatus: true,
+      ...isValid.resData,
+      trnasactionId: transId,
+    };
+    await createOrder(req, res, transId, courseId, paymentInfo, clientId);
+    res.redirect(
+      `${cDomain}/courses/enroll/payment/${Number(courseId)}/succeed`
+    );
+  } else {
+    await orders.destroy({ where: { courseId, clientId } });
+    res.redirect(`${cDomain}/courses/enroll/payment/3/failed`);
+  }
 };
 
 const getAllOrdersAdmin = async (req, res) => {
@@ -216,4 +298,6 @@ module.exports = {
   clientInvoices,
   paymentInit,
   validatePayment,
+  isFromSSLCommerz,
+  ipnListener,
 };

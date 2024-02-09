@@ -12,6 +12,7 @@ import reqs from '../../assets/requests';
 const EnrollCourse = () => {
   const { user, contextTrigger } = ContextConsumer();
   const { id: courseId } = useParams();
+
   const [reqData, setReqData] = useState({
     name: '',
     address: '',
@@ -48,14 +49,20 @@ const EnrollCourse = () => {
         ...reqData,
         courseId: data.id,
         email: user.email,
+        domOrigin: window.location.origin,
       };
       axios
         .post(reqs.PAYMENT_INIT, payData, { withCredentials: true })
         .then((res) => {
           // console.log(res.data);
+
           if (res.data.succeed) {
+            console.log('fdfd');
             window.location.replace(res.data.url);
           }
+        })
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       alert("please make sure you've filled all the fields.");

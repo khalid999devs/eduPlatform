@@ -6,6 +6,8 @@ const db = require('./models');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { v2: cloudinary } = require('cloudinary');
+const { isFromSSLCommerz, ipnListener } = require('./controllers/orders');
+const { validatePayment } = require('./controllers/orders');
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -26,55 +28,35 @@ const corOptions = {
   optionsSuccessStatus: 200,
   credentials: true,
 };
-app.use(cors(corOptions));
 // Custom CORS configuration for SSLCommerz route
 const customCorsForSSLCommerz = async (req, callback) => {
   const corsOptions = {
-    // By default, follow the global CORS policy
-    origin: corOptions.origin,
-    credentials: corOptions.credentials,
-    optionsSuccessStatus: corOptions.optionsSuccessStatus,
+    ...corOptions,
   };
-
-  // Add a condition specifically for requests related to SSLCommerz
-  if (req.header('Origin') === 'null' && (await isFromSSLCommerz(req))) {
-    // Enable CORS for this request if it's from SSLCommerz
-    corsOptions.origin = true;
+  if (req.header('Origin') === 'null') {
+    if (await isFromSSLCommerz(req)) {
+      corsOptions.origin = true;
+    }
   }
-
-  // Callback expects two parameters: error and options
   callback(null, corsOptions);
 };
+// Custom CORS middleware for SSLCommerz route
 
-// Function to determine if the request is from SSLCommerz
-const isFromSSLCommerz = async (req) => {
-  const tran_id = req.params.id;
-  try {
-    const response = await axios.post(
-      'https://securepay.sslcommerz.com/validator/api/validationserverAPI.php',
-      {
-        // your payload here, including the transaction ID and possibly a secret or signature
-        tran_id: transactionId,
-        // ... other required data
-      }
-    );
-
-    if (
-      response.data.status === 'VALID' ||
-      response.data.status === 'VALIDATED'
-    ) {
-      return true;
-    }
-  } catch (error) {
-    console.error('Error validating transaction with SSLCommerz:', error);
-  }
-  return false;
-};
-
-app.use('/uploads', express.static(__dirname + '/uploads'));
 //middlewares
 app.use(express.json());
 app.use(cookieParser('secret'));
+
+//transaction routes
+app.post('/api/order/ipn-listener', cors(customCorsForSSLCommerz), ipnListener);
+app.post(
+  '/api/order/validate-payment/:tranId',
+  cors(customCorsForSSLCommerz),
+  validatePayment
+);
+
+app.use(cors(corOptions));
+
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 //routers
 const adminRouter = require('./routers/admin');

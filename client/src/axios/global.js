@@ -1,27 +1,28 @@
-import axios from "axios";
+import axios from 'axios';
 
-axios.defaults.baseURL = "http://localhost:8001";
-import { postCourse } from "./postCourse";
+axios.defaults.baseURL = 'http://localhost:8001';
+
+import { postCourse } from './postCourse';
 import {
   adminFCourse,
   clientFCourse,
   fetchCourse,
   fetchCourses,
-} from "./fetchCourses";
-import { deleteCourse } from "./deleteCourse";
-import { updateCourse, deleteClass } from "./updateCourse";
-import { fetchStudents } from "./fetchStudents";
-import { addClass } from "./addRecord";
-import { addExam, addSingleQues } from "./addExam";
-import { addResources } from "./addResource";
+} from './fetchCourses';
+import { deleteCourse } from './deleteCourse';
+import { updateCourse, deleteClass } from './updateCourse';
+import { fetchStudents } from './fetchStudents';
+import { addClass } from './addRecord';
+import { addExam, addSingleQues } from './addExam';
+import { addResources } from './addResource';
 import {
   getExamAdmin,
   getSingleExamAdmin,
   getAllExamClient,
   getQuesClient,
-  getSingleExamClient
-} from "./fetchExams";
-import { deleteExam, deleteQuestion } from "./deleteExam";
+  getSingleExamClient,
+} from './fetchExams';
+import { deleteExam, deleteQuestion } from './deleteExam';
 
 export {
   addClass,
