@@ -33,13 +33,7 @@ const customCorsForSSLCommerz = async (req, callback) => {
   const corsOptions = {
     ...corOptions,
   };
-  console.log(
-    'custom cors',
-    req.header('Origin'),
-    req.body,
-    req.query,
-    req.params
-  );
+
   if (req.header('Origin') === 'null') {
     if (await isFromSSLCommerz(req)) {
       corsOptions.origin = true;

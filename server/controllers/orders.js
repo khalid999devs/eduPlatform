@@ -54,7 +54,7 @@ const paymentInit = async (req, res) => {
     )}&courseId=${paymentData.courseId}&clientId=${req.user.id}`,
     fail_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/failed`,
     cancel_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/cancel`,
-    ipn_url: `https://ca35-103-141-60-242.ngrok-free.app/ipn?`,
+    ipn_url: `https://ca35-103-141-60-242.ngrok-free.app/ipn?courseId=${paymentData.courseId}&clientId=${req.user.id}`,
     shipping_method: 'Courier',
     product_name: 'Computer.',
     product_category: 'Electronic',
@@ -91,17 +91,17 @@ const paymentInit = async (req, res) => {
         url: GatewayPageURL,
       });
 
-      // const orderData = {
-      //   courseId: paymentData.courseId,
-      //   clientId: req.user.id,
-      //   paymentInfo: JSON.stringify({
-      //     paidStatus: false,
-      //     ...paymentData,
-      //     trnasactionId: trans_id,
-      //   }),
-      //   createdDate: Date.now().toString(),
-      // };
-      // await orders.create(orderData);
+      const orderData = {
+        courseId: paymentData.courseId,
+        clientId: req.user.id,
+        paymentInfo: JSON.stringify({
+          paidStatus: false,
+          ...paymentData,
+          trnasactionId: trans_id,
+        }),
+        createdDate: Date.now().toString(),
+      };
+      await orders.create(orderData);
     })
     .catch((err) => {
       console.log(err);
@@ -117,7 +117,8 @@ const isFromSSLCommerz = async (req, state) => {
       const resData = await sslcz.validate({ val_id: req.body.val_id });
       if (state === 'INFO') {
         return {
-          isValid: resData.status === 'VALID' || resData.status === 'VALIDATED',
+          validity:
+            resData.status === 'VALID' || resData.status === 'VALIDATED',
           resData,
         };
       }
@@ -153,22 +154,31 @@ const isFromSSLCommerz = async (req, state) => {
 };
 
 const ipnListener = async (req, res) => {
-  console.log('From ipn listener', req.body);
+  const { courseId, clientId } = req.query;
   try {
-    // Validate and process IPN data
-    // const isValid = validateIPNData(req.body);
-    // if (isValid) {
-    //   // Update your backend based on the transaction status
-    //   processIPNData(req.body);
-    //   // Send a success response to SSLCommerz
-    //   res.status(200).send('IPN Received and Processed Successfully');
-    // } else {
-    //   // Invalid IPN data, handle accordingly
-    //   console.error('Invalid IPN Data');
-    //   res.status(400).send('Invalid IPN Data');
-    // }
-    res.send(req.body);
+    const isValid = await isFromSSLCommerz(req, 'INFO');
+
+    if (isValid.validity) {
+      const paymentInfo = {
+        paidStatus: true,
+        ...isValid.resData,
+        trnasactionId: isValid.resData.tran_id,
+      };
+      await createOrder(
+        req,
+        res,
+        paymentInfo.trnasactionId,
+        courseId,
+        paymentInfo,
+        clientId
+      );
+      res.status(200).json({ msg: 'Successful' });
+    } else {
+      await orders.destroy({ where: { courseId, clientId } });
+      res.status(200).json({ msg: 'failed' });
+    }
   } catch (error) {
+    await orders.destroy({ where: { courseId, clientId } });
     console.error('Error processing IPN:', error);
     res.status(500).send('Internal Server Error');
   }
@@ -248,23 +258,17 @@ const createOrder = async (
 const validatePayment = async (req, res) => {
   const transId = req.params.tranId;
   const { cDomain, courseId, clientId } = req.query;
-  console.log('from validate payment success', req.body, req.query, req.params);
 
-  const isValid = await isFromSSLCommerz(req, 'INFO');
+  const isValid = await isFromSSLCommerz(req);
 
-  if (isValid.validity) {
-    const paymentInfo = {
-      paidStatus: true,
-      ...isValid.resData,
-      trnasactionId: transId,
-    };
-    // await createOrder(req, res, transId, courseId, paymentInfo, clientId);
+  if (isValid) {
     res.redirect(
       `${cDomain}/courses/enroll/payment/${Number(courseId)}/succeed`
     );
   } else {
-    await orders.destroy({ where: { courseId, clientId } });
-    res.redirect(`${cDomain}/courses/enroll/payment/3/failed`);
+    res.redirect(
+      `${cDomain}/courses/enroll/payment/${Number(courseId)}/failed`
+    );
   }
 };
 
