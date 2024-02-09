@@ -44,4 +44,29 @@ const addSingleQues = async (data) => {
     alert(error);
   }
 };
-export { addExam, addSingleQues };
+const addStudentAns = async (data, examId) => {
+  try {
+    axios.post(reqs.ADD_STU_ANS, {
+      fullAns: data,
+      examId: examId,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+const addStdFilesAns = async (data,setmsg) => {
+  try {
+    axios
+      .post(reqs.ADD_STU_FANS, data, {
+        withCredentials: true,
+      })
+      .then((res)=>{
+        setmsg(res.data?.msg);
+        
+      })
+      .catch((err) => console.log(err));
+  } catch (error) {
+    console.log(error);
+  }
+};
+export { addExam, addSingleQues, addStudentAns,addStdFilesAns };

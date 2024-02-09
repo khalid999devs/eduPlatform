@@ -48,6 +48,8 @@ const reqs = {
   //exams
   ADD_EXAM: '/api/exam/add-exam',
   ADD_SINGLE_QUES: '/api/exam/add-single-ques-ans',
+  ADD_STU_ANS: '/api/exam/add-stu-ans',
+  ADD_STU_FANS: '/api/exam/add-stu-files-ans',
   DELETE_EXAM: '/api/exam/delete-exam-info',
   DEL_SINGLE_QUES: '/api/exam/delete-single-ques',
   GET_EXAM_ADMIN: '/api/exam/get-exam-admin',

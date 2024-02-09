@@ -69,7 +69,7 @@ function AdminLogin({ children }) {
         )}
         {!user?.userName ? (
           <form
-            className="create backdrop-blur-lg bg-slate-100/10 w-full max-w-2xl my-20 md:px-20 shadow-lg p-6 pt-0"
+            className="create backdrop-blur-lg bg-slate-100/10 w-full max-w-2xl my-20 md:px-20 shadow-lg p-6 pt-0 h-fit"
             onSubmit={loginAdmin}
           >
             <h1 className=" text-center text-3xl underline font-bold my-10 mx-auto">

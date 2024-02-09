@@ -45,7 +45,7 @@ const Resource = ({ ele, id }) => {
       <p
         className="flex gap-1 font-bold hover:underline cursor-default"
         onClick={() => {
-          setDrop((pre) => !pre);
+          setDrop(pre=> !pre);
         }}
       >
         <HiChevronRight
@@ -111,8 +111,8 @@ const Resource = ({ ele, id }) => {
 const ImageViewer = ({ link, toggle }) => {
   return (
     <div className="bg-gradient-to-tr from-black/90 to-slate-900/90 backdrop-blur-lg fixed top-0 left-0 w-screen h-screen p-40 z-50 flex justify-center items-center">
-      <button type="button" className="text-4xl" onClick={() => toggle("")}>
-        <HiPlusCircle size={2} />
+      <button type="button" className="z-50 absolute top-5 right-5" onClick={() => toggle("")}>
+        <HiPlusCircle fontSize={"2rem"} className="rotate-45 text-red-500 hover:text-rose-400 rounded-full"/>
       </button>
       {link.includes(".pdf") ? (
         <iframe
@@ -124,7 +124,7 @@ const ImageViewer = ({ link, toggle }) => {
         ></iframe>
       ) : (
         <img
-          className="aspect-auto w-auto mx-auto rounded-xl shadow-xl shadow-slate-600/20"
+          className="aspect-auto w-auto min-w-[300px] mx-auto rounded-xl shadow-xl shadow-slate-600/20"
           src={link}
           width={600}
           height={600}

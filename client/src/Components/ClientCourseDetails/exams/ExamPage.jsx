@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAllExamClient } from "../../../axios/global";
 import { Link } from "react-router-dom";
 
@@ -12,7 +12,9 @@ function ExamPage({ cid }) {
   return (
     <div className="min-h-full flex items-center flex-col justify-center relative">
       <div>
-        <h1 className="text-3xl font-bold text-center mt-5 mb-10">Exam Lists</h1>
+        <h1 className="text-3xl font-bold text-center mt-5 mb-10">
+          Exam Lists
+        </h1>
         {data?.map((exam, eid) => {
           return (
             <div
@@ -31,14 +33,36 @@ function ExamPage({ cid }) {
               <p>Exam Starting time: {showTime(exam?.examStartTime)}</p>
               <p>Exam Ending time: {showTime(exam?.examEndTime)}</p>
 
-              <Link to={`exam/${exam?.id}`}>
-                <button
-                  type="button"
-                  className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+              {new Date(exam?.examStartTime).getTime() +
+                86400000 -
+                new Date().getTime() >
+              0 ? (
+                <Link
+                  to={
+                    exam?.category == "quiz"
+                      ? `exam/quiz/${exam?.id}`
+                      : exam?.category == "written"
+                      ? `exam/written/${exam?.id}`
+                      : ""
+                  }
                 >
-                  Take Exam
-                </button>
-              </Link>
+                  <button
+                    type="button"
+                    className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                  >
+                    Take Exam
+                  </button>
+                </Link>
+              ) : (
+                <Link to={`viewQuestion/${exam?.id}`}>
+                  <button
+                    type="button"
+                    className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                  >
+                    View Question
+                  </button>
+                </Link>
+              )}
             </div>
           );
         })}
