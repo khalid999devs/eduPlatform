@@ -1,5 +1,5 @@
 import { BiBookReader } from "react-icons/bi";
-import { FaArrowRight, FaChevronRight } from "react-icons/fa";
+import {  FaChevronRight } from "react-icons/fa";
 import Coursecard from "../Courses/CourseCard";
 import PrimaryButton from "../Buttons/PrimaryButton";
 import { useEffect, useState } from "react";
@@ -31,7 +31,9 @@ const MyCourses = () => {
           })
           .map((course, value) => {
             if (value < 5)
-              return <Coursecard key={value} cardDetails={course} />;
+              return <Coursecard key={value} cardDetails={course} onClick={()=>{
+                navigate(`/courses/${course?.id}`)
+              }}/>;
           })}
       </div>
 

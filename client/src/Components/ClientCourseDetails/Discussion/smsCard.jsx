@@ -1,7 +1,7 @@
 import React from "react";
 import { MdOutlineReply, MdDeleteOutline, MdReply } from "react-icons/md";
-import { reqImgWrapper } from "../../../assets/requests";
-import { client } from "../../../axios/discussion";
+import { reqImgWrapper, reqPdfWrapper } from "../../../assets/requests";
+import { FaFileAlt } from "react-icons/fa";
 const Card = ({
   sender,
   message,
@@ -15,7 +15,6 @@ const Card = ({
     // await client.deleteChat()
     alert("Will be available soon!");
   }
-
   return (
     <div
       className={`w-fit max-w-[75%] p-2 mb-4 rounded-xl relative  ${
@@ -46,15 +45,33 @@ const Card = ({
         {/* image component */}
         <div className="flex flex-wrap">
           {files.map((file, id) => {
+            if (file?.filename?.includes(".pdf"))
+              return (
+                <a
+                  href={reqPdfWrapper(file?.path)}
+                  download={true}
+                  key={`file-${id}-pdf`}
+                  target="_blank"
+                >
+                  <button className="relative flex items-center gap-1 mb-2 w-auto h-fit left-0 top-4 text-white bg-slate-600 whitespace-nowrap p-2 size max-w-sm rounded-md shadow-sm">
+                    <FaFileAlt fill="#fffa" /> {file?.originalname}
+                  </button>
+                </a>
+              );
             return (
-              <img
-                key={`${id}%${id}`}
-                className="aspect-square max-w-xs h-auto w-36 m-1 rounded-md overflow-hidden"
-                width={500}
-                height={300}
-                src={reqImgWrapper(file?.path)}
-                alt={file?.filename}
-              />
+              <a
+                key={`img${id}%${id}`}
+                href={reqImgWrapper(file?.path)}
+                target="_blank"
+              >
+                <img
+                  className="aspect-square max-w-xs h-auto w-36 m-1 rounded-md overflow-hidden"
+                  width={500}
+                  height={300}
+                  src={reqImgWrapper(file?.path)}
+                  alt={file?.filename}
+                />
+              </a>
             );
           })}
         </div>
@@ -82,17 +99,55 @@ const Card = ({
 
       {/* reply box */}
       {reply?.length > 0 ? (
-        <div className="text-left text-xs p-2">
+        <div className="text-left text-xs p-2 min-h-fit">
           <p>Reply:</p>
           {reply.map((rep, id) => {
+            const files = JSON.parse(rep?.filesUrl);
             return (
-              <div className="border border-l-2 text-black bg-gray-200 border-l-rose-500 p-1 rounded-md my-2">
-                <p className="font-semibold">
+              <div
+                className="border border-l-2 text-black bg-gray-200 border-l-rose-500  rounded-md my-0"
+                key={`msgId${id}`}
+              >
+                <p className="font-semibold p-1">
                   From:{" "}
                   {JSON.parse(rep?.user)?.fullName ||
                     JSON.parse(rep?.user)?.userName}
                 </p>
-                <p className="font-light">{rep?.reply}</p>
+                <p className="font-light p-1">{rep?.reply}</p>
+                <div className="w-full grid grid-cols-1">
+                  {files?.length > 0
+                    ? files.map((file, id) => {
+                        if (file?.filename?.includes(".pdf"))
+                          return (
+                            <a
+                              href={reqPdfWrapper(file?.path)}
+                              download={true}
+                              target="_blank"
+                              key={`reply-file-${id}pdf`}
+                            >
+                              <button className="flex items-center w-fit h-fit text-black whitespace-nowrap p-2 m-3 size max-w-sm rounded-md shadow-lg shadow-slate-900">
+                                <FaFileAlt fill="#25fa" /> {file?.originalname}
+                              </button>
+                            </a>
+                          );
+                        return (
+                          <a
+                            key={`${id}%${id}`}
+                            href={reqImgWrapper(file?.path)}
+                            target="_blank"
+                          >
+                            <img
+                              className="aspect-square max-w-xs h-auto w-36 m-1 rounded-md overflow-hidden"
+                              width={500}
+                              height={300}
+                              src={reqImgWrapper(file?.path)}
+                              alt={file?.filename}
+                            />
+                          </a>
+                        );
+                      })
+                    : null}
+                </div>
               </div>
             );
           })}
@@ -100,9 +155,7 @@ const Card = ({
       ) : null}
       {/* show time */}
       <p
-        className={`text-xs mt-3 ${
-          isTeacher === "admin" ? "text-blue-800" : "text-black"
-        } font-semibold`}
+        className={`text-xs mt-3 group-hover:opacity-100 opacity-0 transition-opacity select-none text-slate-600 font-semibold`}
       >
         sent {showTime(sentTime)}
       </p>

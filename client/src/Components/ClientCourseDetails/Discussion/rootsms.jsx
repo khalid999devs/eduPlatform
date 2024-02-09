@@ -11,9 +11,10 @@ const showTime = (time) => {
     return "Yesterday";
   } else return `${time.getDate()}-${time.getMonth()}-${time.getFullYear()}`;
 };
-const RootSms = ({ setReplyId, chats = [], isAdmin }) => {
+const RootSms = ({ setReplyId, chats = [], isAdmin ,children}) => {
   return (
     <div className="flex-1 overflow-y-scroll pr-2">
+      {children}
       {chats.map((msg, id) => {
         let user = chats[0] ? JSON.parse(msg?.user) : "";
         let preTime = new Date(id > 0 ? chats[id - 1].createdAt : 0);

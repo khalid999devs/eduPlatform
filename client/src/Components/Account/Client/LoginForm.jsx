@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Input from "../../Form/Input";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 import AlertBox from "../../Form/AlertBox";
@@ -25,6 +25,9 @@ function LoginForm({ children }) {
   };
   const [loading, setLoading] = useState(false);
 
+  let cid = searchParams.get("courseId");
+
+  // login handler
   function handlesubmit(e) {
     e.preventDefault();
     let emailS = "",
@@ -74,7 +77,9 @@ function LoginForm({ children }) {
             if (res.data.succeed) {
               setPopup({ text: res.data.msg, state: "success" });
               setContextTrigger(!contextTrigger);
-              navigate(settings.redirect || `/dashboard`);
+              if (cid !== null) {
+                navigate(`/courses/${cid}/enroll`);
+              } else navigate( `/dashboard`);
             } else {
               throw new Error(res.data.msg);
             }
