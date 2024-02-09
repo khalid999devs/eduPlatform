@@ -15,7 +15,7 @@ const Card = ({
     // await client.deleteChat()
     alert("Will be available soon!");
   }
-  if (reply.length != 0) console.log(reply);
+
   return (
     <div
       className={`w-fit max-w-[75%] p-2 mb-4 rounded-xl relative  ${
@@ -60,7 +60,7 @@ const Card = ({
         </div>
       </div>
 
-      {/* delete btn */}
+      {/* delete btn & reply */}
 
       <div>
         <button
@@ -79,7 +79,7 @@ const Card = ({
           <MdReply fill="white" enableBackground={"true"} />
         </button>
       </div>
-     
+
       {/* reply box */}
       {reply?.length > 0 ? (
         <div className="text-left text-xs p-2">
@@ -87,15 +87,19 @@ const Card = ({
           {reply.map((rep, id) => {
             return (
               <div className="border border-l-2 text-black bg-gray-200 border-l-rose-500 p-1 rounded-md my-2">
-                <p className="font-semibold">From: {JSON.parse(rep?.user)?.fullName}</p>
+                <p className="font-semibold">
+                  From:{" "}
+                  {JSON.parse(rep?.user)?.fullName ||
+                    JSON.parse(rep?.user)?.userName}
+                </p>
                 <p className="font-light">{rep?.reply}</p>
               </div>
             );
           })}
         </div>
       ) : null}
-       {/* show time */}
-       <p
+      {/* show time */}
+      <p
         className={`text-xs mt-3 ${
           isTeacher === "admin" ? "text-blue-800" : "text-black"
         } font-semibold`}

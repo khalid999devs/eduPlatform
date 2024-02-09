@@ -2,15 +2,17 @@ import { useState } from "react";
 import { MdClose, MdPhoto, MdSend } from "react-icons/md";
 import { FaFileAlt } from "react-icons/fa";
 import { admin } from "../../../axios/discussion";
-function InputBox({ replyId, cid }) {
+function InputBox({ replyId, setReplyId, cid, replyMsg }) {
   const [inputValue, setInputValue] = useState("");
   const [rows, setRows] = useState(1);
   const [selectedImage, chooseImgs] = useState([]);
+
   const handleInputChange = (event) => {
     setInputValue((pre) => event.target.value);
     const lines = event.target.value.split("\n");
     setRows(Math.min(3, lines.length));
   };
+
   function sendChat(e) {
     e.preventDefault();
     const fData = new FormData();
@@ -21,8 +23,33 @@ function InputBox({ replyId, cid }) {
         fData.append("discussions", img);
       });
     // console.log(selectedImage);
-    admin.addDiscussion(fData);
+    admin.addDiscussion(fData).then(() => {
+      setInputValue("");
+      setRows(1);
+      chooseImgs([]);
+    });
   }
+  
+  function replyChat(e) {
+    e.preventDefault();
+    const fData = new FormData();
+    fData.append("reply", inputValue);
+    fData.append("courseId", cid);
+    fData.append("discussionId", replyMsg?.id);
+
+    if (selectedImage.length > 0)
+      selectedImage.forEach((img) => {
+        fData.append("discussions", img);
+      });
+    admin.reply(fData).then(() => {
+      alert("REPLY sent!!");
+      setInputValue("");
+      setRows(1);
+      chooseImgs([]);
+      setReplyId(-1);
+    });
+  }
+
   return (
     <div className="flex flex-col items-start space-x-2 w-full px-5 py-3 text-center relative h-fit mb-4 font-thin tracking-wide text-sm bg-root_bluish/70  rounded-xl ">
       {/* photo viewer */}
@@ -66,7 +93,10 @@ function InputBox({ replyId, cid }) {
           : null}
       </div>
       {/* msg input part */}
-      <form className="w-full flex items-center gap-2" onSubmit={sendChat}>
+      <form
+        className="w-full flex items-center gap-2"
+        onSubmit={replyId > -1 ? replyChat : sendChat}
+      >
         <div
           className={`flex flex-1 items-center gap-3 p-2.5 dark:bg-stone-900/30 bg-stone-800/70 text-white border-gray-300 flex-grow outline-none border-0 ring-[1.5px] ring-blue-500 ${
             rows > 1 ? "rounded-lg" : "rounded-full"
@@ -112,16 +142,20 @@ function InputBox({ replyId, cid }) {
         </button>
       </form>
       {/* reply box */}
-      {/* {replyId && (
-        <div className="w-2/5 absolute left-5 ring-1 ring-stone-500/80 rounded-lg bottom-full backdrop-blur-md z-0 bg-slate-400/20 dark:text-white min-h-[2rem] text-left p-2 text-xs text-opacity-20 overflow-y-hidden max-h-20 break-words">
-          <span className="font-bold">{raw_msg_data[replyId].sender}</span>{" "}
+      {replyId >= 0 ? (
+        <div
+          className="w-1/3 absolute left-5 border-l-4 border-l-root_bluish/70 rounded-lg bottom-full backdrop-blur-md z-0 bg-blue-500/50 bg-opacity-50 dark:text-white min-h-[2rem] text-left p-2 text-xs text-opacity-20 overflow-hidden max-h-20 break-words truncate"
+          onClick={() => {
+            setReplyId(-1);
+          }}
+        >
+          <span className="font-bold">
+            {JSON.parse(replyMsg?.user ? replyMsg?.user : JSON.stringify(""))?.userName}
+          </span>{" "}
           <br />
-          <span className="font-extralight ">
-            {raw_msg_data[replyId].message}
-          </span>
-          <div className="w-full h-1/3 p-1 bg-gradient-to-t from-trans_bluish absolute bottom-0 left-0"></div>
+          <span className="font-extralight ">{replyMsg?.question}</span>
         </div>
-      )} */}
+      ) : null}
     </div>
   );
 }

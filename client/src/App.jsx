@@ -2,8 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Components/Nav/Navbar";
 import FooterMain from "./Components/Footer/FooterMain";
 import { createContext, useContext, useEffect, useState } from "react";
-import "./axios/global";
-import { useFetch } from "./Custom_hooks/useFetch";
+import "./axios/global"; 
 import reqs from "./assets/requests";
 import axios from "axios";
 

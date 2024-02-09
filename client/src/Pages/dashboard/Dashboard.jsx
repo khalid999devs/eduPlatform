@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Nav from "../../Components/ClientDashboard/Nav";
 import Header from "../../Components/ClientDashboard/Header";
 import { getClient } from "../../axios/getClientInfo";
-
+import {} from "react-router-dom"
 const ProfileContext = createContext("");
 
 const Dashboard = () => {
@@ -17,15 +17,14 @@ const Dashboard = () => {
     phone: "",
     clientcourses: [
       {
-        id: 0,
-        courseId: 0,
-        clinetId: 0,
+        id: null,
+        courseId: null,
+        clinetId: null,
       },
     ],
   });
   useEffect(() => {
-    getClient(setUserProfile).then((_) => {});
-    console.log("bhbhb");
+    getClient(setUserProfile);
   }, []);
 
   return (

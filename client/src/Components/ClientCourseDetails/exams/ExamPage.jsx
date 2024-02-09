@@ -33,36 +33,38 @@ function ExamPage({ cid }) {
               <p>Exam Starting time: {showTime(exam?.examStartTime)}</p>
               <p>Exam Ending time: {showTime(exam?.examEndTime)}</p>
 
-              {new Date(exam?.examStartTime).getTime() +
-                86400000 -
-                new Date().getTime() >
+              {new Date(exam?.examStartTime).getTime() <
+              new Date().getTime() >
               0 ? (
-                <Link
-                  to={
-                    exam?.category == "quiz"
-                      ? `exam/quiz/${exam?.id}`
-                      : exam?.category == "written"
-                      ? `exam/written/${exam?.id}`
-                      : ""
-                  }
-                >
-                  <button
-                    type="button"
-                    className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                new Date(exam?.examStartTime).getTime() + 86400000 >
+                new Date().getTime() ? (
+                  <Link
+                    to={
+                      exam?.category == "quiz"
+                        ? `exam/quiz/${exam?.id}`
+                        : exam?.category == "written"
+                        ? `exam/written/${exam?.id}`
+                        : ""
+                    }
                   >
-                    Take Exam
-                  </button>
-                </Link>
-              ) : (
-                <Link to={`viewQuestion/${exam?.id}`}>
-                  <button
-                    type="button"
-                    className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
-                  >
-                    View Question
-                  </button>
-                </Link>
-              )}
+                    <button
+                      type="button"
+                      className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                    >
+                      Take Exam
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to={`viewQuestion/${exam?.id}`}>
+                    <button
+                      type="button"
+                      className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                    >
+                      View Question
+                    </button>
+                  </Link>
+                )
+              ) : null}
             </div>
           );
         })}

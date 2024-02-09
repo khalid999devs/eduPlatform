@@ -4,7 +4,7 @@ import Star from "./Star";
 import { reqImgWrapper } from "../../assets/requests";
 const Coursecard = ({
   cardDetails: { title, description, price, id, ratings, image },
-  onClick,
+  onClick,hasEnrolled
 }) => {
   return (
     <>
@@ -49,7 +49,7 @@ const Coursecard = ({
               to={`/courses/${id}`}
               className="text-black  font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-secondary-main opacity-80 hover:opacity-100 hover:text-black flex justify-center items-center gap-1"
             >
-              <h1>See details</h1>
+              <h1>{hasEnrolled ? "Enter Course" : "See details"}</h1>
               <FaArrowRight className="pl-.5 inline-block" />{" "}
             </Link>
           </div>

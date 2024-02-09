@@ -23,7 +23,6 @@ function InputBox({ replyId, setReplyId,cid, replyMsg }) {
         fData.append("discussions", img);
       });
     client.addDiscussion(fData).then(() => {
-      alert("MSG sent!!");
       setInputValue("");
       setRows(1);
       chooseImgs([]);

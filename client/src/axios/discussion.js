@@ -17,7 +17,7 @@ export const admin = {
   reply: async (data) => {
     try {
       axios
-        .post(reqs.REPLY_DISC_CLIENT, data, {
+        .post(reqs.REPLY_DISC_ADMIN, data, {
           withCredentials: true,
         })
         .then((res) => {

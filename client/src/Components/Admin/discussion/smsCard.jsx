@@ -1,15 +1,15 @@
 import React from "react";
-import { MdOutlineReply, MdDeleteOutline } from "react-icons/md";
+import { MdOutlineReply, MdDeleteOutline, MdReply } from "react-icons/md";
 import { reqImgWrapper } from "../../../assets/requests";
 import { admin } from "../../../axios/discussion";
 const Card = ({
   sender,
   message,
   isTeacher,
-  handleReply,
-  isAdmin,
+  handleReply, 
   files = [],
   sentTime,
+  reply = [],
 }) => {
   function handleDelete() {
     // await admin.deleteChat()
@@ -60,15 +60,42 @@ const Card = ({
         </div>
       </div>
 
-      {/* delete btn */}
-      {isAdmin && isTeacher === "admin" ? (
+      {/* delete btn & reply */}
+      <div>
         <button
-          className="bg-orange-500 rounded-full p-1 text-lg absolute top-1/2 -left-14 -translate-y-1/2 opacity-0 group-hover:opacity-100 delay-300 transition-opacity"
+          className="bg-orange-500 rounded-full p-1 text-lg absolute top-1/2 -left-14 -translate-y-1/2 opacity-0 group-hover:opacity-100 pointer-events-none hidden delay-300 transition-opacity"
           onClick={handleDelete}
         >
           <MdDeleteOutline fill="white" enableBackground={"true"} />
         </button>
+
+        <button
+          className={`bg-slate-500 rounded-full p-1 text-lg absolute top-1/2 ${
+            isTeacher === "admin" ? "-left-14" : "-right-14"
+          } -translate-y-1/2 opacity-0 group-hover:opacity-100 delay-300 transition-opacity`}
+          onClick={handleReply}
+        >
+          <MdReply fill="white" enableBackground={"true"} />
+        </button>
+      </div>
+
+      {/* reply box */}
+      {reply?.length > 0 ? (
+        <div className="text-left text-xs p-2">
+          <p>Reply:</p>
+          {reply.map((rep, id) => {
+            return (
+              <div className="border border-l-2 text-black bg-gray-200 border-l-rose-500 p-1 rounded-md my-2">
+                <p className="font-semibold">
+                  From: {JSON.parse(rep?.user)?.fullName}
+                </p>
+                <p className="font-light">{rep?.reply}</p>
+              </div>
+            );
+          })}
+        </div>
       ) : null}
+
       {/* show time */}
       <p
         className={`text-xs pt-5 ${

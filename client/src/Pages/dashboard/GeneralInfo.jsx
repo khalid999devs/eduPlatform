@@ -1,8 +1,6 @@
-import { BsBookFill } from "react-icons/bs";
 import IconNumCard from "../../Components/ClientDashboard/IconNumCard";
 import { ProfileContextConsumer } from "./Dashboard";
 import { GiGraduateCap } from "react-icons/gi";
-import { MdPayment } from "react-icons/md";
 import CourseProCard from "../../Components/ClientDashboard/CourseProCard";
 
 const GeneralInfo = () => {
@@ -31,13 +29,14 @@ const GeneralInfo = () => {
         <div className="flex flex-col gap-6 w-full">
           {userProfile?.clientcourses?.length > 0 ? (
             userProfile?.clientcourses?.map((course, value) => {
-              return (
-                <CourseProCard
-                  key={value}
-                  img={course.img || "/Images/cardPH.jpg"}
-                  id={course?.courseId}
-                />
-              );
+              if (course?.id !== null)
+                return (
+                  <CourseProCard
+                    key={value}
+                    img={course.img || "/Images/cardPH.jpg"}
+                    id={course?.courseId}
+                  />
+                );
             })
           ) : (
             <p className="text-center text-xl text-slate-800 font-extrabold tracking-wider mt-4 opacity-90">
