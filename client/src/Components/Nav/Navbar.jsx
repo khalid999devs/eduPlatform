@@ -64,7 +64,7 @@ const Navbar = () => {
                       : 'text-md transition-colors text-black hover:text-secondary-dark duration-200'
                   }
                 >
-                  {item.name}
+                  {item?.name}
                 </NavLink>
               );
             })}
@@ -86,7 +86,7 @@ const Navbar = () => {
 
           {/* buttons */}
           <div className={`hidden md:flex flex-row gap-3 items-center`}>
-            {user.username ? (
+            {user?.username ? (
               <Avatar user={user} logout={logout} />
             ) : (
               <>

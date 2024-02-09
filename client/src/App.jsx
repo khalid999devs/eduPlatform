@@ -10,7 +10,7 @@ const Context = createContext("");
 
 function App() {
   const [user, setUser] = useState({
-    id: 0,
+    id: null,
     name: "",
     email: "",
     phone: "",
@@ -53,17 +53,17 @@ function App() {
     setUser((user) => {
       return {
         ...user,
-        id: data.id,
-        name: data.fullName,
-        username: data.userName,
-        userName: data.userName,
-        avatar: data.img,
-        img: data.img,
-        email: data.email,
-        phone: data.phone,
-        address: data.address,
-        role: data.role,
-        enrolledCourses: data.clientcourses,
+        id: data?.id,
+        name: data?.fullName,
+        username: data?.userName,
+        userName: data?.userName,
+        avatar: data?.img,
+        img: data?.img,
+        email: data?.email,
+        phone: data?.phone,
+        address: data?.address,
+        role: data?.role,
+        enrolledCourses: data?.clientcourses,
       };
     });
   };

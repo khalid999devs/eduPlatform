@@ -3,7 +3,7 @@ import { GoDiscussionClosed } from "react-icons/go";
 import { HiOutlineAcademicCap } from "react-icons/hi2";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
 import { PiNotePencil, PiNotebook, PiVideoBold } from "react-icons/pi";
-
+ 
 const CourseInfo = ({
   courseInfo = {
     title: "",
@@ -13,6 +13,7 @@ const CourseInfo = ({
     instruct: {},
   },
 }) => {
+ 
   return (
     <div className="left-side md:w-3/5">
       {/* course title........... */}
