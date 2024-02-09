@@ -54,7 +54,7 @@ const paymentInit = async (req, res) => {
     )}&courseId=${paymentData.courseId}&clientId=${req.user.id}`,
     fail_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/failed`,
     cancel_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/cancel`,
-    ipn_url: `http://localhost:8001/api/order/ipn-listener`,
+    ipn_url: `https://ca35-103-141-60-242.ngrok-free.app/ipn?`,
     shipping_method: 'Courier',
     product_name: 'Computer.',
     product_category: 'Electronic',
@@ -91,17 +91,17 @@ const paymentInit = async (req, res) => {
         url: GatewayPageURL,
       });
 
-      const orderData = {
-        courseId: paymentData.courseId,
-        clientId: req.user.id,
-        paymentInfo: JSON.stringify({
-          paidStatus: false,
-          ...paymentData,
-          trnasactionId: trans_id,
-        }),
-        createdDate: Date.now().toString(),
-      };
-      await orders.create(orderData);
+      // const orderData = {
+      //   courseId: paymentData.courseId,
+      //   clientId: req.user.id,
+      //   paymentInfo: JSON.stringify({
+      //     paidStatus: false,
+      //     ...paymentData,
+      //     trnasactionId: trans_id,
+      //   }),
+      //   createdDate: Date.now().toString(),
+      // };
+      // await orders.create(orderData);
     })
     .catch((err) => {
       console.log(err);
@@ -111,7 +111,7 @@ const paymentInit = async (req, res) => {
 
 const isFromSSLCommerz = async (req, state) => {
   const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
-  console.log('from isFromsslcommez', req.body);
+  // console.log('from isFromsslcommez', req.body);
   if (req.body?.val_id) {
     try {
       const resData = await sslcz.validate({ val_id: req.body.val_id });
@@ -153,7 +153,7 @@ const isFromSSLCommerz = async (req, state) => {
 };
 
 const ipnListener = async (req, res) => {
-  console.log('From ipn listener', req.body, req.query, req.params);
+  console.log('From ipn listener', req.body);
   try {
     // Validate and process IPN data
     // const isValid = validateIPNData(req.body);
@@ -258,7 +258,7 @@ const validatePayment = async (req, res) => {
       ...isValid.resData,
       trnasactionId: transId,
     };
-    await createOrder(req, res, transId, courseId, paymentInfo, clientId);
+    // await createOrder(req, res, transId, courseId, paymentInfo, clientId);
     res.redirect(
       `${cDomain}/courses/enroll/payment/${Number(courseId)}/succeed`
     );

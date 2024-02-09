@@ -33,6 +33,13 @@ const customCorsForSSLCommerz = async (req, callback) => {
   const corsOptions = {
     ...corOptions,
   };
+  console.log(
+    'custom cors',
+    req.header('Origin'),
+    req.body,
+    req.query,
+    req.params
+  );
   if (req.header('Origin') === 'null') {
     if (await isFromSSLCommerz(req)) {
       corsOptions.origin = true;
@@ -44,10 +51,11 @@ const customCorsForSSLCommerz = async (req, callback) => {
 
 //middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('secret'));
 
 //transaction routes
-app.post('/api/order/ipn-listener', cors(customCorsForSSLCommerz), ipnListener);
+app.post('/ipn', cors(customCorsForSSLCommerz), ipnListener);
 app.post(
   '/api/order/validate-payment/:tranId',
   cors(customCorsForSSLCommerz),

@@ -59,9 +59,12 @@ const EnrollCourse = () => {
           if (res.data.succeed) {
             console.log('fdfd');
             window.location.replace(res.data.url);
+          } else {
+            alert(res.data.msg);
           }
         })
         .catch((err) => {
+          alert(err.response?.data?.msg);
           console.log(err);
         });
     } else {
