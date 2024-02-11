@@ -10,7 +10,7 @@ const Home = () => {
     <div className='h-auto py-12'>
       <Hero />
       <InfoCards />
-      <MyCourses />
+      <MyCourses user={user} />
     </div>
   );
 };

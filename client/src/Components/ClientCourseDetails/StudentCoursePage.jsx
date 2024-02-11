@@ -11,7 +11,10 @@ import Notes from './notes/note';
 import { useReducer } from 'react';
 import ChatBox from './Discussion/chat';
 import RecordVideo from './Records/Record';
+import { ContextConsumer } from '../../App';
+
 const StudentCoursePage = ({ courseInfo = {} }) => {
+  const { user } = ContextConsumer();
   const [state, dispatch] = useReducer(reducer, 'details');
   function reducer(state, action) {
     switch (action.type) {
@@ -98,7 +101,15 @@ const StudentCoursePage = ({ courseInfo = {} }) => {
               Schedule: {courseInfo.schedule}
             </h4>
           </div>
-          <div>{<ZoomLink />}</div>
+          <div>
+            {
+              <ZoomLink
+                val={{
+                  link: `live-zoom.${window.location.host}.com/${user.userName}/${courseInfo.id}`,
+                }}
+              />
+            }
+          </div>
           {/* course component section */}
           <div className=''>
             <h1 className='font-bold text-left text-4xl text-blue-900 mb-5'>

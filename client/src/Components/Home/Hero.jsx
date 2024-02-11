@@ -1,7 +1,9 @@
 import { FaChevronDown } from 'react-icons/fa6';
 import PrimaryButton from '../Buttons/PrimaryButton';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <div className='m-auto max-w-6xl px-3 mt-[10px] md:mt-[50px]'>
       <div className='grid md:grid-cols-2 p-3 gap-14 md:gap-6'>
@@ -21,6 +23,9 @@ const Hero = () => {
             icon={<FaChevronDown />}
             classes={'bg-secondary-main w-fit gap-4 text-xl'}
             textClasses={'text-lg'}
+            onClick={() => {
+              navigate('/courses');
+            }}
           />
         </div>
         <div className=' overflow-hidden grid md:place-items-center'>

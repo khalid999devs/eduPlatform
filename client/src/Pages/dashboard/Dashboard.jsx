@@ -1,20 +1,20 @@
-import { useState, createContext, useContext, useEffect } from "react";
-import { Outlet } from "react-router-dom";
-import Nav from "../../Components/ClientDashboard/Nav";
-import Header from "../../Components/ClientDashboard/Header";
-import { getClient } from "../../axios/getClientInfo";
-import {} from "react-router-dom"
-const ProfileContext = createContext("");
+import { useState, createContext, useContext, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import Nav from '../../Components/ClientDashboard/Nav';
+import Header from '../../Components/ClientDashboard/Header';
+import { getClient } from '../../axios/getClientInfo';
+import {} from 'react-router-dom';
+const ProfileContext = createContext('');
 
 const Dashboard = () => {
   const [userProfile, setUserProfile] = useState({
     id: 0,
-    userName: "",
-    fullName: "",
-    email: "",
-    role: "",
-    image: "",
-    phone: "",
+    userName: '',
+    fullName: '',
+    email: '',
+    role: '',
+    image: '',
+    phone: '',
     clientcourses: [
       {
         id: null,
@@ -34,11 +34,11 @@ const Dashboard = () => {
         setUserProfile,
       }}
     >
-      <div className="px-5 m-auto my-10 ">
+      <div className='px-5 m-auto my-10 '>
         <Header />
-        <div className="grid md:grid-cols-[auto,1fr]">
+        <div className='grid md:grid-cols-[auto,1fr]'>
           <Nav />
-          <div className="pt-6 md:pl-6 w-full">
+          <div className='pt-6 md:pl-6 w-full'>
             <Outlet context={userProfile} />
           </div>
         </div>

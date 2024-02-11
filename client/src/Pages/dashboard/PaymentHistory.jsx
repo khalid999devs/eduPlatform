@@ -19,8 +19,8 @@ const PaymentHistory = () => {
   return (
     <div className='flex flex-col gap-5 mb-6 w-full '>
       <h1 className='text-xl font-medium '>Payment History</h1>
-      <div className='max-w-[90vw] overflow-auto'>
-        <table className='min-w-[600px] w-full border'>
+      <div className='max-w-[90vw] overflow-auto opacity-60 relative'>
+        <table className='min-w-[600px] w-full border '>
           <thead className='bg-white border-b'>
             <tr>
               <th
@@ -103,6 +103,10 @@ const PaymentHistory = () => {
             })}
           </tbody>
         </table>
+        {/* alert box */}
+        <div className='ring ring-rose-500 rounded-md p-14 text-center absolute top-1/2 translate-x-1/4 bg-white -translate-y-1/2'>
+          <p className='text-red-500'>Will be available soon</p>
+        </div>
       </div>
     </div>
   );

@@ -116,7 +116,7 @@ const Navbar = () => {
               text={'All Courses'}
               classes={'bg-onPrimary-light'}
             /> */}
-            {user.username && <Avatar user={user} logout={logout} />}
+            {user.userName && <Avatar user={user} logout={logout} />}
             <div className='py-3 '>
               <PrimaryButton
                 icon={<RxHamburgerMenu fontSize={'1.2rem'} />}
