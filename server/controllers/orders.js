@@ -54,7 +54,7 @@ const paymentInit = async (req, res) => {
     )}&courseId=${paymentData.courseId}&clientId=${req.user.id}`,
     fail_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/failed`,
     cancel_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/cancel`,
-    ipn_url: `https://ca35-103-141-60-242.ngrok-free.app/ipn?courseId=${paymentData.courseId}&clientId=${req.user.id}`,
+    ipn_url: `${process.env.SERVER_DOMAIN}/ipn?courseId=${paymentData.courseId}&clientId=${req.user.id}`,
     shipping_method: 'Courier',
     product_name: 'Computer.',
     product_category: 'Electronic',
