@@ -8,6 +8,11 @@ const redisClient = () => {
   }
   throw new Error('Redis Connection Failed');
 };
-const redis = new Redis(redisClient());
+let redis;
+try {
+  redis = new Redis(redisClient());
+} catch (error) {
+  console.log(error);
+}
 
 module.exports = { redis };
