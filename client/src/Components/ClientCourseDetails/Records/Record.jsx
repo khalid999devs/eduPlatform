@@ -1,16 +1,36 @@
 // import ReactPlayer from "react-player/youtube";
-import YouTubePlayer from "../../YTPlayer/YTPlayer";
-function RecordVideo() {
+import { useState } from "react"; 
+import Video from './Video'
+function RecordVideo({ rcdClass }) {
+  const [showVid, setvid] = useState(false);
+  function handleVideo() {
+    setvid((pre) => !pre);
+  }
   return (
     <div className="w-full mx-auto">
       <h2>This is record page</h2>
-      <div className="w-3/4 mx-auto relative">
-        <div className="absolute bg-onPrimary-main/80 text-blue-50 p-5 right-px top-0 select-none pointer-events-auto rounded-bl-xl">
-          Chemgenie
-        </div>
-        <YouTubePlayer
-          videoId={"https://www.youtube.com/watch?v=LXb3EKWsInQ"}
-        />
+      <div>
+        {rcdClass
+          ?.sort((a, b) => {
+            let x = a.createdAt;
+            let y = b.createdAt;
+            if (x > y) return 1;
+            else if (x < y) return -1;
+            else if (x == y) return 0;
+          })
+          ?.map((vid, uid) => {
+            return (
+              <Video
+                key={uid}
+                id={vid.id}
+                sl={uid + 1}
+                length={vid.videoLength}
+                link={vid.videoURL}
+                title={vid.videoTitle}
+                desc={vid.desc}
+              />
+            );
+          })}
       </div>
     </div>
   );

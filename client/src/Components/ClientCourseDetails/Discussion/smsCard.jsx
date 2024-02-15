@@ -48,10 +48,11 @@ const Card = ({
             if (file?.filename?.includes(".pdf"))
               return (
                 <a
+                className="w-fit m-px h-fit"
                   href={reqPdfWrapper(file?.path)}
-                  download={true}
                   key={`file-${id}-pdf`}
                   target="_blank"
+                  download={true}
                 >
                   <button className="relative flex items-center gap-1 mb-2 w-auto h-fit left-0 top-4 text-white bg-slate-600 whitespace-nowrap p-2 size max-w-sm rounded-md shadow-sm">
                     <FaFileAlt fill="#fffa" /> {file?.originalname}
@@ -63,6 +64,7 @@ const Card = ({
                 key={`img${id}%${id}`}
                 href={reqImgWrapper(file?.path)}
                 target="_blank"
+                className="w-fit m-px h-fit"
               >
                 <img
                   className="aspect-square max-w-xs h-auto w-36 m-1 rounded-md overflow-hidden"
@@ -105,7 +107,7 @@ const Card = ({
             const files = JSON.parse(rep?.filesUrl);
             return (
               <div
-                className="border border-l-2 text-black bg-gray-200 border-l-rose-500  rounded-md my-0"
+                className="border border-l-2 text-black bg-gray-200 border-l-rose-500  rounded-md my-1"
                 key={`msgId${id}`}
               >
                 <p className="font-semibold p-1">
@@ -120,6 +122,7 @@ const Card = ({
                         if (file?.filename?.includes(".pdf"))
                           return (
                             <a
+                            className="w-fit m-px h-fit"
                               href={reqPdfWrapper(file?.path)}
                               download={true}
                               target="_blank"
@@ -135,6 +138,7 @@ const Card = ({
                             key={`${id}%${id}`}
                             href={reqImgWrapper(file?.path)}
                             target="_blank"
+                            className="w-fit h-fit m-px"
                           >
                             <img
                               className="aspect-square max-w-xs h-auto w-36 m-1 rounded-md overflow-hidden"

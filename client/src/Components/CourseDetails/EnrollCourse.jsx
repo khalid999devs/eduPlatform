@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { fetchCourse } from '../../axios/fetchCourses';
-import { ContextConsumer } from '../../App';
-import ValuedInput from '../Form/ValuedInput';
-import OptionField from '../Form/OptionField';
-import { currencyOptions } from '../../assets/utils';
-import axios from 'axios';
-import reqs from '../../assets/requests';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchCourse } from "../../axios/fetchCourses";
+import { ContextConsumer } from "../../App";
+import ValuedInput from "../Form/ValuedInput";
+import OptionField from "../Form/OptionField";
+import { currencyOptions } from "../../assets/utils";
+import axios from "axios";
+import reqs from "../../assets/requests";
 
 const EnrollCourse = () => {
   const { user, contextTrigger, setContextTrigger, loading } =
@@ -14,11 +14,11 @@ const EnrollCourse = () => {
   const { id: courseId } = useParams();
   const navigate = useNavigate();
   const [reqData, setReqData] = useState({
-    name: '',
-    address: '',
-    phone: '',
-    postCode: '',
-    currType: 'BDT',
+    name: "",
+    address: "",
+    phone: "",
+    postCode: "",
+    currType: "BDT",
   });
   const [data, setData] = useState({});
 
@@ -40,10 +40,10 @@ const EnrollCourse = () => {
 
   useEffect(() => {
     setReqData({
-      name: user.name || '',
-      address: user.address || '',
-      phone: user.phone || '',
-      postCode: user.address?.split('@')[1] || '',
+      name: user.name || "",
+      address: user.address || "",
+      phone: user.phone || "",
+      postCode: user.address?.split("@")[1] || "",
       currType: currencyOptions[0].value,
     });
   }, [user]);
@@ -90,76 +90,80 @@ const EnrollCourse = () => {
   };
 
   return (
-    <div className='min-h-screen w-full'>
-      <div className='min-w-[400px] mt-16  p-2 m-auto flex items-center justify-center'>
+    <div className="min-h-screen w-full">
+      <div className="min-w-[400px] mt-16  p-2 m-auto flex items-center justify-center">
         <form onSubmit={handleSubmit}>
-          <div className='w-full flex flex-column sm:flex-row gap-12'>
-            <div className='flex flex-col gap-3 items-end justify-start'>
+          <div className="w-full flex flex-column sm:flex-row gap-12">
+            <div className="flex flex-col gap-3 items-end justify-start">
               <ValuedInput
-                label={'Name'}
+                label={"Name"}
                 inputProps={{
                   value: reqData?.name,
                   onChange: handleChange,
-                  name: 'name',
-                  placeholder: 'name',
+                  name: "name",
+                  placeholder: "name",
+                  required: true,
                 }}
               />
               <ValuedInput
-                label={'Address'}
+                label={"Address"}
                 inputProps={{
                   value: reqData?.address,
                   onChange: handleChange,
-                  name: 'address',
-                  placeholder: 'area, district, country',
+                  name: "address",
+                  placeholder: "area, district, country",
+                  required: true,
                 }}
               />
               <ValuedInput
-                label={'Phone'}
+                label={"Phone"}
                 inputProps={{
                   value: reqData?.phone,
                   onChange: handleChange,
-                  name: 'phone',
-                  placeholder: '01XXXXXXXXX',
+                  name: "phone",
+                  placeholder: "01XXXXXXXXX",
+                  required: true,
                 }}
               />
               <ValuedInput
-                label={'Post Code'}
+                label={"Post Code"}
                 inputProps={{
                   value: reqData?.postCode,
                   onChange: handleChange,
-                  name: 'postCode',
-                  placeholder: '3452',
+                  name: "postCode",
+                  placeholder: "3452",
+                  required: true,
                 }}
               />
 
               <OptionField
-                id={'currencySelect'}
-                label={'Currency'}
+                id={"currencySelect"}
+                label={"Currency"}
                 setValue={handleChange}
                 optionsObjs={currencyOptions}
-                name={'currType'}
+                name={"currType"}
               />
             </div>
-            <div className='flex flex-col gap-10 items-center justify-start'>
-              <div className='max-w-[350px] p-3 w-full'>
-                <div className='flex flex-col gap-2 w-full'>
-                  <h1 className='text-2xl font-bold'>
-                    {data.title || 'Course title'}
+            <div className="flex flex-col gap-10 items-center justify-start">
+              <div className="max-w-[350px] p-3 w-full">
+                <div className="flex flex-col gap-2 w-full">
+                  <h1 className="text-2xl font-bold">
+                    {data.title || "Course title"}
                   </h1>
                   <p>
-                    Price: {data.price && reqData.currType}{' '}
-                    {data.price || 'N/A'}
+                    Price: {data.price && reqData.currType}{" "}
+                    {data.price || "N/A"}
                   </p>
                   <p>
-                    Net amount: {data.price && reqData.currType}{' '}
-                    {data.price || 'N/A'}
+                    Net amount: {data.price && reqData.currType}{" "}
+                    {data.price || "N/A"}
                   </p>
                 </div>
 
                 {data.price && (
                   <button
-                    type='Submit'
-                    className='bg-onPrimary-main text-white text-md px-6 py-4 rounded-md mt-6'
+                    type="Submit"
+                    className="bg-onPrimary-main text-white text-md px-6 py-4 rounded-md mt-6"
                   >
                     Pay {reqData.currType} {data.estimatedPrice}
                   </button>

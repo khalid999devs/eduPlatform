@@ -1,6 +1,20 @@
 import Card from "./smsCard";
 
 const showTime = (time) => {
+  const months = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUNE",
+    "JULY",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
   let today = new Date();
   if (
     today.getTime() - time.getTime() <= 86400 * 1000 &&
@@ -9,9 +23,9 @@ const showTime = (time) => {
     return "Today";
   } else if (today.getTime() - time.getTime() < 86400 * 2000) {
     return "Yesterday";
-  } else return `${time.getDate()}-${time.getMonth()}-${time.getFullYear()}`;
+  } else return `${time.getDate()}-${months[time.getMonth()]}-${time.getFullYear()}`;
 };
-const RootSms = ({ setReplyId, chats = [], isAdmin ,children}) => {
+const RootSms = ({ setReplyId, chats = [], isAdmin, children }) => {
   return (
     <div className="flex-1 overflow-y-scroll pr-2">
       {children}

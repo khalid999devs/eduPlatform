@@ -60,7 +60,6 @@ const ViewQuestion = () => {
                   let x = ele?.quesOptions?.find(
                     (e) => e?.id == Number(quesOpt)
                   );
-                  console.log(quesOpt);
                   return (
                     <span
                       key={`qapt${quesOpt}${oid}`}

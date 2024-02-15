@@ -254,8 +254,27 @@ function EachCourse() {
 }
 export const tabSwitcher = () => {
   const tabs = ["info", "record", "exam", "resource"];
-  const [currentTab, setCurTab] = useState(tabs[0]);
+  const localTab = JSON.parse(localStorage.getItem("adminCourseTab"));
+  const [currentTab, setCurTab] = useState(localStorage?.value);
+  const curTime = new Date();
+  useEffect(() => {
+    if (localTab?.expireDate > curTime.getTime())
+      if (localTab?.value?.length > 0) {
+        setCurTab(localTab?.value);
+      } else setCurTab(tabs[0]);
+    else localStorage.removeItem("adminCourseTab");
+  }, [localTab]);
 
+  function handleTab(e) {
+    setCurTab(e);
+    let result = {
+      value: e,
+      expireDate: localTab?.expireDate
+        ? localTab?.expireDate
+        : curTime.getTime() + 86400000,
+    };
+    localStorage.setItem("adminCourseTab", JSON.stringify(result));
+  }
   return {
     currentTab,
     render: (
@@ -271,7 +290,7 @@ export const tabSwitcher = () => {
               disabled={currentTab == tab}
               type="button"
               key={id + tab}
-              onClick={(e) => setCurTab(tab)}
+              onClick={() => handleTab(tab)}
             >
               {tab.toUpperCase()}
             </button>
@@ -466,18 +485,19 @@ const Resource = ({ ele }) => {
           {filesUrl?.length == 0 && (
             <p className="mx-14 text-red-600">No files</p>
           )}
-          {filesUrl?.map((val, uid) => {
-            return (
-              <a
-                key={`${val?.id}${uid}`}
-                className="underline mx-14 w-fit hover:text-rose-600"
-                href={`${reqPdfWrapper(val?.url)}`}
-                target="_blank"
-              >
-                {val?.id}
-              </a>
-            );
-          })}
+          {filesUrl?.length > 0 &&
+            filesUrl?.map((val, uid) => {
+              return (
+                <a
+                  key={`${val?.id}${uid}`}
+                  className="underline mx-14 w-fit hover:text-rose-600"
+                  href={`${reqPdfWrapper(val?.url)}`}
+                  target="_blank"
+                >
+                  {val?.id}
+                </a>
+              );
+            })}
         </>
       )}
       {/* drive links */}

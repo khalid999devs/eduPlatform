@@ -28,7 +28,7 @@ const ExamLink = ({ id, value }) => {
       <span>{id}</span>
       <p className="font-semibold text-xl">{value?.testTitle}</p>
       <a href={value?.link}>
-        <button className="px-4 py-2 w-24 transition-colors bg-green-400 hover:bg-green-500 text-onPrimary-main text-root_bluish font-semibold capitalize rounded-lg">
+        <button className="px-4 py-2 w-24 transition-colors bg-green-400 hover:bg-green-500 text-onPrimary-main font-semibold capitalize rounded-lg">
           Start
         </button>
       </a>

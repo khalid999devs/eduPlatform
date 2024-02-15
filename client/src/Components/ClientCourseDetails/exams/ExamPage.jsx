@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 
 function ExamPage({ cid }) {
   const [data, setdata] = useState([]);
+
   useEffect(() => {
     getAllExamClient(cid, setdata);
   }, []);
-  // set finish time
 
   return (
     <div className="min-h-full flex items-center flex-col justify-center relative">
@@ -16,10 +16,21 @@ function ExamPage({ cid }) {
           Exam Lists
         </h1>
         {data?.map((exam, eid) => {
+          let startTime = new Date(
+            exam?.examStartTime?.includes("-")
+              ? exam?.examStartTime
+              : Number(exam?.examStartTime)
+          );
+          let endTime = new Date(
+            exam?.examEndTime?.includes("-")
+              ? exam?.examEndTime
+              : Number(exam?.examEndTime)
+          );
+          let curTime = new Date();
           return (
             <div
               key={`eid${eid}`}
-              className="bg-yellow-100 relative p-4 rounded-md my-10 hover:bg-yellow-200/80"
+              className="bg-yellow-100 relative p-4 rounded-md my-10 hover:bg-yellow-200/80 transition-colors"
             >
               <p className="font-bold">{exam?.name}</p>
               <p className="font-semibold">
@@ -30,14 +41,11 @@ function ExamPage({ cid }) {
                 Mark: {exam?.totalMarks}
               </span>
 
-              <p>Exam Starting time: {showTime(exam?.examStartTime)}</p>
-              <p>Exam Ending time: {showTime(exam?.examEndTime)}</p>
+              <p>Exam Starting time: {showTime(startTime)}</p>
+              <p>Exam Ending time: {showTime(endTime)}</p>
 
-              {new Date(exam?.examStartTime).getTime() <
-              new Date().getTime() >
-              0 ? (
-                new Date(exam?.examStartTime).getTime() + 86400000 >
-                new Date().getTime() ? (
+              {startTime < curTime.getTime() > 0 ? (
+                endTime > curTime.getTime() ? (
                   <Link
                     to={
                       exam?.category == "quiz"
@@ -74,7 +82,7 @@ function ExamPage({ cid }) {
 }
 
 function showTime(time) {
-  const date = new Date(time);
+  const date = new Date(Number(time));
   return `${addZero(date.getDate())}-${addZero(date.getMonth() + 1)}-${addZero(
     date.getFullYear()
   )} at ${printTime(date.getHours(), date.getMinutes())}`;
@@ -83,8 +91,8 @@ function addZero(e) {
   return e < 10 ? `0${e}` : e;
 }
 function printTime(hh, mm) {
-  return `${addZero(checkHours(hh).time)}:${addZero(mm)}  ${
-    checkHours(hh).format
+  return `${addZero(checkHours(hh)?.time)}:${addZero(mm)}  ${
+    checkHours(hh)?.format
   }`;
 }
 function checkHours(hour) {
@@ -93,19 +101,21 @@ function checkHours(hour) {
       time: 12,
       format: "AM",
     };
-  }
-  if (hour > 0 && hour <= 12) {
+  } else if (hour > 0 && hour <= 12) {
     return {
       time: hour,
       format: hour == 12 ? "PM" : "AM",
     };
-  }
-  if (hour > 12 && hour <= 23) {
+  } else if (hour > 12 && hour <= 23) {
     return {
       time: hour - 12,
       format: "PM",
     };
-  }
+  } else
+    return {
+      time: 0,
+      format: "--",
+    };
 }
 
 export default ExamPage;
