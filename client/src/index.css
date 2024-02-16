@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 html {
@@ -21,7 +21,7 @@ html {
 ::-webkit-scrollbar-thumb {
   width: 100%;
   background-color: #d86d6d;
-  border-radius: 50pt
+  border-radius: 50pt;
 }
 
 /* login form create class*/
@@ -34,7 +34,7 @@ html {
   @apply gap-3 flex items-center mx-auto;
 }
 
-.create>section {
+.create > section {
   @apply mb-4 w-full flex justify-between flex-col items-start md:flex-row;
 }
 
@@ -42,11 +42,11 @@ html {
   @apply text-sm;
 }
 
-.create>section>input {
+.create > section > input {
   @apply border-0 outline-none p-2.5 rounded-md bg-slate-900/40 text-yellow-50;
 }
 
-.create>section>input:focus {
+.create > section > input:focus {
   @apply border-0 outline-none;
 }
 
@@ -60,7 +60,7 @@ html {
 }
 
 .adminInputBox {
-  @apply font-semibold px-1 py-2 ring-2 ring-offset-0 ring-darkText my-1 outline-none border-none focus:ring-blue-700 focus:rounded-md transition-all h-fit
+  @apply font-semibold px-1 py-2 ring-2 ring-offset-0 ring-darkText my-1 outline-none border-none focus:ring-blue-700 focus:rounded-md transition-all h-fit;
 }
 
 form.gallery-form {
@@ -86,7 +86,6 @@ form.gallery-form section {
 
 form.gallery-form section label {
   font-size: 1rem;
-
 }
 
 form.gallery-form section input {
@@ -96,4 +95,39 @@ form.gallery-form section input {
   outline: none;
   border: none;
   background-color: transparent;
+}
+
+/* animate rotation */
+.anime-rot {
+  animation: rot-360 15s linear infinite;
+  transform-origin: center;
+}
+.anime-rot-fast {
+  animation: rot-360-fast 1s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes rot-360-fast {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
+}
+@keyframes rot-360 {
+  0% {
+    transform: rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.5);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: brightness(1);
+  }
 }

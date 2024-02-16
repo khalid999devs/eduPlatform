@@ -48,7 +48,7 @@ const Card = ({
             if (file?.filename?.includes(".pdf"))
               return (
                 <a
-                className="w-fit m-px h-fit"
+                  className="w-fit m-px h-fit"
                   href={reqPdfWrapper(file?.path)}
                   key={`file-${id}-pdf`}
                   target="_blank"
@@ -107,7 +107,7 @@ const Card = ({
             const files = JSON.parse(rep?.filesUrl);
             return (
               <div
-                className="border border-l-2 text-black bg-gray-200 border-l-rose-500  rounded-md my-1"
+                className="border border-l-2 text-black bg-gray-200 hover:bg-gray-300 transition-colors duration-200 ease-in-out border-l-rose-500  rounded-md my-1"
                 key={`msgId${id}`}
               >
                 <p className="font-semibold p-1">
@@ -122,7 +122,7 @@ const Card = ({
                         if (file?.filename?.includes(".pdf"))
                           return (
                             <a
-                            className="w-fit m-px h-fit"
+                              className="w-fit m-px h-fit"
                               href={reqPdfWrapper(file?.path)}
                               download={true}
                               target="_blank"

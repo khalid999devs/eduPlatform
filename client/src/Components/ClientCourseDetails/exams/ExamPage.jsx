@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAllExamClient } from "../../../axios/global";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-function ExamPage({ cid }) {
+function ExamPage() {
   const [data, setdata] = useState([]);
-
+  const { cid } = useParams();
   useEffect(() => {
     getAllExamClient(cid, setdata);
   }, []);

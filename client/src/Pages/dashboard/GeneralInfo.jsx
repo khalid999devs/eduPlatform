@@ -33,7 +33,7 @@ const GeneralInfo = () => {
                 return (
                   <CourseProCard
                     key={value}
-                    img={course.img || "/Images/cardPH.jpg"}
+                    img={course?.img || "/Images/cardPH.jpg"}
                     id={course?.courseId}
                   />
                 );

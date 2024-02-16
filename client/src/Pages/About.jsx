@@ -7,6 +7,21 @@ const About = () => {
   return (
     <div className="px-3 m-auto w-full my-10">
       <h1 className="text-center text-2xl font-semibold">About</h1>
+      <div className="m-5">
+        <p className="border-l-4 border-black/40 pl-4 rounded-l-xl text-blue-400">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A amet
+          blanditiis, veritatis accusamus dolor beatae, illum libero cum id
+          voluptatem temporibus animi! Autem quod iusto placeat quam, iure nobis
+          consectetur!
+        </p>
+        <br />
+        <p className="border-l-4 border-black/40 pl-4 rounded-l-xl text-indigo-700">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A amet
+          blanditiis, veritatis accusamus dolor beatae, illum libero cum id
+          voluptatem temporibus animi! Autem quod iusto placeat quam, iure nobis
+          consectetur!
+        </p>
+      </div>
       <Gallery />
     </div>
   );
@@ -70,7 +85,11 @@ const Gallery = () => {
         />
 
         <div className="fullImg max-w-2xl">
-          <img src={reqImgWrapper(galleryImages[photoIndex]?.bigImage)} alt="" srcset="" />
+          <img
+            src={reqImgWrapper(galleryImages[photoIndex]?.bigImage)}
+            alt=""
+            srcset=""
+          />
         </div>
       </div>
 

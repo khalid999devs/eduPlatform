@@ -18,7 +18,7 @@ const ViewQuestion = () => {
         {Object.keys(data).map((e, id) => {
           const ele = data[e];
           let images = [];
-          if (ele?.images && ele?.ansType =='file') {
+          if (ele?.images && ele?.ansType == "file") {
             images = ele?.images;
           }
           return (
@@ -27,7 +27,7 @@ const ViewQuestion = () => {
               className="w-[400px] max-w-sm m-5 p-5 rounded-md ring-4 ring-yellow-400"
             >
               {/* question title */}
-              <p className="w-full break-all">
+              <p className="w-full break-words">
                 {id + 1}. {ele?.title}{" "}
                 <span className="float-right">{ele?.mark}</span>
               </p>
