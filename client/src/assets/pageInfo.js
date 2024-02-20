@@ -1,8 +1,8 @@
 import { FaFacebook, FaYoutube } from 'react-icons/fa';
 
 export const contacts = {
-  phone: ['01XXXXXXXXX'],
-  emails: ['example01@gmail.com'],
+  phone: ['+8801752905580'],
+  emails: ['afnanbinsiddique@gmail.com'],
   location: 'Motijheel, Dhaka',
   socials: [
     {

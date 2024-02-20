@@ -1,14 +1,14 @@
-import React from 'react';
-import CourseProCard from '../../Components/ClientDashboard/CourseProCard';
-import { ProfileContextConsumer } from './Dashboard';
+import React from "react";
+import CourseProCard from "../../Components/ClientDashboard/CourseProCard";
+import { ProfileContextConsumer } from "./Dashboard";
 
 const EnrolledCourses = () => {
   const { userProfile } = ProfileContextConsumer();
 
   return (
-    <div className='flex flex-col gap-5 mb-6 w-full'>
-      <h1 className='text-xl font-medium '>Enrolled Courses</h1>
-      <div className='flex flex-col gap-6 w-full'>
+    <div className="flex flex-col gap-5 mb-6 w-full">
+      <h1 className="text-xl font-medium ">Enrolled Courses</h1>
+      <div className="flex flex-col gap-6 w-full">
         {/* {userProfile?.clientcourses?.map((course, value) => {
           return (
             <CourseProCard
@@ -27,13 +27,13 @@ const EnrolledCourses = () => {
               return (
                 <CourseProCard
                   key={value}
-                  img={course.img || '/Images/cardPH.jpg'}
+                  img={course?.img || "/Images/cardPH.jpg"}
                   id={course?.courseId}
                 />
               );
           })
         ) : (
-          <p className='text-center text-xl text-slate-800 font-extrabold tracking-wider mt-4 opacity-90'>
+          <p className="text-center text-xl text-slate-800 font-extrabold tracking-wider mt-4 opacity-90">
             Empty
           </p>
         )}

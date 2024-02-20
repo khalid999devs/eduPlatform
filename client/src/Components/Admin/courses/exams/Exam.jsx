@@ -205,7 +205,8 @@ const SelectDropdown = ({
   );
 };
 
-const AddQuestion = ({ eid, category }) => {
+const AddQuestion = ({ eid, category, startTime = 0 }) => {
+  const currentTime = new Date();
   const [data, setData] = useState({ questions: [] });
   const [showQues, toggleQues] = useState(false);
   const [ques, setQues] = useState("");
@@ -228,194 +229,196 @@ const AddQuestion = ({ eid, category }) => {
   useEffect(() => {
     getSingleExamAdmin(setData, eid);
   }, [eid]);
+
   return (
-    <div>
-      <h3 className="bg-sky-400 text-black px-2 py-1 my-2 w-3/5 mx-auto text-center shadow-xl shadow-sky-500/50">
-        Add question
-      </h3>
-      <form
-        className="grid grid-cols-3 gap-1 my-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const form = new FormData();
-          const fData = {
-            title: ques,
-            quesOptions: JSON.stringify(
-              new Array(
-                opt.map((val, vid) => ({
-                  id: vid + 1,
-                  title: val,
-                }))
-              )[0]
-            ),
-            examId: eid,
-            mark: mark,
-            ansType: ansType,
-            answers: JSON.stringify(ans),
-          };
+    <>
+      {startTime > currentTime.getTime() ? (
+        <div>
+          <h3 className="bg-sky-400 text-black px-2 py-1 my-2 w-3/5 mx-auto text-center shadow-xl shadow-sky-500/50">
+            Add question
+          </h3>
+          <form
+            className="grid grid-cols-3 gap-1 place-items-stretch w-full"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = new FormData();
+              const fData = {
+                title: ques,
+                quesOptions: JSON.stringify(
+                  new Array(
+                    opt.map((val, vid) => ({
+                      id: vid + 1,
+                      title: val,
+                    }))
+                  )[0]
+                ),
+                examId: eid,
+                mark: mark,
+                ansType: ansType,
+                answers: JSON.stringify(ans),
+              };
 
-          Object.keys(fData).forEach((key) => {
-            form.append(`${key}`, fData[key]);
-          });
-          for (let i = 0; i < files.length; i++) {
-            form.append("questions", files[i]);
-          }
-          addSingleQues(form).then(() => {
-            setQues("");
-            setAns([]);
-            setOpt([]);
-            setAnsType(category === "quiz" ? ansTypes[0] : ansTypes[1]);
-            setFiles(null);
-            setMark(0);
-          });
-        }}
-      >
-        {/* question title */}
-        <section className="grid border p-2 rounded-md shadow space-y-2">
-          <label htmlFor="ques">Question: </label>
-          <input
-            className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-            id="ques"
-            type="text"
-            name="question"
-            placeholder="Title"
-            required
-            value={ques}
-            onChange={(e) => setQues(e.target.value)}
-          />
-          {/* <p className="text-xs flex flex-wrap break-words m-1">{ques}</p> */}
-        </section>
-        {/* question option */}
-        <section
-          className={`grid border p-2 rounded-md shadow space-y-2 ${
-            category === "written" ? "hidden" : ""
-          }`}
-        >
-          <label htmlFor="opt">Options: </label>
-          <input
-            className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-            type="text"
-            name="options"
-            id="opt"
-            required={ansType === "options"}
-            placeholder="Options"
-            onChange={(e) => setOpt(e.target.value.split(",", 4))}
-          />
-          <p className="text-xs flex flex-wrap break-words">
-            {opt.map((e, i) => {
-              return (
-                <span
-                  key={`${e}${i}`}
-                  className="m-1 p-1 rounded-sm bg-slate-200 text-black"
-                >
-                  {e}
-                </span>
-              );
-            })}
-          </p>
-        </section>
-        {/* question answer */}
-        <section
-          className={`grid border p-2 rounded-md shadow space-y-2 ${
-            category === "written" ? "hidden" : ""
-          }`}
-        >
-          <label htmlFor="ans">
-            Answer:{" "}
-            <span className="text-red-500 text-xs">
-              *make sure answer includes in options
-            </span>{" "}
-          </label>
-          <input
-            className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-            type="text"
-            name="answer"
-            id="ans"
-            placeholder="Answer"
-            required={ansType === "options"}
-            onChange={(e) => setAns(e.target.value.split(",", 4))}
-          />
-          <p className="text-xs flex flex-wrap break-words">
-            {ans.map((e, i) => {
-              return (
-                <span
-                  key={`${e}${i}${i}`}
-                  className="m-1 p-1 rounded-sm bg-slate-200 text-black"
-                >
-                  {e}
-                </span>
-              );
-            })}
-          </p>
-        </section>
-        {/* question mark */}
-        <section className="grid border p-2 rounded-md shadow space-y-2">
-          <label htmlFor="mark">Mark: </label>
-          <input
-            className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-            id="mark"
-            type="number"
-            name="mark"
-            placeholder="Mark"
-            required
-            min={0}
-            value={mark}
-            onChange={(e) => setMark(e.target.value)}
-          />
-          {/* <p className="text-xs flex flex-wrap break-words m-1">{mark}</p> */}
-        </section>
-        {/* question type */}
-        <section className="grid border p-2 rounded-md shadow space-y-2">
-          <label htmlFor="ansType">Answer Type: </label>
+              Object.keys(fData).forEach((key) => {
+                form.append(`${key}`, fData[key]);
+              });
+              for (let i = 0; i < files.length; i++) {
+                form.append("questions", files[i]);
+              }
+              addSingleQues(form).then(() => {
+                window.location.reload();
+              });
+            }}
+          >
+            {/* question title */}
+            <section className="grid border p-2 rounded-md shadow space-y-2">
+              <label htmlFor="ques">Question: </label>
+              <input
+                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
+                id="ques"
+                type="text"
+                name="question"
+                placeholder="Title"
+                required
+                value={ques}
+                onChange={(e) => setQues(e.target.value)}
+              />
+              {/* <p className="text-xs flex flex-wrap break-words m-1">{ques}</p> */}
+            </section>
+            {/* question option */}
+            <section
+              className={`grid border p-2 rounded-md shadow space-y-2 ${
+                category === "written" ? "hidden" : ""
+              }`}
+            >
+              <label htmlFor="opt">Options: </label>
+              <input
+                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
+                type="text"
+                name="options"
+                id="opt"
+                required={ansType === "options"}
+                placeholder="Options"
+                onChange={(e) => setOpt(e.target.value.split(",", 4))}
+              />
+              <p className="text-xs flex flex-wrap break-words">
+                {opt.map((e, i) => {
+                  return (
+                    <span
+                      key={`${e}${i}`}
+                      className="m-1 p-1 rounded-sm bg-slate-200 text-black"
+                    >
+                      {e}
+                    </span>
+                  );
+                })}
+              </p>
+            </section>
+            {/* question answer */}
+            <section
+              className={`grid border p-2 rounded-md shadow space-y-2 ${
+                category === "written" ? "hidden" : ""
+              }`}
+            >
+              <label htmlFor="ans">
+                Answer:{" "}
+                <span className="text-red-500 text-xs">
+                  *make sure answer includes in options
+                </span>{" "}
+              </label>
+              <input
+                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
+                type="text"
+                name="answer"
+                id="ans"
+                placeholder="Answer"
+                required={ansType === "options"}
+                onChange={(e) => setAns(e.target.value.split(",", 4))}
+              />
+              <p className="text-xs flex flex-wrap break-words">
+                {ans.map((e, i) => {
+                  return (
+                    <span
+                      key={`${e}${i}${i}`}
+                      className="m-1 p-1 rounded-sm bg-slate-200 text-black"
+                    >
+                      {e}
+                    </span>
+                  );
+                })}
+              </p>
+            </section>
+            {/* question mark */}
+            <section className="grid border p-2 rounded-md shadow space-y-2">
+              <label htmlFor="mark">Mark: </label>
+              <input
+                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
+                id="mark"
+                type="number"
+                name="mark"
+                placeholder="Mark"
+                required
+                min={0}
+                value={mark}
+                onChange={(e) => setMark(e.target.value)}
+              />
+              {/* <p className="text-xs flex flex-wrap break-words m-1">{mark}</p> */}
+            </section>
+            {/* question type */}
+            <section className="grid border p-2 rounded-md shadow space-y-2">
+              <label htmlFor="ansType">Answer Type: </label>
 
-          <SelectDropdown
-            options={ansTypes}
-            isOpen={isOpen}
-            selectedOption={ansType}
-            setIsOpen={setIsOpen}
-            handleSelectOption={handleSelectOption}
-            disabled={category === "written"}
-          />
-        </section>
-        {/* question photo */}
-        <section
-          className={`grid border p-2 rounded-md shadow space-y-2 ${
-            ansType === ansTypes[ansTypes.length - 1] ? "" : "hidden"
-          }`}
-        >
-          <label htmlFor="files">Images: </label>
-          <input
-            className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-            id="files"
-            type="file"
-            multiple={true}
-            name="imageFiles"
-            required={ansType === "file"}
-            placeholder="Question image"
-            onChange={(e) => setFiles([...e.target.files])}
-          />
-          {/* <p className="text-xs flex flex-wrap break-words m-1">{files}</p> */}
-        </section>
+              <SelectDropdown
+                options={ansTypes}
+                isOpen={isOpen}
+                selectedOption={ansType}
+                setIsOpen={setIsOpen}
+                handleSelectOption={handleSelectOption}
+                disabled={category === "written"}
+              />
+            </section>
+            {/* question photo */}
+            <section
+              className={`grid border p-2 rounded-md shadow space-y-2 ${
+                ansType === ansTypes[ansTypes.length - 1] ? "" : "hidden"
+              }`}
+            >
+              <label htmlFor="files">Images: </label>
+              <input
+                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
+                id="files"
+                type="file"
+                multiple={true}
+                name="imageFiles"
+                required={ansType === "file"}
+                placeholder="Question image"
+                onChange={(e) => setFiles([...e.target.files])}
+              />
+              {/* <p className="text-xs flex flex-wrap break-words m-1">{files}</p> */}
+            </section>
 
-        <button
-          className={
-            "col-span-3 w-1/4 my-4 bg-purple-500 px-2 py-1 rounded-sm text-white hover:bg-purple-600"
-          }
-          type="submit"
-        >
-          Submit
-        </button>
-      </form>
+            <button
+              className={
+                "col-span-3 w-1/4 my-4 bg-purple-500 px-2 py-1 rounded-sm text-white hover:bg-purple-600"
+              }
+              type="submit"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      ) : null}
+      {/* show all question in current exam */}
       <button
         className="bg-rose-500 px-2 py-1 rounded-sm text-white hover:bg-rose-500/70"
         onClick={(e) => toggleQues((pre) => !pre)}
       >
         {showQues ? "Hide" : "Show"} Questions
       </button>
-      {/* show all question in current exam */}
 
       {showQues ? (
-        <div className={`grid grid-cols-2 gap-2 justify-center `}>
+        <div
+          className={`grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-2 justify-center `}
+        >
           {data.questions.length != 0
             ? data.questions.map((quest, id) => {
                 return (
@@ -457,7 +460,7 @@ const AddQuestion = ({ eid, category }) => {
                           >
                             <span>{quest?.quesOptions[iid]?.title}. </span>
                             <img
-                              className="aspect-square border border-black p-1 rounded-md"
+                              className="aspect-square border border-black p-1 rounded-md w-[150px]"
                               width={150}
                               height={150}
                               src={reqImgWrapper(img?.url)}
@@ -497,10 +500,10 @@ const AddQuestion = ({ eid, category }) => {
                   </section>
                 );
               })
-            : null}
+            : <h2 className="text-rose-600 text-left my-10 font-bold text-3xl">No question found</h2>}
         </div>
       ) : null}
-    </div>
+    </>
   );
 };
 
@@ -520,8 +523,16 @@ const ExamLists = () => {
       {data.length != 0 ? (
         <div className="grid grid-cols-1 w-full gap-5 justify-evenly">
           {data.map((ele, id) => {
-            const exst = new Date(ele?.examStartTime);
-            const exet = new Date(ele?.examEndTime);
+            const exst = new Date(
+              ele?.examStartTime?.includes("-")
+                ? ele?.examStartTime
+                : Number(ele?.examStartTime)
+            );
+            const exet = new Date(
+              ele?.examEndTime?.includes("-")
+                ? ele?.examEndTime
+                : Number(ele?.examEndTime)
+            );
             return (
               <div
                 className="mx-5 text-base group hover:ring hover:ring-violet-500 transition p-2 rounded focus:ring focus:ring-violet-500 ring ring-transparent"
@@ -548,7 +559,7 @@ const ExamLists = () => {
                     <MdDelete className="text-xl text-red-600 hover:text-black rounded-full" />
                   </button>
                 </div>
-                <ul className="grid grid-cols-2 justify-between gap-3 items-start my-2">
+                <ul className="grid grid-cols-1 lg:grid-cols-2 justify-between gap-3 items-start my-2">
                   <li className="p-2 text-blue-900 font-bold border border-fuchsia-500">
                     Exam Topic: {ele?.topic}
                   </li>
@@ -582,7 +593,11 @@ const ExamLists = () => {
                     Exam Duration: {duration(exet.getTime(), exst.getTime())}
                   </li>
                 </ul>
-                <AddQuestion eid={ele.id} category={ele?.category} />
+                <AddQuestion
+                  eid={ele.id}
+                  category={ele?.category}
+                  startTime={exst.getTime()}
+                />
               </div>
             );
           })}
@@ -599,8 +614,8 @@ function addZero(e) {
   return e < 10 ? `0${e}` : e;
 }
 function printTime(hh, mm, ss) {
-  return `${addZero(checkHours(hh).time)}:${addZero(mm)}:${addZero(ss)} ${
-    checkHours(hh).format
+  return `${addZero(checkHours(hh)?.time)}:${addZero(mm)}:${addZero(ss)} ${
+    checkHours(hh)?.format
   }`;
 }
 function checkHours(hour) {
@@ -609,25 +624,28 @@ function checkHours(hour) {
       time: 12,
       format: "AM",
     };
-  }
-  if (hour > 0 && hour <= 12) {
+  } else if (hour > 0 && hour <= 12) {
     return {
       time: hour,
       format: hour == 12 ? "PM" : "AM",
     };
-  }
-  if (hour > 12 && hour <= 23) {
+  } else if (hour > 12 && hour <= 23) {
     return {
       time: hour - 12,
       format: "PM",
+    };
+  } else {
+    return {
+      time: 0,
+      format: "--",
     };
   }
 }
 function duration(startTime, endTime) {
   let x = Math.abs(startTime - endTime);
   x /= 1000;
-  return `${addZero(Math.floor(x / 3600))}:${addZero(
+  return `${addZero(Math.floor(x / 3600))}h ${addZero(
     Math.floor((x % 3600) / 60)
-  )}:${addZero(x % 60)}`;
+  )}m ${addZero(Math.floor(x % 60))}s`;
 }
 export default Exam;

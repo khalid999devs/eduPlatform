@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   getQuesClient,
   addStdFilesAns,
   getSingleExamClient,
 } from "../../../axios/global";
 import { reqImgWrapper } from "../../../assets/requests";
+import Timer from './Timer'
 
-import { useParams } from "react-router-dom";
+
+//main component
 const CQExam = () => {
   const [data, setData] = useState([]);
   const { cid, examid } = useParams();
   const [examInfo, setEInfo] = useState({});
+  const [curtime,setcurtime] = useState(new Date())
   useEffect(() => {
     getQuesClient(examid, "question", setData);
     getSingleExamClient(cid, examid, setEInfo);
   }, [examid]);
+  
+  const startTime = new Date(examInfo?.examStartTime);
+  const endTime = new Date(examInfo?.examEndTime);
+  useEffect(()=>{
+    const loop = setInterval(() => {
+      setcurtime(new Date());
+    }, 1000);
+    return ()=> clearInterval(loop)
+  },[])
+
   return (
     <div className="w-3/4 mx-auto my-10 min-h-screen">
-      <ExamInfo eInfo={examInfo} />
+      <ExamInfo data={examInfo} startTime={startTime} endTime={endTime} curtime={curtime} />
       {data?.length > 0
         ? data?.map((quest, id) => {
             return (
@@ -37,15 +51,37 @@ const CQExam = () => {
     </div>
   );
 };
-const ExamInfo = ({ eInfo }) => {
-  if (eInfo?.name)
-    return (
-      <div className="text-left text-root_bluish font-semibold w-max mx-auto rounded-lg ring ring-red-500 ring-offset-4 ring-offset-red-400 px-10 py-5 mb-10">
-        <h1>Exam name: {eInfo?.name}</h1>
-        <h1>Exam Topic: {eInfo?.topic}</h1>
-        <h1>Exam type: {eInfo?.category}</h1>
-      </div>
-    );
+const ExamInfo = ({ data, startTime, endTime,curtime }) => {
+  let examDur = endTime?.getTime() - startTime?.getTime();
+  const durTime = endTime?.getTime() - curtime?.getTime();
+  return (
+    <div className="text-left px-5 py-2 bg-white">
+      
+      <h2>Exam name: {data?.name}</h2>
+      <h2>Exam topic: {data?.topic}</h2>
+      <h2 className="font-semibold">Total Mark: {data?.totalMarks}</h2>
+      <h2>
+        Start Time:{" "}
+        {`${startTime?.getDate()}-${
+          startTime?.getMonth() + 1
+        }-${startTime?.getFullYear()} || ${startTime?.getHours()}:${startTime?.getMinutes()}:${startTime?.getSeconds()}`}{" "}
+        {"(24H)"}
+      </h2>
+      <h2>
+        Finish Time:{" "}
+        {`${endTime?.getDate()}-${
+          endTime?.getMonth() + 1
+        }-${endTime?.getFullYear()} || ${endTime?.getHours()}:${endTime?.getMinutes()}:${endTime?.getSeconds()}`}{" "}
+        {"(24H)"}
+      </h2>
+
+      <h2 className="font-semibold">
+        Total Duration: {duration(examDur).hh}:{duration(examDur).mm}:
+        {duration(examDur).ss}
+      </h2>
+      <Timer durTime={durTime} classes={"p-1 m-5"}/>
+    </div>
+  );
 };
 const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
   const [files, setFiles] = useState([]);
@@ -159,5 +195,19 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
     </div>
   );
 };
+function duration(localDuration) {
+  let x = Math.abs(localDuration > 0 ? localDuration : 0);
 
+  x /= 1000;
+  x = parseInt(x);
+
+  return {
+    hh: addZero(Math.floor(x / 3600)),
+    mm: addZero(Math.floor((x % 3600) / 60)),
+    ss: addZero(x % 60),
+  };
+}
+function addZero(x) {
+  return x < 10 ? `0${x}` : x;
+}
 export default CQExam;

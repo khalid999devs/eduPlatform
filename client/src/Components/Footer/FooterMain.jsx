@@ -1,10 +1,11 @@
 import { companyLinks, quickLinks } from "../../assets/LinkInfo";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconText from "../Typography/IconText";
 import { contacts } from "../../assets/pageInfo";
 import { FaPhone, FaEnvelope, FaLocationDot } from "react-icons/fa6";
-
+import PrimaryButton from "../Buttons/PrimaryButton";
 const FooterMain = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-full p-2 md:p-4 py-14 md:py-10 px-2 md:px-3 mt-16 bg-onPrimary-main text-white">
       <div
@@ -59,6 +60,15 @@ const FooterMain = () => {
             <IconText text={contacts.phone[0]} icon={<FaPhone />} />
             <IconText text={contacts.emails[0]} icon={<FaEnvelope />} />
             <IconText text={contacts.location} icon={<FaLocationDot />} />
+            <PrimaryButton
+              text={"contact us"}
+              classes={
+                "bg-purple-500 w-fit my-4 px-5 py-2 hover:bg-purple-600 hover:text-purple-50 transition-colors"
+              }
+              onClick={() => {
+                navigate("/contact-us");
+              }}
+            />
           </div>
         </div>
 
@@ -100,7 +110,9 @@ const FooterMain = () => {
           })}
         </div>
         <p className="opacity-60 text-xs">
-          &copy; {new Date().getFullYear()} Chemgeni all rights reserved
+          &copy; 2023 -{" "}
+          {new Date().getFullYear() > 2023 && new Date().getFullYear()} Chemgeni
+          all rights reserved
         </p>
       </div>
     </div>

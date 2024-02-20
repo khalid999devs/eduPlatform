@@ -1,42 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 import { MdOutlineClose } from "react-icons/md";
+import { getImageGallery } from "../axios/gallery";
+import { reqImgWrapper } from "../assets/requests";
 const About = () => {
   return (
     <div className="px-3 m-auto w-full my-10">
       <h1 className="text-center text-2xl font-semibold">About</h1>
+      <div className="m-5">
+        <p className="border-l-4 border-black/40 pl-4 rounded-l-xl text-blue-400">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A amet
+          blanditiis, veritatis accusamus dolor beatae, illum libero cum id
+          voluptatem temporibus animi! Autem quod iusto placeat quam, iure nobis
+          consectetur!
+        </p>
+        <br />
+        <p className="border-l-4 border-black/40 pl-4 rounded-l-xl text-indigo-700">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A amet
+          blanditiis, veritatis accusamus dolor beatae, illum libero cum id
+          voluptatem temporibus animi! Autem quod iusto placeat quam, iure nobis
+          consectetur!
+        </p>
+      </div>
       <Gallery />
     </div>
   );
 };
 
 const Gallery = () => {
-  window.global ||= window;
+  window.global |= window;
+  const [galleryImages, setGallery] = useState([{ img: "" }]);
 
-  const galleryImages = [
-    {
-      img: "/Images/bannerPic.jpg",
-    },
-    {
-      img: "/Images/cardPH.jpg",
-    },
-    {
-      img: "/Images/bannerPic.jpg",
-    },
-    {
-      img: "/Images/cardPH.jpg",
-    },
-    {
-      img: "/Images/bannerPic.jpg",
-    },
-    {
-      img: "/Images/cardPH.jpg",
-    },
-    {
-      img: "/Images/bannerPic.jpg",
-    },
-  ];
-
+  useEffect(() => {
+    try {
+      getImageGallery(setGallery);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+  console.table(galleryImages);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [openPhoto, setOpenPhoto] = useState(false);
 
@@ -63,7 +65,7 @@ const Gallery = () => {
   return (
     <>
       <div
-        className={`sliderwrap fixed top-0 bottom-0 left-0 right-0 z-10 bg-black flex items-center justify-center w-full h-full transition-opacity duration-300 ${
+        className={`sliderwrap fixed top-0 bottom-0 left-0 right-0 z-50 bg-black flex items-center justify-center w-full h-full transition-opacity duration-300 ${
           openPhoto
             ? "opacity-100 pointer-events-auto scale-100"
             : "pointer-events-none opacity-0 scale-50"
@@ -83,12 +85,16 @@ const Gallery = () => {
         />
 
         <div className="fullImg max-w-2xl">
-          <img src={galleryImages[photoIndex].img} alt="" srcset="" />
+          <img
+            src={reqImgWrapper(galleryImages[photoIndex]?.bigImage)}
+            alt=""
+            srcset=""
+          />
         </div>
       </div>
 
       <div className="gallerywrap flex flex-wrap gap-3 items-center justify-center max-w-2xl m-auto my-9 ">
-        {galleryImages &&
+        {galleryImages?.length > 0 &&
           galleryImages.map((slide, index) => {
             return (
               <div
@@ -100,7 +106,7 @@ const Gallery = () => {
               >
                 <img
                   className="hover:scale-105 max-w-full transition-all "
-                  src={slide.img}
+                  src={reqImgWrapper(slide?.bigImage)}
                   alt=""
                 />
               </div>

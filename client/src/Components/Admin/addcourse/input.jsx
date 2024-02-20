@@ -55,7 +55,7 @@ function FileInput({ value, change, extraClass }) {
         <ul className="list-none m-4 text-rose-600">
           <li>
             <span className="text-xs block ">
-              *Image size should not exceed 1000 KB
+              *Image size should not exceed 4 MB 
             </span>
           </li>
           <li>

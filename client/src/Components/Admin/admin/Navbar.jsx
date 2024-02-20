@@ -1,23 +1,11 @@
 import { useState } from "react";
-import {
-  TbMessage2,
-  TbLogin2,
-  TbMenu,
-  TbCross,
-  TbPlus,
-  TbLogout2,
-} from "react-icons/tb";
-import { PiImage, PiStudentFill } from "react-icons/pi";
+import { TbLogin2, TbMenu, TbPlus, TbLogout2 } from "react-icons/tb";
+import { PiImage, PiPhoneBold, PiStudentFill } from "react-icons/pi";
 import { HiAcademicCap } from "react-icons/hi";
 import { AdminConsumer } from "../../../Pages/admin/Admin";
 import { Link } from "react-router-dom";
 
 const dashList = [
-  // {
-  //     title: "Chat",
-  //     link: "/chat",
-  //     icon: <TbMessage2 />,
-  // },
   {
     title: "Add Course",
     link: "addcourse",
@@ -37,6 +25,11 @@ const dashList = [
     title: "Gallery",
     link: "gallery",
     icon: <PiImage />,
+  },
+  {
+    title: "Contact",
+    link: "public-contact",
+    icon: <PiPhoneBold />,
   },
   {
     title: "FAQ",

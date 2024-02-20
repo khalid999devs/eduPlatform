@@ -12,6 +12,7 @@ const MCQExam = () => {
   const [exDetails, setExdetails] = useState({});
   const [questions, setques] = useState([]);
   const [stdAns, setAns] = useState([]);
+  const [submition, setSubmition] = useState(false);
   // fetch questions
   useEffect(() => {
     getQuesClient(examid, "question", setques);
@@ -20,22 +21,21 @@ const MCQExam = () => {
 
   const startTime = new Date(exDetails?.examStartTime);
   const endTime = new Date(exDetails?.examEndTime);
-  const lastTime = startTime?.getTime() + 86400000;
+
   const [time, settime] = useState(new Date());
-  const [localDuration, setlocaldur] = useState(
-    Number(localStorage.getItem("duration"))
-  );
+  const [localDuration, setlocaldur] = useState(null);
 
   useEffect(() => {
-    setInterval(() => {
-      settime(new Date());
+    const loop = setInterval(() => {
+      let newTime = new Date();
+      settime(newTime);
     }, 1000);
+    return () => clearInterval(loop);
   }, []);
-
   useEffect(() => {
-    setlocaldur(Number(localStorage.getItem("duration")));
+    if (endTime.getTime() - time.getTime() > 0)
+      setlocaldur(endTime.getTime() - time.getTime());
   }, [time]);
-
   useEffect(() => {
     if (questions.length > 0) {
       setAns(
@@ -45,7 +45,14 @@ const MCQExam = () => {
       );
     }
   }, [questions?.length > 0]);
-  // console.log(stdAns);
+
+  useEffect(() => {
+    if(localDuration !==  null)
+    if (localDuration <= 0) {
+      handleSubmit();
+    }
+  }, [localDuration]);
+  console.log(questions);
   const OptionsMemo = ({ id, ques, stdAns, localDuration }) => {
     return (
       <ul className="my-1">
@@ -63,13 +70,12 @@ const MCQExam = () => {
               onClick={() => {
                 if (
                   fID >= 0 &&
-                  // localDuration >= 0 &&
+                  localDuration > 0 &&
                   stdAns[fID]?.optionsId?.findIndex(
                     (ele) => ele === option?.id
                   ) === -1
                 )
-                  stdAns[fID]?.optionsId?.push(option?.id);
-                console.log(stdAns[fID]?.optionsId?.at(oID) === option?.id);
+                  stdAns[fID]?.optionsId?.push(option?.id); 
               }}
             >
               <span
@@ -96,8 +102,8 @@ const MCQExam = () => {
 
   function handleSubmit(e) {
     e?.preventDefault();
-    if (localDuration <= 0) return;
-    else {
+    setSubmition(true);
+    try {
       addStudentAns(
         {
           courseId: cid,
@@ -106,21 +112,27 @@ const MCQExam = () => {
         },
         examid
       ).then(() => {
-        localStorage.setItem("duration", -1);
+        setSubmition(false);
         window.location.assign("../../");
       });
+    } catch (error) {
+      setSubmition(false);
     }
   }
 
-  if (time >= lastTime) handleSubmit();
 
   return (
     <div className="p-4 rounded w-full my-32 mx-auto">
+      {/* submiting shadow page */}
+      {submition && (
+        <div className="bg-black/40 text-white font-bold text-3xl text-center fixed top-0 left-0 right-0 bottom-0 justify-center items-center">
+          <p className="relative top-1/2 -translate-y-1/2">
+            Exam Time over. Submiting your answers...
+          </p>
+        </div>
+      )}
       {/*it will show remainder timer  */}
-      <Timer
-        lastTime={lastTime}
-        durTime={endTime?.getTime() - startTime?.getTime()}
-      />{" "}
+      <Timer durTime={localDuration} classes={"fixed top-20 right-5"} />{" "}
       <ExamInfo data={exDetails} startTime={startTime} endTime={endTime} />
       <h1 className="text-xl text-center font-bold my-4">MCQ Exam</h1>
       <form onSubmit={handleSubmit}>
@@ -141,7 +153,7 @@ const MCQExam = () => {
             />
           </div>
         ))}
-        {localDuration >= 0 ? (
+        {localDuration > 0 ? (
           <button
             className="bg-onPrimary-main ring ring-slate-500 rounded-sm text-primary-main px-4 py-2 text-base mt-5"
             type="submit"
@@ -159,16 +171,30 @@ const ExamInfo = ({ data, startTime, endTime }) => {
     <div className="text-left px-5 py-2 bg-white">
       <h2>Exam name: {data?.name}</h2>
       <h2>Exam topic: {data?.topic}</h2>
-      <h2>Total Mark: {data?.totalMarks}</h2>
+      <h2 className="font-semibold">Total Mark: {data?.totalMarks}</h2>
       <h2>
+        Start Time:{" "}
+        {`${startTime?.getDate()}-${
+          startTime?.getMonth() + 1
+        }-${startTime?.getFullYear()} || ${startTime?.getHours()}:${startTime?.getMinutes()}:${startTime?.getSeconds()}`}
+      </h2>
+      <h2>
+        Finish Time:{" "}
+        {`${endTime?.getDate()}-${
+          endTime?.getMonth() + 1
+        }-${endTime?.getFullYear()} || ${endTime?.getHours()}:${endTime?.getMinutes()}:${endTime?.getSeconds()}`}
+      </h2>
+
+      <h2 className="font-semibold">
         Total Duration: {duration(examDur).hh}:{duration(examDur).mm}:
         {duration(examDur).ss}
       </h2>
     </div>
   );
 };
+
 function duration(localDuration) {
-  let x = Math.abs(localDuration >= 0 ? localDuration : 0);
+  let x = Math.abs(localDuration > 0 ? localDuration : 0);
 
   x /= 1000;
   x = parseInt(x);
