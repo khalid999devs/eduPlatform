@@ -78,8 +78,6 @@ const reqs = {
 
   //faqs
   FAQ: '/api/faq',
-  ADD_EXAM: '/api/exam/add-exam',
-  GET_EXAM_ADMIN: '/api/exam/get-exam-admin',
 
   //order
   PAYMENT_INIT: '/api/order/pay-init',

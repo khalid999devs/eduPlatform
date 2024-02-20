@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'http://localhost:8001';
-axios.defaults.baseURL = 'https://chem.khalidahammed.com';
+axios.defaults.baseURL = 'http://localhost:8001';
+// axios.defaults.baseURL = 'https://chem.khalidahammed.com';
 
 import { postCourse } from './postCourse';
 import {

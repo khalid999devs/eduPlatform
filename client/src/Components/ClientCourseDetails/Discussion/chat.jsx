@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import InputBox from "./inputBox";
-import RootSms from "./rootsms";
-import { client } from "../../../axios/discussion";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import InputBox from './inputBox';
+import RootSms from './rootsms';
+import { client } from '../../../axios/discussion';
+import { useParams } from 'react-router-dom';
 const fetchChat = (id, setChats) => {
   client.getDiscussion(id, setChats);
 };
@@ -14,17 +14,17 @@ function ChatBox({ isAdmin }) {
   useEffect(() => {
     setInterval(() => {
       fetchChat(cid, setChats);
-      console.warn("calling multiple");
+      // console.warn('calling multiple');
     }, 10000);
   }, []);
   useEffect(() => {
     fetchChat(cid, setChats);
-    console.warn("calling once");
+    // console.warn("calling once");
   }, [cid]);
 
   return (
-    <div className="bg-trans_bluish/0 rounded-md py-1 max-w-6xl  mx-auto h-[65vh] overflow-y-hidden">
-      <div className="px-4 pb-0 flex flex-col h-full w-auto">
+    <div className='bg-trans_bluish/0 rounded-md py-1 max-w-6xl  mx-auto h-[65vh] overflow-y-hidden'>
+      <div className='px-4 pb-0 flex flex-col h-full w-auto'>
         <RootSms
           setReplyId={setReplyId}
           chats={chats.sort((a, b) => {
@@ -37,7 +37,7 @@ function ChatBox({ isAdmin }) {
           isAdmin={isAdmin}
         >
           {chats.length === 0 ? (
-            <h2 className="text-center text-4xl text-gray-500 mt-32 mb-auto pointer-events-none select-none">
+            <h2 className='text-center text-4xl text-gray-500 mt-32 mb-auto pointer-events-none select-none'>
               Send a message to start discussion
             </h2>
           ) : null}
