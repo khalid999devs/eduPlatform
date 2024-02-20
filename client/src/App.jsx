@@ -83,6 +83,7 @@ function App() {
   };
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(reqs.IS_CLIENT_VALID, { withCredentials: true })
       .then((res) => {

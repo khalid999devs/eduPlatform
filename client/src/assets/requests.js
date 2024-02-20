@@ -1,4 +1,5 @@
-const so = 'http://localhost:8001';
+// const so = 'http://localhost:8001';
+const so = 'https://chem.khalidahammed.com';
 
 export const reqImgWrapper = (src) => {
   if (!src) return null;
@@ -71,8 +72,6 @@ const reqs = {
 
   //faqs
   FAQ: '/api/faq',
-  ADD_EXAM: '/api/exam/add-exam',
-  GET_EXAM_ADMIN: '/api/exam/get-exam-admin',
 
   //order
   PAYMENT_INIT: '/api/order/pay-init',
