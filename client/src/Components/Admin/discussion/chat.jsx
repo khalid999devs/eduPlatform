@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import InputBox from "./inputBox";
 import RootSms from "./rootsms";
 import { admin } from "../../../axios/discussion";
@@ -9,6 +9,8 @@ const fetchChat = (id, setChats) => {
 function ChatBox({ courseId, isAdmin }) {
   const [replyId, setReplyId] = useState(-1);
   const [chats, setChats] = useState([]);
+  const scrollRef = useRef(null);
+
   useEffect(() => {
     fetchChat(courseId, setChats);
     setInterval(() => {
@@ -16,7 +18,7 @@ function ChatBox({ courseId, isAdmin }) {
     }, 15000);
   }, [courseId]);
   return (
-    <div className="bg-trans_bluish/0 rounded-md py-1 max-w-6xl  mx-auto h-full overflow-y-hidden">
+    <div className="bg-trans_bluish/0 rounded-md py-1 max-w-6xl  mx-auto h-[85vh] overflow-y-hidden">
       <div className="px-4 pb-0 flex flex-col h-full w-auto">
         <RootSms
           setReplyId={setReplyId}
@@ -28,6 +30,7 @@ function ChatBox({ courseId, isAdmin }) {
             else return 0;
           })}
           isAdmin={isAdmin}
+          ref={scrollRef}
         />
         <InputBox
           replyId={replyId}

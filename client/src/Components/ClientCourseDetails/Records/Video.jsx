@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AiFillYoutube } from "react-icons/ai";
+import { AiFillPlayCircle } from "react-icons/ai";
 import YouTubePlayer from "../../YTPlayer/YTPlayer";
 function Video({ sl, id, title = "", link = "", desc = "" }) {
   const [showVid, setShowVid] = useState(false);
@@ -8,6 +8,7 @@ function Video({ sl, id, title = "", link = "", desc = "" }) {
     setShowVid((pre) => !pre);
   };
   const vidLink = link.slice(17, 17 + 11);
+  console.log(link);
   return (
     <div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center group">
       <p
@@ -20,10 +21,10 @@ function Video({ sl, id, title = "", link = "", desc = "" }) {
       <span
         className="flex items-center justify-center gap-1 hover:ring-red-500 hover:ring transition-all cursor-default"
         target="_blank"
-        title={link}
+        title={title}
         onClick={handleVideo}
       >
-        <AiFillYoutube fill="red" /> youtube
+        <AiFillPlayCircle fill="#2f2f2f" /> Play Now
       </span>
 
       <p className="text-left border m-2 w-auto p-2">
@@ -40,7 +41,7 @@ function Video({ sl, id, title = "", link = "", desc = "" }) {
 
       {showVid && (
         <YouTubePlayer
-          key={vidLink + id}
+          key={`${vidLink}+${id}`}
           id={id}
           videoId={vidLink}
           handleVideo={handleVideo}

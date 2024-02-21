@@ -106,31 +106,8 @@ const router = createBrowserRouter([
         element: <CourseClientdetails />,
         children: [
           {
-            index: true,
-            element: (
-              <Details
-                courseInfo={{
-                  title: "",
-                  desc: "",
-                  schedule: "",
-                  id: 3,
-                }}
-              />
-            ),
-          },
-          {
             path: "/courses/onClientReq/:cid/details",
-
-            element: (
-              <Details
-                courseInfo={{
-                  title: "",
-                  desc: "",
-                  schedule: "",
-                  id: 3,
-                }}
-              />
-            ),
+            element: <Details />,
           },
           {
             path: "/courses/onClientReq/:cid/chat",

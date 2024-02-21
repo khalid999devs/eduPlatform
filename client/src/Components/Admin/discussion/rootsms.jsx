@@ -1,4 +1,6 @@
+import React, { useEffect, useRef, useState } from "react";
 import Card from "./smsCard";
+import { FaHandPointDown } from "react-icons/fa";
 
 const showTime = (time) => {
   const months = [
@@ -26,9 +28,31 @@ const showTime = (time) => {
   } else
     return `${time.getDate()}-${months[time.getMonth()]}-${time.getFullYear()}`;
 };
-const RootSms = ({ setReplyId, chats = [], isAdmin }) => {
+const RootSms = React.forwardRef(({ setReplyId, chats = [], isAdmin }, ref) => {
+  const containerRef = useRef(null);
+  const [willScroll, setWillScroll] = useState(false);
+  const handleScroll = () => {
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  };
+  useEffect(() => {
+    handleScroll();
+  }, [chats?.length > 0]);
+
+  const checkScroll = () => {
+    setWillScroll(
+      containerRef.current?.scrollHeight - containerRef.current?.scrollTop >
+        1000
+    );
+  };
   return (
-    <div className="flex-1 overflow-y-scroll pr-2">
+    <div
+      className="flex-1 overflow-y-scroll pr-2"
+      ref={containerRef}
+      onScroll={checkScroll}
+    >
       {chats.map((msg, id) => {
         let user = chats[0] ? JSON.parse(msg?.user) : "";
         let preTime = new Date(id > 0 ? chats[id - 1].createdAt : 0);
@@ -64,11 +88,23 @@ const RootSms = ({ setReplyId, chats = [], isAdmin }) => {
               isAdmin={isAdmin}
               handleReply={() => setReplyId(id)}
             />
+            <button
+              className={`absolute bg-gray-700 text-white font-bold rounded-full w-10 h-10 left-1/2 -translate-x-1/2 mb-10 ${
+                willScroll
+                  ? "opacity-100 bottom-20"
+                  : "bottom-10 opacity-0 pointer-events-none"
+              } transition-all`}
+              onClick={handleScroll}
+            >
+              <FaHandPointDown className="mx-auto" />
+            </button>
+
+            <div className="scrollDown" ref={ref}></div>
           </div>
         );
       })}
     </div>
   );
-};
+});
 
 export default RootSms;

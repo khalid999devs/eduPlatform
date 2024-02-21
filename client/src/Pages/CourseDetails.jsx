@@ -1,8 +1,8 @@
-import FixedCard from '../Components/CourseDetails/FixedCard';
-import CourseInfo from '../Components/CourseDetails/CourseInfo';
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { fetchCourse } from '../axios/fetchCourses';
+import FixedCard from "../Components/CourseDetails/FixedCard";
+import CourseInfo from "../Components/CourseDetails/CourseInfo";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { fetchCourse } from "../axios/fetchCourses";
 
 const Coursedetails = () => {
   const { id } = useParams();
@@ -10,9 +10,8 @@ const Coursedetails = () => {
   useEffect(() => {
     fetchCourse(id, setData);
   }, []);
-  console.log(data);
   return (
-    <div className='px-3 w-full m-auto my-10 relative'>
+    <div className="px-3 w-full m-auto my-10 relative">
       <FixedCard
         cardDetails={{
           id: data?.id,

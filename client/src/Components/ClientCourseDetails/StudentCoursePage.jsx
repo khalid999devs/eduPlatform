@@ -6,11 +6,12 @@ import {
   AiFillWechat,
 } from "react-icons/ai";
 import { PiNotebook } from "react-icons/pi";
+import { CourseContextConsumer } from "../../Pages/CourseClientDetails";
 
 const StudentCoursePage = () => {
   const [currentTab, setCurTab] = useState(localStorage?.value);
   const navigate = useNavigate();
-
+  const { courseInfo } = CourseContextConsumer();
   function handleTab(e) {
     setCurTab(e);
     navigate(e);
@@ -79,7 +80,7 @@ const StudentCoursePage = () => {
         </ul>
       </nav>
 
-      <Outlet />
+      <Outlet context={courseInfo} />
     </div>
   );
 };

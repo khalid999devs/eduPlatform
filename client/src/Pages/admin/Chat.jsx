@@ -6,7 +6,7 @@ const AdminChat = () => {
   const { isAdmin } = AdminConsumer();
   return (
     <div className="h-full">
-      <ChatBox courseId={id} isAdmin={isAdmin} />;
+      <ChatBox courseId={id} isAdmin={isAdmin} />
     </div>
   );
 };
