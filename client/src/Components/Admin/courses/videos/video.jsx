@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { AiFillYoutube } from "react-icons/ai";
 import { deleteClass } from "../../../../axios/global";
-import YouTubePlayer from "../../../YTPlayer/YTPlayer";
 function Video({ sl, id, title = "", link = "", desc = "" }) {
   const [toggle, setToggle] = useState(false);
-  const [showVid, setShowVid] = useState(false);
   const handleToggle = () => {
     setToggle((pre) => !pre);
   };
-  const handleVideo = () => {
-    setShowVid((pre) => !pre);
-  };
+
   const vidLink = link.slice(17, 17 + 11);
   return (
     <div className="grid grid-cols-3 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center">
@@ -26,7 +22,6 @@ function Video({ sl, id, title = "", link = "", desc = "" }) {
         className="flex items-center justify-center gap-1 hover:ring-red-500 hover:ring transition-all cursor-default"
         target="_blank"
         title={link}
-        onClick={handleVideo}
       >
         <AiFillYoutube fill="red" /> youtube
       </span>
@@ -61,15 +56,6 @@ function Video({ sl, id, title = "", link = "", desc = "" }) {
           Delete
         </button>
       </div>
-      {showVid && (
-        <YouTubePlayer
-          key={vidLink + id}
-          id={id}
-          videoId={vidLink}
-          handleVideo={handleVideo}
-          showVid={showVid}
-        />
-      )}
     </div>
   );
 }

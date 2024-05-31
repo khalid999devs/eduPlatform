@@ -24,7 +24,7 @@ function RecordVideo() {
           ?.map((vid, uid) => {
             return (
               <Video
-                key={`{uid}=${vid?.id}`}
+                key={`{uid}=${vid?.id}${uid}`}
                 id={vid?.id}
                 sl={uid + 1}
                 link={vid?.videoURL}

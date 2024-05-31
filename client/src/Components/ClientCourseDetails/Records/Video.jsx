@@ -1,14 +1,7 @@
-import { useState } from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
-import YouTubePlayer from "../../YTPlayer/YTPlayer";
-function Video({ sl, id, title = "", link = "", desc = "" }) {
-  const [showVid, setShowVid] = useState(false);
-
-  const handleVideo = () => {
-    setShowVid((pre) => !pre);
-  };
-  const vidLink = link.slice(17, 17 + 11);
-  console.log(link);
+import { useNavigate } from "react-router-dom";
+function Video({ sl, title = "", link = "", desc = "" }) {
+  const navigate = useNavigate();
   return (
     <div className="grid grid-cols-4 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center group">
       <p
@@ -22,7 +15,11 @@ function Video({ sl, id, title = "", link = "", desc = "" }) {
         className="flex items-center justify-center gap-1 hover:ring-red-500 hover:ring transition-all cursor-default"
         target="_blank"
         title={title}
-        onClick={handleVideo}
+        onClick={() => {
+          // navigate(link);
+          let vid = link.split("/");
+          navigate(vid[vid.length - 1]);
+        }}
       >
         <AiFillPlayCircle fill="#2f2f2f" /> Play Now
       </span>
@@ -38,16 +35,6 @@ function Video({ sl, id, title = "", link = "", desc = "" }) {
           );
         })}
       </p>
-
-      {showVid && (
-        <YouTubePlayer
-          key={`${vidLink}+${id}`}
-          id={id}
-          videoId={vidLink}
-          handleVideo={handleVideo}
-          showVid={showVid}
-        />
-      )}
     </div>
   );
 }

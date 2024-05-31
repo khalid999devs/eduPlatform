@@ -45,6 +45,7 @@ import RecordVideo from "./Components/ClientCourseDetails/Records/Record.jsx";
 import Details from "./Components/ClientCourseDetails/Details.jsx";
 import ContactPage from "./Pages/ContactPage.jsx";
 import ContactAdmin from "./Pages/admin/Contact.jsx";
+import YTPlayer from "./Components/YTPlayer/YTPlayer.jsx";
 // import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
 // import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
 
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
           {
             path: "/courses/onClientReq/:cid/record",
             element: <RecordVideo />,
+          },
+          {
+            path: "/courses/onClientReq/:cid/record/:videoId",
+            element: <YTPlayer />,
           },
         ],
       },

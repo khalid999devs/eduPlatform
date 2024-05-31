@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import "./style.css";
 import {
   FaForward,
   FaBackward,
   FaPlayCircle,
   FaPauseCircle,
-  FaPlusCircle,
 } from "react-icons/fa";
-const wind = window.document;
 
-const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
+const YTPlayer = () => {
   const playerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [sspeed, setsspeed] = useState(false);
@@ -20,13 +19,12 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
   const [speed, setSpeed] = useState(1);
   const [quality, setQuality] = useState("auto");
   const [qualities, setQualities] = useState([]);
+  const { cid, videoId } = useParams();
 
   const togglePlay = () => {
     setIsPlaying((prev) => !prev);
   };
-  const handleTimeUpdate = (time) => {
-    setCurrentTime(time);
-  };
+
   useEffect(() => {
     // Load the YouTube API script
     const script = document.createElement("script");
@@ -44,7 +42,7 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
       window.removeEventListener("contextmenu", handlecontext);
       window.removeEventListener("keydown", handlecontext);
     };
-  }, [videoId, id]);
+  }, [videoId, cid]);
 
   const initializeYouTubePlayer = () => {
     // Create a new YouTube player
@@ -147,19 +145,13 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
   const controller = useMemo(() => {
     return (
       <div
-        className={`custom-controls hover:opacity-100 group-hover:opacity-100 delay-300 ${
+        className={`custom-controls text-sm hover:opacity-100 group-hover:opacity-100 delay-300 ${
           isPlaying ? "hover:opacity-100 opacity-0" : "opacity-100"
         }`}
         style={{
           zIndex: "1000",
         }}
       >
-        <PPButton
-          Click={togglePlay}
-          isPlaying={isPlaying}
-          pauseVideo={pauseVideo}
-          playVideo={playVideo}
-        />
         <ProgessBar
           currentTime={currentTime}
           duration={duration}
@@ -209,7 +201,7 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
             onClick={showSpeed}
           >
             Speed
-            <ul onClick={showSpeed}>
+            <ul onClick={showSpeed} className="absolute left-4">
               {sspeed &&
                 speeds.map((ele, id) => {
                   return (
@@ -221,13 +213,16 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
                         showSpeed();
                       }}
                     >
-                      {ele}x
+                      {ele} x
                     </li>
                   );
                 })}
             </ul>
           </button>
-          <button style={{ width: "fit-content" }} onClick={showQuality}>
+          <button
+            style={{ width: "fit-content", display: "none" }}
+            onClick={showQuality}
+          >
             Quality
             <ul onClick={showQuality}>
               {squality &&
@@ -247,18 +242,9 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
                 })}
             </ul>
           </button>
-          {/* <button
-            style={{ width: "fit-content" }}
-            onClick={() => {
-              if (wind.fullScreenElement)
-                wind.documentElement.requestFullscreen();
-              else wind.exitFullscreen();
-            }}
-          >
-            {"⏹️"}
-          </button> */}
         </div>
         <p
+          className="text-xs md:text-base"
           style={{
             backgroundColor: "#0872fd",
             padding: "5pt",
@@ -283,11 +269,7 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
   return (
     <div
       className="fixed top-0 left-0 w-screen h-screen bg-black z-50"
-      // hidden={!showVid}
-      id={videoId + id}
-      style={{
-        display: !showVid ? "none" : "",
-      }}
+      id={videoId + cid}
     >
       <div
         className="video-container group"
@@ -367,15 +349,10 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
         <div
           className="customHeader"
           style={{
+            // display: "none",
             zIndex: "1000",
           }}
         >
-          <span
-            className="absolute top-1/2 right-5 -translate-y-1/2 cursor-pointer"
-            onClick={handleVideo}
-          >
-            <FaPlusCircle className="rotate-45" />
-          </span>
           <p>{title}</p>
         </div>
         {controller}
@@ -384,7 +361,7 @@ const YouTubePlayer = ({ videoId, handleVideo, showVid, id }) => {
   );
 };
 
-export default YouTubePlayer;
+export default YTPlayer;
 
 const PPButton = ({ isPlaying, Click, playVideo, pauseVideo }) => {
   return (

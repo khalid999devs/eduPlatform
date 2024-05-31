@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { getMessage, sendReply } from "../../axios/sendContact";
+import { MdClose } from "react-icons/md";
+
 const ContactAdmin = () => {
   const [messages, setmsg] = useState([]);
   const [inboxId, setInbox] = useState(null);
   useEffect(() => {
     getMessage(setmsg);
   }, []);
+
   return (
     <div>
       <h2 className="text-center font-bold text-4xl underline my-10">
@@ -50,12 +53,14 @@ const ContactAdmin = () => {
             </tbody>
           </table>
         </div>
-        <SenderInfo allmsg={messages} msgId={inboxId} />
+        {inboxId?.length === 0 ? null : (
+          <SenderInfo allmsg={messages} msgId={inboxId} setClose={setInbox} />
+        )}
       </div>
     </div>
   );
 };
-const SenderInfo = ({ msgId, allmsg }) => {
+const SenderInfo = ({ msgId, allmsg, setClose }) => {
   const data = allmsg?.find((ele) => ele?.id === msgId);
   const [msg, setMsg] = useState({ text: "", subject: "" });
   const [res, setResponse] = useState("");
@@ -76,7 +81,13 @@ const SenderInfo = ({ msgId, allmsg }) => {
   }, [msgId]);
   if (msgId === null) return;
   return (
-    <section className="p-5 ring rounded-lg m-5 flex-1 text-base bg-white">
+    <section className="relative p-5 ring rounded-lg m-5 flex-1 text-base bg-white">
+      <MdClose
+        className="bg-slate-200 shadow-sm rounded-full absolute right-5 top-5 hover:bg-red-400 hover:text-white cursor-pointer"
+        enableBackground={"true"}
+        onClick={() => setClose("")}
+      />
+
       <p>Sender Info:</p>
       <ul className="my-5 grid grid-cols-1 gap-2 -space-y-1 text-sm">
         <li className="font-semibold">Name: {data?.name}</li>
