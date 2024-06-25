@@ -56,3 +56,4 @@
 {succeed:true,fullTime:"16-2-2024 ,time-20:58",mode:"custom",email:"turya.biswas@gmail.com"},
 {succeed:true,fullTime:"16-2-2024 ,time-20:58",mode:"custom",email:"turya.biswas@gmail.com"},
 {succeed:true,fullTime:"16-2-2024 ,time-21:1",mode:"custom",email:"turya.biswas@gmail.com"},
+{succeed:true,fullTime:"18-5-2024 ,time-2:0",mode:"resetPass",email:"bdencrkw@gmail.com"},

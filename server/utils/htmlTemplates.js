@@ -20,7 +20,8 @@ const htmlCreator = (mode, data) => {
     const { client, info } = data;
     subject = `Course purchase successful!`;
     body = `
-    <p>Dear ${client.fullName}, your purchase for course: ${info.courseName} is successful</p>
+    <p>Dear ${client.fullName}, your purchase for course: ${info.courseName} is successful.</p><br/>
+    <p>Your invoice no. <strong>${info.paymentInfo.invoiceNo}</strong><p>
     `;
   } else if (mode === 'questionReply') {
     (subject = `Someone replied to your question or discussion!`),

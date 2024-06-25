@@ -29,8 +29,12 @@ const ValuedInput = ({ inputProps, label, alert, type, show, onShowClick }) => {
 
       {alert?.msg && (
         <p
-          className={`text-${
-            alert.state === 'error' ? 'red-700' : 'orange-600'
+          className={`${
+            alert.state === 'error'
+              ? 'text-red-700'
+              : alert.state === 'normal'
+              ? 'text-onPrimary-main opacity-60'
+              : 'text-orange-600'
           } text-xs ml-1 -mt-1.5`}
         >
           {alert.msg}

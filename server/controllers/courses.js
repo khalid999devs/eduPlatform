@@ -302,7 +302,7 @@ const deleteRecordedClass = async (req, res) => {
 };
 
 const addResource = async (req, res) => {
-  const data = req.body;
+  let data = req.body;
   const courseId = req.params.id;
 
   if (req.files?.length > 0) {

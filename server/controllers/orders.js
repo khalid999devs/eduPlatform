@@ -18,10 +18,10 @@ const deleteFile = require('../utils/deleteFile');
 const { Op } = require('sequelize');
 const sendSMS = require('../utils/sendSMS');
 
-const SSLCommerzPayment = require('sslcommerz-lts');
-const store_id = process.env.SSLCMZ_STORE_ID;
-const store_passwd = process.env.SSLCMZ_STORE_PASS;
-const is_live = false; //true for live, false for sandbox
+// const SSLCommerzPayment = require('sslcommerz-lts');
+// const store_id = process.env.SSLCMZ_STORE_ID;
+// const store_passwd = process.env.SSLCMZ_STORE_PASS;
+// const is_live = false; //true for live, false for sandbox
 
 const paymentInit = async (req, res) => {
   const paymentData = req.body;
@@ -38,75 +38,92 @@ const paymentInit = async (req, res) => {
   if (isOrderExist) {
     throw new BadRequestError('You have already purchased this course');
   }
-
-  const trans_id = `${req.user.id}${Date.now().toString().slice(-4)}${Math.ceil(
-    Math.random() * 100
-  )}`;
-
-  const data = {
-    total_amount: course.estimatedPrice,
-    currency: paymentData.currType,
-    tran_id: trans_id, // use unique tran_id for each api call
-    success_url: `${
-      process.env.SERVER_DOMAIN
-    }/api/order/validate-payment/${trans_id}?cDomain=${encodeURIComponent(
-      paymentData.domOrigin
-    )}&courseId=${paymentData.courseId}&clientId=${req.user.id}`,
-    fail_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/failed`,
-    cancel_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/cancel`,
-    ipn_url: `${process.env.SERVER_DOMAIN}/ipn?courseId=${paymentData.courseId}&clientId=${req.user.id}`,
-    shipping_method: 'Courier',
-    product_name: 'Computer.',
-    product_category: 'Electronic',
-    product_profile: 'general',
-    cus_name: paymentData.name,
-    cus_email: 'customer@example.com',
-    cus_add1: paymentData.address,
-    cus_add2: 'Dhaka',
-    cus_city: 'Dhaka',
-    cus_state: 'Dhaka',
-    cus_postcode: paymentData.postCode,
-    cus_country: 'Bangladesh',
-    cus_phone: paymentData.phone,
-    cus_fax: '01711111111',
-    ship_name: 'Customer Name',
-    ship_add1: 'Dhaka',
-    ship_add2: 'Dhaka',
-    ship_city: 'Dhaka',
-    ship_state: 'Dhaka',
-    ship_postcode: 1000,
-    ship_country: 'Bangladesh',
+  const orderData = {
+    courseId: paymentData.courseId,
+    clientId: req.user.id,
+    paymentInfo: JSON.stringify({
+      ...paymentData,
+      courseTitle: course.title,
+      userInfo: req.user,
+    }),
+    createdDate: Date.now().toString(),
   };
-  const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
-  sslcz
-    .init(data)
-    .then(async (apiResponse) => {
-      // Redirect the user to payment gateway
-      let GatewayPageURL = apiResponse.GatewayPageURL;
+  await orders.create(orderData);
 
-      // res.redirect(GatewayPageURL);
-      res.json({
-        succeed: true,
-        msg: 'Successfully initialized payment',
-        url: GatewayPageURL,
-      });
+  res.json({
+    succeed: true,
+    msg: 'Successfully submitted your info. Please wait for the verification by admin.',
+  });
 
-      const orderData = {
-        courseId: paymentData.courseId,
-        clientId: req.user.id,
-        paymentInfo: JSON.stringify({
-          paidStatus: false,
-          ...paymentData,
-          trnasactionId: trans_id,
-        }),
-        createdDate: Date.now().toString(),
-      };
-      await orders.create(orderData);
-    })
-    .catch((err) => {
-      console.log(err);
-      throw new CustomAPIError(err.message);
-    });
+  // const trans_id = `${req.user.id}${Date.now().toString().slice(-4)}${Math.ceil(
+  //   Math.random() * 100
+  // )}`;
+
+  // const data = {
+  //   total_amount: course.estimatedPrice,
+  //   currency: paymentData.currType,
+  //   tran_id: trans_id, // use unique tran_id for each api call
+  //   success_url: `${
+  //     process.env.SERVER_DOMAIN
+  //   }/api/order/validate-payment/${trans_id}?cDomain=${encodeURIComponent(
+  //     paymentData.domOrigin
+  //   )}&courseId=${paymentData.courseId}&clientId=${req.user.id}`,
+  //   fail_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/failed`,
+  //   cancel_url: `${paymentData.domOrigin}/courses/enroll/payment/${paymentData.courseId}/cancel`,
+  //   ipn_url: `${process.env.SERVER_DOMAIN}/ipn?courseId=${paymentData.courseId}&clientId=${req.user.id}`,
+  //   shipping_method: 'Courier',
+  //   product_name: 'Computer.',
+  //   product_category: 'Electronic',
+  //   product_profile: 'general',
+  //   cus_name: paymentData.name,
+  //   cus_email: 'customer@example.com',
+  //   cus_add1: paymentData.address,
+  //   cus_add2: 'Dhaka',
+  //   cus_city: 'Dhaka',
+  //   cus_state: 'Dhaka',
+  //   cus_postcode: paymentData.postCode,
+  //   cus_country: 'Bangladesh',
+  //   cus_phone: paymentData.phone,
+  //   cus_fax: '01711111111',
+  //   ship_name: 'Customer Name',
+  //   ship_add1: 'Dhaka',
+  //   ship_add2: 'Dhaka',
+  //   ship_city: 'Dhaka',
+  //   ship_state: 'Dhaka',
+  //   ship_postcode: 1000,
+  //   ship_country: 'Bangladesh',
+  // };
+
+  // const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
+  // sslcz
+  //   .init(data)
+  //   .then(async (apiResponse) => {
+  //     // Redirect the user to payment gateway
+  //     let GatewayPageURL = apiResponse.GatewayPageURL;
+
+  //     // res.redirect(GatewayPageURL);
+  //     res.json({
+  //       succeed: true,
+  //       msg: 'Successfully initialized payment',
+  //       url: GatewayPageURL,
+  //     });
+
+  //     const orderData = {
+  //       courseId: paymentData.courseId,
+  //       clientId: req.user.id,
+  //       paymentInfo: JSON.stringify({
+  //         paidStatus: false,
+  //         ...paymentData,
+  //         trnasactionId: trans_id,
+  //       }),
+  //       createdDate: Date.now().toString(),
+  //     };
+  //     await orders.create(orderData);
+  //   })
+  //   .catch((err) => {
+  //     // console.log(err);
+  //     throw new CustomAPIError(err.message);
+  //   });
 };
 
 const isFromSSLCommerz = async (req, state) => {
@@ -193,6 +210,7 @@ const createOrder = async (
   clientId
 ) => {
   const user = await clients.findByPk(clientId);
+  if (!user) throw new UnauthenticatedError('client Id is not valid!');
 
   const timeMil = Date.now();
   const invoiceNo = `#${
@@ -239,20 +257,22 @@ const createOrder = async (
       });
   }
 
-  mailer(
-    {
-      client: {
-        fullName: user.fullName,
-        email: user.email,
+  if (user.email) {
+    mailer(
+      {
+        client: {
+          fullName: user.fullName,
+          email: user.email,
+        },
+        info: {
+          invoiceNo,
+          courseName: course.title,
+          paymentInfo: paymentInfo,
+        },
       },
-      info: {
-        invoiceNo,
-        courseName: course.title,
-        paymentInfo: paymentInfo,
-      },
-    },
-    'order'
-  ).catch((err) => {});
+      'order'
+    ).catch((err) => {});
+  }
 };
 
 const validatePayment = async (req, res) => {
@@ -272,8 +292,102 @@ const validatePayment = async (req, res) => {
   }
 };
 
-const getAllOrdersAdmin = async (req, res) => {
-  const result = await orders.findAll({});
+//for admin
+const getAllPendingOrders = async (req, res) => {
+  let result = await orders.findAll({ where: { paidStatus: false } });
+  result = result.map((item) => {
+    item.dataValues.paymentInfo = JSON.parse(item.dataValues.paymentInfo);
+    return item;
+  });
+  res.json({
+    succeed: true,
+    msg: 'Successful',
+    result,
+  });
+};
+
+//for admin
+const confirmSingleOrder = async (req, res) => {
+  const { clientId, courseId } = req.body;
+  if (!clientId || !courseId) {
+    throw new BadRequestError(
+      'Please provide the both clientId and courseId of the client!'
+    );
+  }
+  const user = await clients.findByPk(clientId);
+  if (!user) throw new UnauthenticatedError('client Id is not valid!');
+
+  const timeMil = Date.now();
+  const invoiceNo = `#${
+    Math.ceil(Math.random() * 10) + timeMil.toString().slice(-4)
+  }`;
+
+  const course = await courses.findByPk(courseId);
+  const orderData = {
+    paidStatus: true,
+    createdDate: timeMil,
+    invoiceNo,
+  };
+  await orders.update(
+    { ...orderData },
+    { where: { courseId: courseId, clientId: user.id } }
+  );
+
+  await clientcourses.create({ courseId: course.id, clientId: user.id });
+  course.purchased = course.purchased + 1;
+  await course.save();
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully confirmed the order',
+  });
+  //send notifications
+  const notification = await notifications.create({
+    title: 'New purchase made',
+    message: `A new purchase for ${course.title} was made by ${user.userName}`,
+  });
+
+  //sending sms and mail
+  if (user.phone) {
+    sendSMS(
+      user.phone,
+      `You purchase for "${course.title}" is successful. Your order id is: ${invoiceNo} \n --ChemGenie`
+    )
+      .then((res) => {
+        // console.log(res);
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
+  }
+
+  if (user.email) {
+    mailer(
+      {
+        client: {
+          fullName: user.fullName,
+          email: user.email,
+        },
+        info: {
+          invoiceNo,
+          courseName: course.title,
+          paymentInfo: {
+            invoiceNo,
+          },
+        },
+      },
+      'order'
+    ).catch((err) => {});
+  }
+};
+
+//for admin
+const getAllVerifiedOrders = async (req, res) => {
+  let result = await orders.findAll({ where: { paidStatus: true } });
+  result = result.map((item) => {
+    item.dataValues.paymentInfo = JSON.parse(item.dataValues.paymentInfo);
+    return item;
+  });
   res.json({
     succeed: true,
     msg: 'Successful',
@@ -298,10 +412,12 @@ const clientInvoices = async (req, res) => {
 
 module.exports = {
   createOrder,
-  getAllOrdersAdmin,
+  getAllVerifiedOrders,
   clientInvoices,
   paymentInit,
   validatePayment,
   isFromSSLCommerz,
   ipnListener,
+  getAllPendingOrders,
+  confirmSingleOrder,
 };

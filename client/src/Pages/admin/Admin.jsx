@@ -1,22 +1,23 @@
-import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
-import AdminNavbar from "../../Components/Admin/admin/Navbar";
-import reqs from "../../assets/requests";
+import axios from 'axios';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import AdminNavbar from '../../Components/Admin/admin/Navbar';
+import reqs from '../../assets/requests';
 
-const Context = createContext("");
+const Context = createContext('');
 
 const Admin = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     id: 0,
-    userName: "",
-    role: "",
+    userName: '',
+    role: '',
   });
   const [loading, setLoading] = useState(false);
   const [isAdmin, setadmin] = useState(false);
   const [adminTrigger, setAdminTrigger] = useState(false);
   const [settings, setSettings] = useState({
-    redirect: "/admin/login",
+    redirect: '/admin/login',
   });
   const logout = () => {
     axios
@@ -24,9 +25,10 @@ const Admin = () => {
       .then((res) => {
         if (res.data.succeed) {
           setUser((user) => {
-            return { ...user, userName: "", role: "" };
+            return { ...user, userName: '', role: '' };
           });
-          window.location.reload();
+          // window.location.reload();
+          navigate('/abs-admin/login');
         } else {
           throw new Error(res.data.msg);
         }
@@ -45,7 +47,7 @@ const Admin = () => {
         role: data?.role,
       };
     });
-    setadmin((pre) => data?.role === "admin");
+    setadmin((pre) => data?.role === 'admin');
   };
   useEffect(() => {
     axios
@@ -53,12 +55,15 @@ const Admin = () => {
       .then((res) => {
         if (res.data.succeed) {
           setAdminUser(res.data.result);
+        } else {
+          alert(res.data.msg);
         }
         setLoading(false);
       })
       .catch((err) => {
         // console.log(err.response);
         setLoading(false);
+        navigate(`/abs-admin/login`);
       });
   }, [adminTrigger]);
   return (
@@ -75,25 +80,28 @@ const Admin = () => {
         setAdminUser,
       }}
     >
-      <div className="w-screen min-h-screen mx-auto max-w-[1600px] max-h-screen p-2 overflow-hidden overflow-y-auto bg-slate-100 text-xs">
+      <div className='w-screen min-h-screen mx-auto max-w-[1600px] max-h-screen p-2 overflow-hidden overflow-y-auto bg-slate-100 text-xs'>
         <AdminNavbar />
-        {!isAdmin && <ErrorPage />}
-        <main className="h-4/5 transition-all duration-200 ease-in-out mx-auto w-auto flex-1">
-          <Outlet context={[isAdmin, user]} />
-        </main>
+        {!isAdmin ? (
+          <ErrorPage />
+        ) : (
+          <main className='h-4/5 transition-all duration-200 ease-in-out mx-auto w-auto flex-1'>
+            <Outlet context={[isAdmin, user]} />
+          </main>
+        )}
       </div>
     </Context.Provider>
   );
 };
 export const ErrorPage = () => {
   return (
-    <div className="w-auto mt-0">
-      <p className="text-center text-base">
-        Login as{" "}
-        <span className="text-rose-500 text-xl font-semibold uppercase mx-1 font-mono p-1 rounded-md bg-slate-200">
+    <div className='w-auto mt-0'>
+      <p className='text-center text-base'>
+        Login as{' '}
+        <span className='text-rose-500 text-xl font-semibold uppercase mx-1 font-mono p-1 rounded-md bg-slate-200'>
           admin
-        </span>{" "}
-        so visit Admin-page
+        </span>{' '}
+        to visit Admin-page
       </p>
     </div>
   );

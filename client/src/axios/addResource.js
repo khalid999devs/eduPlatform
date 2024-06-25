@@ -1,5 +1,5 @@
-import axios from "axios";
-import reqs from "../assets/requests";
+import axios from 'axios';
+import reqs from '../assets/requests';
 
 const addResources = async (courseid, formData) => {
   try {
@@ -7,11 +7,11 @@ const addResources = async (courseid, formData) => {
       .post(`${reqs.ADD_RESOURCES}/${courseid}`, formData, {
         withCredentials: true,
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then((res) => {
-        if (res.data.succeed) alert("New course has been added");
+        if (res.data.succeed) alert('New Resource has been added');
       })
       .then(() => {
         window.location.reload();

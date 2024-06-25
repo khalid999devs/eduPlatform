@@ -1,39 +1,52 @@
-import { useState } from "react";
-import { TbLogin2, TbMenu, TbPlus, TbLogout2 } from "react-icons/tb";
-import { PiImage, PiPhoneBold, PiStudentFill } from "react-icons/pi";
-import { HiAcademicCap } from "react-icons/hi";
-import { AdminConsumer } from "../../../Pages/admin/Admin";
-import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { TbLogin2, TbMenu, TbPlus, TbLogout2 } from 'react-icons/tb';
+import { PiImage, PiPhoneBold, PiStudentFill } from 'react-icons/pi';
+import { HiAcademicCap } from 'react-icons/hi';
+import { AdminConsumer } from '../../../Pages/admin/Admin';
+import { Link } from 'react-router-dom';
+import { FiShoppingCart } from 'react-icons/fi';
+import { MdAssignmentAdd } from 'react-icons/md';
+import { IoIosListBox } from 'react-icons/io';
 
 const dashList = [
   {
-    title: "Add Course",
-    link: "addcourse",
+    title: 'Add Course',
+    link: 'addcourse',
+    icon: <MdAssignmentAdd />,
+  },
+  {
+    title: 'Enrolls & Orders',
+    link: 'orders/pending',
+    icon: <FiShoppingCart />,
+  },
+  {
+    title: 'Students',
+    link: 'students',
     icon: <PiStudentFill />,
   },
   {
-    title: "Students",
-    link: "students",
-    icon: <PiStudentFill />,
-  },
-  {
-    title: "Courses",
-    link: "course",
+    title: 'Courses',
+    link: 'course',
     icon: <HiAcademicCap />,
   },
   {
-    title: "Gallery",
-    link: "gallery",
+    title: 'Exams',
+    link: 'exams',
+    icon: <IoIosListBox />,
+  },
+  {
+    title: 'Gallery',
+    link: 'gallery',
     icon: <PiImage />,
   },
   {
-    title: "Contact",
-    link: "public-contact",
+    title: 'Contact',
+    link: 'public-contact',
     icon: <PiPhoneBold />,
   },
   {
-    title: "FAQ",
-    link: "faq",
+    title: 'FAQ',
+    link: 'faq',
     icon: <PiImage />,
   },
 ];
@@ -53,31 +66,31 @@ const LeftPanel = () => {
       className={`w-full px-5 sticky  py-2 top-0 left-0 mx-auto h-16 min-h-max pointer-events-auto flex items-center my-5 duration-700 ease-out rounded-xl border-0 shadow-lg bg-trans_bluish/70 backdrop-blur z-50 text-sm`}
     >
       <button
-        className="justify-center items-center p-1 transition-transform duration-200 text-slate-600 text-lg font-semibold mx-5 bg-white rounded-md"
+        className='justify-center items-center p-1 transition-transform duration-200 text-slate-600 text-lg font-semibold mx-5 bg-white rounded-md'
         style={{
-          transform: `${toggle ? "rotate(45deg)" : "rotate(0deg)"}`,
-          display: !isAdmin ? "none" : "flex",
+          transform: `${toggle ? 'rotate(45deg)' : 'rotate(0deg)'}`,
+          display: !isAdmin ? 'none' : 'flex',
         }}
         onClick={toggleMenu}
       >
         {!toggle ? <TbMenu /> : <TbPlus />}
       </button>
       {/* dahsboard titlebar */}
-      <div className="h-auto flex items-center w-fit ">
+      <div className='h-auto flex items-center w-fit '>
         <a
-          className="block m-0 text-sm whitespace-nowrap dark:text-white text-slate-700"
-          href="/abs-admin"
+          className='block m-0 text-sm whitespace-nowrap dark:text-white text-slate-700'
+          href='/abs-admin'
         >
-          <span className="mx-1 font-bold transition-all duration-200 ease-nav-brand">
+          <span className='mx-1 font-bold transition-all duration-200 ease-nav-brand'>
             Admin page
           </span>
         </a>
 
         <a
-          className="px-8 text-sm mx-auto whitespace-nowrap dark:text-white text-slate-700"
-          href="/"
+          className='px-8 text-sm mx-auto whitespace-nowrap dark:text-white text-slate-700'
+          href='/'
         >
-          <span className="ml-1 font-bold transition-all duration-200 ease-nav-brand">
+          <span className='ml-1 font-bold transition-all duration-200 ease-nav-brand'>
             Client page
           </span>
         </a>
@@ -86,8 +99,8 @@ const LeftPanel = () => {
       <ul
         className={`flex flex-col absolute left-10 top-20 w-fit bg-slate-500 rounded-lg ransition-all h-auto ${
           toggle
-            ? "opacity-100 translate-x-0 pointer-events-auto"
-            : "opacity-0 -translate-x-1/2 pointer-events-none"
+            ? 'opacity-100 translate-x-0 pointer-events-auto'
+            : 'opacity-0 -translate-x-1/2 pointer-events-none'
         }`}
         onClick={toggleMenu}
       >
@@ -104,11 +117,11 @@ const LeftPanel = () => {
           );
         })}
       </ul>
-      {/* login button */}
+      {/* login button
       <Link
-        to={"login"}
+        to={'login'}
         className={`py-2.5 dark:opacity-80 text-sm ease-nav-brand my-2 ml-auto flex items-center whitespace-nowrap rounded-lg px-4 font-semibold transition-colors hover:cursor-pointer shadow-md shadow-root_bluish/50 bg-green-500 hover:bg-green-400 text-black ${
-          isAdmin && "hidden"
+          isAdmin && 'hidden'
         }`}
       >
         <span>
@@ -120,12 +133,10 @@ const LeftPanel = () => {
         >
           Login
         </span>
-      </Link>
+      </Link> */}
 
       <button
-        className={`py-2.5 dark:opacity-80 text-sm ease-nav-brand my-2 ml-auto flex items-center whitespace-nowrap rounded-lg px-4 font-semibold transition-colors hover:cursor-pointer dark:text-white  shadow-md shadow-root_bluish/50 bg-red-500 hover:bg-rose-600 ${
-          !isAdmin && "hidden"
-        } `}
+        className={`py-2.5 dark:opacity-80 text-sm ease-nav-brand my-2 ml-auto flex items-center whitespace-nowrap rounded-lg px-4 font-semibold transition-colors hover:cursor-pointer dark:text-white  shadow-md shadow-root_bluish/50 bg-red-500 hover:bg-rose-600`}
         onClick={logout}
       >
         <span>
@@ -143,7 +154,7 @@ const LeftPanel = () => {
 };
 const PanelItem = ({ title, link, icon, isAdmin }) => {
   return (
-    <li className="h-fit">
+    <li className='h-fit'>
       <Link
         to={link}
         className={`py-2.5 text-sm ease-nav-brand my-2 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold transition-colors hover:cursor-pointer dark:text-white  shadow-md shadow-root_bluish/50 bg-slate-700 hover:bg-slate-500 `}

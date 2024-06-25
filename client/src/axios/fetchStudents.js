@@ -1,5 +1,5 @@
-import axios from "axios";
-import reqs from "../assets/requests";
+import axios from 'axios';
+import reqs from '../assets/requests';
 const fetchStudents = async (skip, row, setData) => {
   try {
     axios
@@ -14,7 +14,8 @@ const fetchStudents = async (skip, row, setData) => {
         }
       )
       .then((res) => {
-        console.log("done");
+        // console.log(res.data);
+        // console.log('done');
         setData((pre) => res.data?.result);
       })
       .catch((err) => {

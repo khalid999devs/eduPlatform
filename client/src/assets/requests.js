@@ -81,6 +81,9 @@ const reqs = {
 
   //order
   PAYMENT_INIT: '/api/order/pay-init',
+  GET_PENDING_ORDERS_ADMIN: '/api/order/pending-orders',
+  GET_VERIFIED_ORDERS_ADMIN: '/api/order/verified-orders',
+  CONFIRM_SINGLE_ORDER_ADMIN: '/api/order/confirm-single-order',
 };
 
 export default reqs;

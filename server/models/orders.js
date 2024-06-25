@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      paidStatus: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       paymentInfo: {
         type: DataTypes.TEXT,
         defaultValue: '{}',

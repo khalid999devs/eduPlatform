@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Checkbox = ({ checked, setChecked, name, text, extra, classes }) => {
   return (
     <div className={'flex flex-row gap-4 text-md ' + classes}>

@@ -44,7 +44,7 @@ const Navbar = () => {
         {/* logo */}
         <Link to={'/'}>
           <h1 className='text-2xl font-bold text-black w-fit pr-3'>
-            Chemgenie
+            ChemGenie
           </h1>
         </Link>
         {/* main nav */}

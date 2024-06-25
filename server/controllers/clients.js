@@ -1,4 +1,4 @@
-const { clients, sequelize, clientcourses } = require('../models');
+const { clients, sequelize, clientcourses, orders } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -15,9 +15,9 @@ const { Op } = require('sequelize');
 
 const registration = async (req, res) => {
   const newPar = await clients.create(req.user);
-  // mailer({ client: newPar }, 'par').catch((err) => {
-  //   // console.log(err)
-  // });
+  mailer({ client: newPar }, 'par').catch((err) => {
+    // console.log(err)
+  });
 
   res.status(StatusCodes.CREATED).json({
     succeed: true,
@@ -253,28 +253,22 @@ const resetPassVerify = async (req, res) => {
   }
 };
 
+//for admin
 const getAllClients = async (req, res) => {
   const { skip, rowNum } = req.body;
   if (skip === '' || skip === null || skip === undefined || !rowNum)
     throw new BadRequestError('skip or rows field must not be empty');
 
-  // let result;
-  //   [result] = await sequelize.query(
-  //     `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM clients as par LEFT JOIN parevents as pe ON par.id=pe.parId LIMIT ${skip},${rowNum};`
-  //   );
-
-  result = await clients.findAll({
+  let result = await clients.findAll({
     include: {
       model: clientcourses,
+      required: true,
     },
-    attributes: { exclude: ['password'] },
+    attributes: { exclude: ['password', 'otp', 'otpCount', 'otpTime'] },
     offset: Number(skip),
     limit: Number(rowNum),
+    order: [['id', 'DESC']],
   });
-
-  // [result] = await sequelize.query(
-  //   `SELECT par.id,par.qrCode,par.fullName,par.fb,par.institute,par.className,par.address,par.image,par.email,par.phone,par.userName, pe.eventInfo,pe.teamName,pe.paidEvent,pe.fee,pe.transactionID,pe.SubLinks,pe.SubNames,pe.roll_no FROM clients as par LEFT JOIN parevents as pe ON par.id=pe.parId WHERE JSON_EXTRACT(pe.eventInfo, "$.${mode}") =0 or JSON_EXTRACT(pe.eventInfo, "$.${mode}") =1 LIMIT ${skip},${rowNum};`
-  // );
 
   res.json({ succeed: true, result: result });
 };
