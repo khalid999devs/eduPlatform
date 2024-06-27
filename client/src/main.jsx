@@ -109,11 +109,15 @@ const router = createBrowserRouter([
         element: <CourseClientdetails />,
         children: [
           {
-            path: '/courses/onClientReq/:cid/details',
+            index: true,
             element: <Details />,
           },
           {
-            path: '/courses/onClientReq/:cid/chat',
+            path: 'details',
+            element: <Details />,
+          },
+          {
+            path: 'chat',
             element: <ChatBox isAdmin={false} />,
           },
           {
@@ -121,7 +125,7 @@ const router = createBrowserRouter([
             element: <ExamPage />,
           },
           {
-            path: '/courses/onClientReq/:cid/record',
+            path: 'record',
             element: <RecordVideo />,
           },
           {

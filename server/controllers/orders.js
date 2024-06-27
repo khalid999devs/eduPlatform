@@ -294,7 +294,10 @@ const validatePayment = async (req, res) => {
 
 //for admin
 const getAllPendingOrders = async (req, res) => {
-  let result = await orders.findAll({ where: { paidStatus: false } });
+  let result = await orders.findAll({
+    where: { paidStatus: false },
+    order: [['id', 'DESC']],
+  });
   result = result.map((item) => {
     item.dataValues.paymentInfo = JSON.parse(item.dataValues.paymentInfo);
     return item;
@@ -383,7 +386,10 @@ const confirmSingleOrder = async (req, res) => {
 
 //for admin
 const getAllVerifiedOrders = async (req, res) => {
-  let result = await orders.findAll({ where: { paidStatus: true } });
+  let result = await orders.findAll({
+    where: { paidStatus: true },
+    order: [['id', 'DESC']],
+  });
   result = result.map((item) => {
     item.dataValues.paymentInfo = JSON.parse(item.dataValues.paymentInfo);
     return item;

@@ -350,6 +350,7 @@ const deleteResource = async (req, res) => {
 };
 
 const getZoomCreds = async (req, res) => {
+  console.log(req.user);
   const userId = req.user.id;
   const username = req.user.userName;
   const { courseId } = req.body;
@@ -390,11 +391,15 @@ const getZoomCreds = async (req, res) => {
   const signature = jwt.sign(oPayload, process.env.ZOOM_API_SECRET);
 
   res.json({
-    signature: signature,
-    sdkKey: oPayload.appKey,
-    username: username,
-    meetingNo: oPayload.mn,
-    password: zoomInfo.pass,
+    creds: {
+      signature: signature,
+      sdkKey: oPayload.appKey,
+      username: username,
+      meetingNo: oPayload.mn,
+      password: zoomInfo.pass,
+    },
+    succeed: true,
+    msg: 'Successfully created zoom credentials',
   });
 };
 

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Timer from "./Timer";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import Timer from './Timer';
 import {
   addStudentAns,
   getQuesClient,
   getSingleExamClient,
-} from "../../../axios/global";
+} from '../../../axios/global';
 
 const MCQExam = () => {
   const { cid, examid } = useParams();
@@ -15,12 +15,12 @@ const MCQExam = () => {
   const [submition, setSubmition] = useState(false);
   // fetch questions
   useEffect(() => {
-    getQuesClient(examid, "question", setques);
+    getQuesClient(examid, 'question', setques);
     getSingleExamClient(cid, examid, setExdetails);
   }, []);
 
-  const startTime = new Date(exDetails?.examStartTime);
-  const endTime = new Date(exDetails?.examEndTime);
+  const startTime = new Date(Number(exDetails?.examStartTime));
+  const endTime = new Date(Number(exDetails?.examEndTime));
 
   const [time, settime] = useState(new Date());
   const [localDuration, setlocaldur] = useState(null);
@@ -47,15 +47,15 @@ const MCQExam = () => {
   }, [questions?.length > 0]);
 
   useEffect(() => {
-    if(localDuration !==  null)
-    if (localDuration <= 0) {
-      handleSubmit();
-    }
+    if (localDuration !== null)
+      if (localDuration <= 0) {
+        handleSubmit();
+      }
   }, [localDuration]);
   console.log(questions);
   const OptionsMemo = ({ id, ques, stdAns, localDuration }) => {
     return (
-      <ul className="my-1">
+      <ul className='my-1'>
         {ques?.quesOptions?.map((option, index) => {
           let fID = stdAns?.findIndex((ele) => ele?.questionId === ques?.id);
           let oID = stdAns[fID]?.optionsId?.findIndex(
@@ -65,7 +65,7 @@ const MCQExam = () => {
             <li
               key={`q${id}?ans${index}`}
               className={`flex items-center gap-2 space-y-1 cursor-pointer hover:bg-secondary-main rounded-md transition-colors p-1 touch-pan-left ${
-                localDuration < 0 ? "pointer-events-none" : ""
+                localDuration < 0 ? 'pointer-events-none' : ''
               }`}
               onClick={() => {
                 if (
@@ -75,20 +75,20 @@ const MCQExam = () => {
                     (ele) => ele === option?.id
                   ) === -1
                 )
-                  stdAns[fID]?.optionsId?.push(option?.id); 
+                  stdAns[fID]?.optionsId?.push(option?.id);
               }}
             >
               <span
                 className={`p-px text-black ring-black w-5 h-5 flex justify-center items-center ring-1 rounded-full ${
                   stdAns[fID]?.optionsId?.includes(option?.id)
-                    ? "bg-secondary-main"
-                    : "bg-primary-main"
+                    ? 'bg-secondary-main'
+                    : 'bg-primary-main'
                 }`}
               >
                 {index + 1}
               </span>
               <label
-                className="block pointer-events-none"
+                className='block pointer-events-none'
                 htmlFor={option + index}
               >
                 {option?.title}
@@ -113,35 +113,34 @@ const MCQExam = () => {
         examid
       ).then(() => {
         setSubmition(false);
-        window.location.assign("../../");
+        window.location.assign('../../');
       });
     } catch (error) {
       setSubmition(false);
     }
   }
 
-
   return (
-    <div className="p-4 rounded w-full my-32 mx-auto">
+    <div className='p-4 rounded w-full my-32 mx-auto'>
       {/* submiting shadow page */}
       {submition && (
-        <div className="bg-black/40 text-white font-bold text-3xl text-center fixed top-0 left-0 right-0 bottom-0 justify-center items-center">
-          <p className="relative top-1/2 -translate-y-1/2">
+        <div className='bg-black/40 text-white font-bold text-3xl text-center fixed top-0 left-0 right-0 bottom-0 justify-center items-center'>
+          <p className='relative top-1/2 -translate-y-1/2'>
             Exam Time over. Submiting your answers...
           </p>
         </div>
       )}
       {/*it will show remainder timer  */}
-      <Timer durTime={localDuration} classes={"fixed top-20 right-5"} />{" "}
+      <Timer durTime={localDuration} classes={'fixed top-20 right-5'} />{' '}
       <ExamInfo data={exDetails} startTime={startTime} endTime={endTime} />
-      <h1 className="text-xl text-center font-bold my-4">MCQ Exam</h1>
+      <h1 className='text-xl text-center font-bold my-4'>MCQ Exam</h1>
       <form onSubmit={handleSubmit}>
         {questions.map((ques, id) => (
           <div
             key={id}
-            className="bg-white w-5/6 mx-auto px-5 py-3 my-5 rounded-lg"
+            className='bg-white w-5/6 mx-auto px-5 py-3 my-5 rounded-lg'
           >
-            <h2 className="text-lg mt-5 font-semibold pointer-events-none select-none">
+            <h2 className='text-lg mt-5 font-semibold pointer-events-none select-none'>
               {id + 1}. {ques?.title}
             </h2>
 
@@ -155,8 +154,8 @@ const MCQExam = () => {
         ))}
         {localDuration > 0 ? (
           <button
-            className="bg-onPrimary-main ring ring-slate-500 rounded-sm text-primary-main px-4 py-2 text-base mt-5"
-            type="submit"
+            className='bg-onPrimary-main ring ring-slate-500 rounded-sm text-primary-main px-4 py-2 text-base mt-5'
+            type='submit'
           >
             Submit
           </button>
@@ -168,24 +167,24 @@ const MCQExam = () => {
 const ExamInfo = ({ data, startTime, endTime }) => {
   let examDur = endTime?.getTime() - startTime?.getTime();
   return (
-    <div className="text-left px-5 py-2 bg-white">
+    <div className='text-left px-5 py-2 bg-white'>
       <h2>Exam name: {data?.name}</h2>
       <h2>Exam topic: {data?.topic}</h2>
-      <h2 className="font-semibold">Total Mark: {data?.totalMarks}</h2>
+      <h2 className='font-semibold'>Total Mark: {data?.totalMarks}</h2>
       <h2>
-        Start Time:{" "}
+        Start Time:{' '}
         {`${startTime?.getDate()}-${
           startTime?.getMonth() + 1
         }-${startTime?.getFullYear()} || ${startTime?.getHours()}:${startTime?.getMinutes()}:${startTime?.getSeconds()}`}
       </h2>
       <h2>
-        Finish Time:{" "}
+        Finish Time:{' '}
         {`${endTime?.getDate()}-${
           endTime?.getMonth() + 1
         }-${endTime?.getFullYear()} || ${endTime?.getHours()}:${endTime?.getMinutes()}:${endTime?.getSeconds()}`}
       </h2>
 
-      <h2 className="font-semibold">
+      <h2 className='font-semibold'>
         Total Duration: {duration(examDur).hh}:{duration(examDur).mm}:
         {duration(examDur).ss}
       </h2>
