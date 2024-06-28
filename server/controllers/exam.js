@@ -110,6 +110,7 @@ const addSingleQuesAns = async (req, res) => {
     req.body;
 
   const exam = await exams.findByPk(examId);
+
   if (!exam) {
     if (req.files?.length > 0) deleteMultipleFiles(req.files);
     throw new NotFoundError('This particular exam could not be found!');
@@ -125,7 +126,7 @@ const addSingleQuesAns = async (req, res) => {
 
   const quesAnsId = `${examId}@${Date.now().toString().slice(-7)}`;
 
-  const quesData = {
+  let quesData = {
     id: quesAnsId,
     title: title,
     ansType,
@@ -171,13 +172,14 @@ const addSingleQuesAns = async (req, res) => {
       'Question data format cache is missing! Please ensure the cache is maintained properly!'
     );
   }
-  const quesAns = JSON.parse(resQuesAns);
+  let quesAns = JSON.parse(resQuesAns);
 
   quesAns.questions.push(quesData);
   quesAns.answers.push({
     id: quesAnsId,
     quesAns: answers ? JSON.parse(answers) : [],
   });
+
   await redis.set(`question@${examId}`, JSON.stringify(quesAns));
 
   exam.quesAns = JSON.stringify(quesAns);
@@ -233,6 +235,8 @@ const getAllQues = async (req, res) => {
   const { examId, mode } = req.body;
   let allQuesAns = await redis.get(`question@${examId}`);
 
+  // console.log(allQuesAns);
+
   if (!allQuesAns) {
     const exam = await exams.findByPk(examId);
     if (!exam) {
@@ -261,7 +265,7 @@ const getAllQues = async (req, res) => {
 };
 
 const addStuAns = async (req, res) => {
-  const { fullAns, examId } = req.body;
+  let { fullAns, examId } = req.body;
   fullAns.clientId = req.user.id;
   let newLength;
   try {
@@ -283,7 +287,7 @@ const addStuAns = async (req, res) => {
 const addStuAnsFiles = async (req, res) => {
   const { ansInfo, examId } = req.body;
 
-  const finalAns = JSON.parse(ansInfo);
+  let finalAns = JSON.parse(ansInfo);
   finalAns.clientId = req.user.id;
   finalAns.files = req.files;
 

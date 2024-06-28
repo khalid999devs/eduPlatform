@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
     } else if (file.fieldname === 'questions') {
       destName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/${req.body.title
+        `../uploads/${file.fieldname}/exam@${req.body.examId}/${req.body.title
           .split(' ')
           .join('_')
           .slice(0, 15)}`
@@ -72,10 +72,9 @@ const storage = multer.diskStorage({
         .join('_')
         .slice(0, 10)}`;
     } else if (file.fieldname === 'questions') {
-      pathName = `uploads/${file.fieldname}/${req.body.title
-        .split(' ')
-        .join('_')
-        .slice(0, 15)}`;
+      pathName = `uploads/${file.fieldname}/exam@${
+        req.body.examId
+      }/${req.body.title.split(' ').join('_').slice(0, 15)}`;
     }
     cb(null, pathName);
   },
@@ -110,7 +109,10 @@ const storage = multer.diskStorage({
       }`;
     } else if (file.fieldname === 'questions') {
       fileName =
-        req.body.title.split(' ').join('_').slice(0, 15) + `_${Date.now()}`;
+        req.body.title.split(' ').join('_').slice(0, 15) +
+        '_exam@' +
+        req.body.examId +
+        `_${Date.now()}`;
     } else {
       fileName = file.fieldname + `-${Date.now()}`;
     }

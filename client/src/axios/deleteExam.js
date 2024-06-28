@@ -1,5 +1,5 @@
-import axios from "axios";
-import reqs from "../assets/requests";
+import axios from 'axios';
+import reqs from '../assets/requests';
 const deleteExam = async (id) => {
   try {
     axios
@@ -26,7 +26,12 @@ const deleteQuestion = async (qid, eid) => {
         { withCredentials: true }
       )
       .then((res) => {
-        alert(res.data.msg, "refresh the page to see update");
+        if (res.data.succeed) {
+          // alert(res.data.msg, "refresh the page to see update");
+          window.location.reload();
+        } else {
+          alert(res.data.msg);
+        }
       });
   } catch (error) {
     console.log(error);

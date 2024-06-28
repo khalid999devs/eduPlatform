@@ -22,7 +22,7 @@ function Exam() {
     name: '',
     topic: '',
     category: '',
-    courseId: Number(id),
+    courseId: id,
     totalMarks: 0,
     examStartTime: '',
     examEndTime: '',
@@ -249,37 +249,55 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
             className='grid grid-cols-3 gap-1 place-items-stretch w-full'
             onSubmit={(e) => {
               e.preventDefault();
+              const quesOptions = opt.map((val, vid) => ({
+                id: vid + 1,
+                title: val,
+              }));
+              let isDataOk = true;
               const form = new FormData();
               const fData = {
                 title: ques,
-                quesOptions: JSON.stringify(
-                  new Array(
-                    opt.map((val, vid) => ({
-                      id: vid + 1,
-                      title: val,
-                    }))
-                  )[0]
-                ),
+                quesOptions: JSON.stringify(quesOptions),
                 examId: eid,
                 mark: mark,
+                category: null,
                 ansType: ansType,
-                answers: JSON.stringify(ans),
+                answers: JSON.stringify(
+                  Array.from(
+                    new Set(
+                      ans.map((item) => {
+                        const ansId = quesOptions.find(
+                          (op) => op.title === item
+                        );
+                        if (!ansId) {
+                          alert(
+                            `One of the question option and answer option [${item}] did not match. Re-enter the option values`
+                          );
+                          isDataOk = false;
+                          return null;
+                        }
+                        return ansId.id;
+                      })
+                    )
+                  )
+                ),
               };
-
+              if (!isDataOk) {
+                return;
+              }
               Object.keys(fData).forEach((key) => {
                 form.append(`${key}`, fData[key]);
               });
-              for (let i = 0; i < files.length; i++) {
-                form.append('questions', files[i]);
-              }
-              addSingleQues(form).then(() => {
-                window.location.reload();
+
+              files.forEach((file) => {
+                form.append('questions', file);
               });
+              addSingleQues(form);
             }}
           >
             {/* question title */}
             <section className='grid border p-2 rounded-md shadow space-y-2'>
-              <label htmlFor='ques'>Question: </label>
+              <label htmlFor='ques'>Question*: </label>
               <input
                 className='p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none'
                 id='ques'
@@ -306,7 +324,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 id='opt'
                 required={ansType === 'options'}
                 placeholder='Options'
-                onChange={(e) => setOpt(e.target.value.split(',', 4))}
+                onChange={(e) => setOpt(e.target.value.split(','))}
               />
               <p className='text-xs flex flex-wrap break-words'>
                 {opt.map((e, i) => {
@@ -340,7 +358,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 id='ans'
                 placeholder='Answer'
                 required={ansType === 'options'}
-                onChange={(e) => setAns(e.target.value.split(',', 4))}
+                onChange={(e) => setAns(e.target.value.split(','))}
               />
               <p className='text-xs flex flex-wrap break-words'>
                 {ans.map((e, i) => {
@@ -357,7 +375,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
             </section>
             {/* question mark */}
             <section className='grid border p-2 rounded-md shadow space-y-2'>
-              <label htmlFor='mark'>Mark: </label>
+              <label htmlFor='mark'>Mark*: </label>
               <input
                 className='p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none'
                 id='mark'
@@ -385,19 +403,14 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
               />
             </section>
             {/* question photo */}
-            <section
-              className={`grid border p-2 rounded-md shadow space-y-2 ${
-                ansType === ansTypes[ansTypes.length - 1] ? '' : 'hidden'
-              }`}
-            >
-              <label htmlFor='files'>Images: </label>
+            <section className={`grid border p-2 rounded-md shadow space-y-2`}>
+              <label htmlFor='files'>Question Images: </label>
               <input
                 className='p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none'
                 id='files'
                 type='file'
-                multiple={true}
+                multiple
                 name='imageFiles'
-                required={ansType === 'file'}
                 placeholder='Question image'
                 onChange={(e) => setFiles([...e.target.files])}
               />
@@ -428,86 +441,82 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
           className={`grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-2 justify-center `}
         >
           {data.questions.length != 0 ? (
-            data.questions.map((quest, id) => {
-              return (
-                <section
-                  key={id + quest.title}
-                  className=' ring-1 rounded-sm p-2 m-1 groupques relative'
-                >
-                  <span className='float-right m-1 text-red-500 font-semibold'>
-                    {quest?.mark}
-                  </span>
-                  <p className='text-red-500 mb-1'>
-                    <span>
-                      {id + 1}. {quest.title}
+            data.questions
+              .slice()
+              .reverse()
+              .map((quest, id) => {
+                let l = data?.questions?.length;
+                return (
+                  <section
+                    key={l - id + quest.title}
+                    className=' ring-1 rounded-sm p-2 m-1 groupques relative'
+                  >
+                    <span className='float-right m-1 text-red-500 font-semibold'>
+                      {quest?.mark}
                     </span>
-                    <button
-                      className='hover:bg-purple-400 rounded-full p-1 text-xl opacity-0 group-[ques]:group-hover:opacity-100 transition'
-                      type='button'
-                      onClick={(e) =>
-                        deleteQuestion(quest.id, eid).then(() => {
-                          setQues('');
-                          setAns([]);
-                          setOpt([]);
-                          setAnsType(ansTypes[0]);
-                          setFiles(null);
-                          setMark(0);
-                        })
-                      }
-                    >
-                      <MdDelete className='text-xl text-red-600 hover:text-black rounded-full' />
-                    </button>
-                  </p>
-                  {/* images */}
-                  <ol className='grid grid-cols-2 gap-2 items-center'>
-                    {quest?.images?.map((img, iid) => {
-                      return (
-                        <li
-                          className='flex justify-center items-start p-2'
-                          key={`${img?.originamName} + ${iid}`}
-                        >
-                          <span>{quest?.quesOptions[iid]?.title}. </span>
+                    <p className='text-red-500 mb-1'>
+                      <span>
+                        {l - id}. {quest.title}
+                      </span>
+                      <button
+                        className='hover:bg-purple-400 rounded-full p-1 text-xl opacity-0 group-[ques]:group-hover:opacity-100 transition'
+                        type='button'
+                        onClick={(e) =>
+                          deleteQuestion(quest.id, eid).then(() => {
+                            setQues('');
+                            setAns([]);
+                            setOpt([]);
+                            setAnsType(ansTypes[0]);
+                            setFiles(null);
+                            setMark(0);
+                          })
+                        }
+                      >
+                        <MdDelete className='text-xl text-red-600 hover:text-black rounded-full' />
+                      </button>
+                    </p>
+                    {/* images */}
+                    <div className='grid grid-cols-2 gap-2 mb-2 items-center'>
+                      {quest?.images?.map((img, iid) => {
+                        return (
                           <img
-                            className='aspect-square border border-black p-1 rounded-md w-[150px]'
-                            width={150}
-                            height={150}
+                            className='rounded-md max-h-[200px]'
                             src={reqImgWrapper(img?.url)}
                             alt={img?.originamName}
                           />
-                        </li>
-                      );
-                    })}
-                  </ol>
-                  {/* questions */}
-                  <ol className='grid grid-cols-2 gap-2 items-center'>
-                    {quest?.quesOptions?.map((qOpt, qid) => {
-                      return (
-                        <li
-                          className='border p-1 border-black text-black'
-                          key={qOpt?.title}
-                        >
-                          {String.fromCharCode(97 + qid)}. {qOpt?.title}
-                        </li>
-                      );
-                    })}
-                  </ol>
-                  {/* answers */}
-                  <ol className='flex flex-wrap gap-2 items-center my-3'>
-                    {quest?.quesAns?.length != 0 && <span>Answers: </span>}{' '}
-                    {quest?.quesAns?.map((qans, aid) => {
-                      return (
-                        <li
-                          className='border p-1 border-black text-black'
-                          key={`${qans}+${aid}`}
-                        >
-                          {qans}
-                        </li>
-                      );
-                    })}
-                  </ol>
-                </section>
-              );
-            })
+                        );
+                      })}
+                    </div>
+                    {/* questions */}
+                    <ol className='grid grid-cols-2 gap-2 items-center'>
+                      {quest?.quesOptions?.map((qOpt, qid) => {
+                        return (
+                          <li
+                            className='border p-1 border-black text-black'
+                            key={qOpt?.title}
+                          >
+                            {String.fromCharCode(97 + qid)}. {qOpt?.title}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                    {/* answers */}
+                    <ol className='flex flex-wrap gap-2 items-center my-3'>
+                      {quest?.quesAns?.length != 0 && <span>Answers: </span>}{' '}
+                      {quest?.quesAns?.map((qans, aid) => {
+                        return (
+                          <li
+                            className='border p-1 border-black text-black'
+                            key={`${qans}+${aid}`}
+                          >
+                            {qans}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </section>
+                );
+              })
           ) : (
             <h2 className='text-rose-600 text-left my-10 font-bold text-3xl'>
               No question found

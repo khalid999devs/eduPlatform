@@ -1,5 +1,5 @@
-import axios from "axios";
-import reqs from "../assets/requests";
+import axios from 'axios';
+import reqs from '../assets/requests';
 
 const addExam = async (data) => {
   try {
@@ -20,21 +20,19 @@ const addExam = async (data) => {
     alert(error);
   }
 };
+
 const addSingleQues = async (data) => {
   try {
     axios
       .put(reqs.ADD_SINGLE_QUES, data, {
         withCredentials: true,
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then((res) => {
         if (res.data.succeed) {
-          alert(
-            res.data.msg +
-              " reload the page to see update.\nRECOMMENDED TO RELOAD PAGE AFTER ADDING A FEW QUESTIONS. "
-          );
+          window.location.reload();
         }
       })
       .catch((err) => {
@@ -54,19 +52,18 @@ const addStudentAns = async (data, examId) => {
     console.log(error);
   }
 };
-const addStdFilesAns = async (data,setmsg) => {
+const addStdFilesAns = async (data, setmsg) => {
   try {
     axios
       .post(reqs.ADD_STU_FANS, data, {
         withCredentials: true,
       })
-      .then((res)=>{
+      .then((res) => {
         setmsg(res.data?.msg);
-        
       })
       .catch((err) => console.log(err));
   } catch (error) {
     console.log(error);
   }
 };
-export { addExam, addSingleQues, addStudentAns,addStdFilesAns };
+export { addExam, addSingleQues, addStudentAns, addStdFilesAns };
