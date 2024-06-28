@@ -1,17 +1,16 @@
 import axios from 'axios';
 import reqs from '../assets/requests';
-const deleteExam = async (id) => {
+const deleteExam = async (id, resetData) => {
   try {
     axios
       .delete(`${reqs.DELETE_EXAM}/${id}`, {
         withCredentials: true,
       })
       .then((res) => {
-        alert(res.data.msg);
-        if (res.data.succeed) window.location.reload();
+        if (res.data.succeed) resetData();
       });
   } catch (error) {
-    console.log(error);
+    alert(err.response.data.msg);
   }
 };
 const deleteQuestion = async (qid, eid) => {

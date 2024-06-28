@@ -1,7 +1,7 @@
 import axios from 'axios';
 import reqs from '../assets/requests';
 
-const addExam = async (data) => {
+const addExam = async (data, setExamListData) => {
   try {
     axios
       .post(reqs.ADD_EXAM, data, {
@@ -9,11 +9,16 @@ const addExam = async (data) => {
       })
       .then((res) => {
         if (res.data.succeed) {
-          alert(res.data.msg);
-          window.location.reload();
+          alert(
+            'Exam added successfully. Now you can add questions and answers to it.'
+          );
+          setExamListData((examData) => {
+            return [...examData, res.data.exam];
+          });
         }
       })
       .catch((err) => {
+        alert(err.response.data.msg);
         console.log(err);
       });
   } catch (error) {
@@ -21,7 +26,7 @@ const addExam = async (data) => {
   }
 };
 
-const addSingleQues = async (data) => {
+const addSingleQues = async (data, toggleQues) => {
   try {
     axios
       .put(reqs.ADD_SINGLE_QUES, data, {
@@ -32,7 +37,9 @@ const addSingleQues = async (data) => {
       })
       .then((res) => {
         if (res.data.succeed) {
+          //here instead of reloading, we should set the ques data here.
           window.location.reload();
+          // toggleQues(true);
         }
       })
       .catch((err) => {

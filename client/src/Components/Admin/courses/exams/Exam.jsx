@@ -13,11 +13,12 @@ import {
   getSingleExamAdmin,
 } from '../../../../axios/global';
 import { reqImgWrapper } from '../../../../assets/requests';
-const options = ['quiz', 'written'];
+const options = ['quiz', 'written', 'quiz+written'];
 const ansTypes = ['options', 'file'];
 
 function Exam() {
   const { id } = useParams();
+  const [data, setData] = useState([]);
   const [examData, setExamData] = useState({
     name: '',
     topic: '',
@@ -41,7 +42,9 @@ function Exam() {
       [e.target.name]: e.target.value.toString(),
     }));
   };
+
   useEffect(() => {
+    getExamAdmin('all', setData, id);
     setExamData((pre) => ({ ...pre, courseId: id }));
   }, [id]);
 
@@ -59,7 +62,8 @@ function Exam() {
             examEndTime: new Date(examData.examEndTime).getTime(),
             courseId: Number(id),
           };
-          addExam(submitData);
+          // console.log(submitData);
+          addExam(submitData, setData);
         }}
       >
         <FormInput
@@ -138,7 +142,7 @@ function Exam() {
       </form>
 
       <hr />
-      <ExamLists />
+      <ExamLists data={data} id={id} setData={setData} />
     </div>
   );
 }
@@ -218,7 +222,9 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
   const [data, setData] = useState({ questions: [] });
   const [showQues, toggleQues] = useState(false);
   const [ques, setQues] = useState('');
-  const [ansType, setAnsType] = useState(ansTypes[0]);
+  const [ansType, setAnsType] = useState(
+    category === 'written' ? ansTypes[1] : ansTypes[0]
+  );
   const [opt, setOpt] = useState([]);
   const [ans, setAns] = useState([]);
   const [mark, setMark] = useState('');
@@ -292,7 +298,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
               files.forEach((file) => {
                 form.append('questions', file);
               });
-              addSingleQues(form);
+              addSingleQues(form, toggleQues);
             }}
           >
             {/* question title */}
@@ -399,7 +405,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 selectedOption={ansType}
                 setIsOpen={setIsOpen}
                 handleSelectOption={handleSelectOption}
-                disabled={category === 'written'}
+                disabled={!(category === 'quiz+written')}
               />
             </section>
             {/* question photo */}
@@ -480,6 +486,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                       {quest?.images?.map((img, iid) => {
                         return (
                           <img
+                            key={iid}
                             className='rounded-md max-h-[200px]'
                             src={reqImgWrapper(img?.url)}
                             alt={img?.originamName}
@@ -528,12 +535,8 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
   );
 };
 
-const ExamLists = () => {
-  const { id } = useParams();
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    getExamAdmin('all', setData, id);
-  }, [id]);
+const ExamLists = ({ data, id, setData }) => {
+  let l = data.length;
 
   return (
     <div>
@@ -541,87 +544,87 @@ const ExamLists = () => {
         Exam List{' '}
       </h2>
       {/* here goes exam list */}
-      {data.length != 0 ? (
+      {l != 0 ? (
         <div className='grid grid-cols-1 w-full gap-5 justify-evenly'>
-          {data.map((ele, id) => {
-            const exst = new Date(
-              ele?.examStartTime?.includes('-')
-                ? ele?.examStartTime
-                : Number(ele?.examStartTime)
-            );
-            const exet = new Date(
-              ele?.examEndTime?.includes('-')
-                ? ele?.examEndTime
-                : Number(ele?.examEndTime)
-            );
-            return (
-              <div
-                className='mx-5 text-base group hover:ring hover:ring-violet-500 transition p-2 rounded focus:ring focus:ring-violet-500 ring ring-transparent'
-                key={`${ele.id}${ele.name}`}
-              >
-                <div className='text-white w-auto max-w-xs h-fit flex items-center space-x-2'>
-                  <p className='w-full rounded-full text-left px-5 bg-purple-500 transition-colors group-hover:bg-purple-700 font-extrabold'>
-                    {' '}
-                    {id + 1}. {ele?.name}
-                  </p>
-                  <button
-                    className='hover:bg-purple-400 rounded-full p-1 text-xl opacity-0 group-hover:opacity-100 transition '
-                    type='button'
-                    onClick={(e) => {
-                      let x = '';
-                      x = prompt(
-                        `Delete exam ? [${ele.name}, eid:${ele.id}] (yes/no)`
-                      );
-                      if (x.toLocaleLowerCase() == 'yes') {
-                        deleteExam(ele?.id);
-                      } else alert('Failed');
-                    }}
-                  >
-                    <MdDelete className='text-xl text-red-600 hover:text-black rounded-full' />
-                  </button>
+          {data
+            ?.slice()
+            .reverse()
+            .map((ele, id) => {
+              // console.log(ele);
+              const exst = new Date(Number(ele?.examStartTime));
+              const exet = new Date(Number(ele?.examEndTime));
+              return (
+                <div
+                  className='mx-5 text-base group hover:ring hover:ring-violet-500 transition p-2 rounded focus:ring focus:ring-violet-500 ring ring-transparent'
+                  key={`${ele.id}${ele.name}`}
+                >
+                  <div className='text-white w-auto max-w-xs h-fit flex items-center space-x-2'>
+                    <p className='w-full rounded-full text-left px-5 bg-purple-500 transition-colors group-hover:bg-purple-700 font-extrabold'>
+                      {' '}
+                      {l - id}. {ele?.name}
+                    </p>
+                    <button
+                      className='hover:bg-purple-400 rounded-full p-1 text-xl opacity-0 group-hover:opacity-100 transition '
+                      type='button'
+                      onClick={(e) => {
+                        let x = '';
+                        x = prompt(
+                          `Delete exam ? [${ele.name}, eid:${ele.id}] (yes/no)`
+                        );
+                        if (x.toLocaleLowerCase() == 'yes') {
+                          deleteExam(ele?.id, () => {
+                            setData((data) => {
+                              return data.filter((item) => item.id !== ele?.id);
+                            });
+                          });
+                        } else alert('Failed');
+                      }}
+                    >
+                      <MdDelete className='text-xl text-red-600 hover:text-black rounded-full' />
+                    </button>
+                  </div>
+                  <ul className='grid grid-cols-1 lg:grid-cols-2 justify-between gap-3 items-start my-2'>
+                    <li className='p-2 text-blue-900 font-bold border border-fuchsia-500'>
+                      Exam Topic: {ele?.topic}
+                    </li>
+                    <li className='p-2 text-yellow-600 border border-fuchsia-500'>
+                      Exam Type: {ele?.category}
+                    </li>
+                    <li className='p-2 text-green-600 border border-fuchsia-500'>
+                      Exam Start:{' '}
+                      {`${exst.getDate()}/${
+                        exst.getMonth() + 1
+                      }/${exst.getFullYear()}, ${printTime(
+                        exst.getHours(),
+                        exst.getMinutes(),
+                        exst.getSeconds()
+                      )}`}
+                    </li>
+                    <li className='p-2 text-rose-500 border border-fuchsia-500'>
+                      Exam End:{' '}
+                      {`${exet.getDate()}/${
+                        exet.getMonth() + 1
+                      }/${exet.getFullYear()}, ${printTime(
+                        exet.getHours(),
+                        exet.getMinutes(),
+                        exet.getSeconds()
+                      )}`}
+                    </li>
+                    <li className='p-2 text-red-700 border border-fuchsia-500 font-semibold'>
+                      Exam Marks: {ele?.totalMarks}
+                    </li>
+                    <li className='p-2 text-blue-600 border border-fuchsia-500'>
+                      Exam Duration: {duration(exet.getTime(), exst.getTime())}
+                    </li>
+                  </ul>
+                  <AddQuestion
+                    eid={ele.id}
+                    category={ele?.category}
+                    startTime={exst.getTime()}
+                  />
                 </div>
-                <ul className='grid grid-cols-1 lg:grid-cols-2 justify-between gap-3 items-start my-2'>
-                  <li className='p-2 text-blue-900 font-bold border border-fuchsia-500'>
-                    Exam Topic: {ele?.topic}
-                  </li>
-                  <li className='p-2 text-yellow-600 border border-fuchsia-500'>
-                    Exam Type: {ele?.category}
-                  </li>
-                  <li className='p-2 text-green-600 border border-fuchsia-500'>
-                    Exam Start:{' '}
-                    {`${exst.getDate()}/${
-                      exst.getMonth() + 1
-                    }/${exst.getFullYear()}, ${printTime(
-                      exst.getHours(),
-                      exst.getMinutes(),
-                      exst.getSeconds()
-                    )}`}
-                  </li>
-                  <li className='p-2 text-rose-500 border border-fuchsia-500'>
-                    Exam End:{' '}
-                    {`${exet.getDate()}/${
-                      exet.getMonth() + 1
-                    }/${exet.getFullYear()}, ${printTime(
-                      exet.getHours(),
-                      exet.getMinutes(),
-                      exet.getSeconds()
-                    )}`}
-                  </li>
-                  <li className='p-2 text-red-700 border border-fuchsia-500 font-semibold'>
-                    Exam Marks: {ele?.totalMarks}
-                  </li>
-                  <li className='p-2 text-blue-600 border border-fuchsia-500'>
-                    Exam Duration: {duration(exet.getTime(), exst.getTime())}
-                  </li>
-                </ul>
-                <AddQuestion
-                  eid={ele.id}
-                  category={ele?.category}
-                  startTime={exst.getTime()}
-                />
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       ) : (
         <p className='capitalize text-rose-500 text-center text-xl font-semibold'>
@@ -631,6 +634,7 @@ const ExamLists = () => {
     </div>
   );
 };
+
 function addZero(e) {
   return e < 10 ? `0${e}` : e;
 }

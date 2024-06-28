@@ -21,7 +21,7 @@ const { Op } = require('sequelize');
 const { writeFileSync } = require('fs');
 
 const setExamInfo = async (req, res) => {
-  const data = req.body;
+  let data = req.body;
   if (!data.examStartTime || !data.examEndTime || !data.examCreationTime) {
     throw new BadRequestError(
       'examStartTime or examEndTime or examCreationTime data must not be empty!'
@@ -40,6 +40,7 @@ const setExamInfo = async (req, res) => {
   data.serverExamEndTime = serverExmEndTime.toString();
 
   const exam = await exams.create(data);
+  // console.log(data, exam);
 
   await redis.set(`question@${exam.id}`, exam.quesAns);
 
