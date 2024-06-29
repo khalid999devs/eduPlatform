@@ -16,7 +16,7 @@ function Timer({ durTime, classes }) {
         <span className="dot">:</span>
         <span className="timer">{parseTimer(duration(durTime).ss)}</span>
       </div>
-      {timeErr && <p className="text-rose-400 w-fit mx-auto">Time Over</p>}
+      {/* {timeErr && <p className="text-rose-400 w-fit mx-auto">Time Over</p>} */}
     </div>
   );
 }

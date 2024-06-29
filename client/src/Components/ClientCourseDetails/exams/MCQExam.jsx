@@ -120,12 +120,13 @@ const MCQExam = () => {
         {
           courseId: cid,
           examId: examid,
+          submittedTime: new Date.now(),
           answers: stdAns,
         },
         examid
       ).then(() => {
         setSubmition(false);
-        window.location.assign('../../');
+        // window.location.assign('../../');
       });
     } catch (error) {
       setSubmition(false);
