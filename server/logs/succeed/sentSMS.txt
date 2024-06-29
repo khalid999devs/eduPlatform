@@ -29,3 +29,5 @@
 {type:"Success",numbers:"01988892068",message:"You purchase for Example Course 5 is successful. Your order id is: #109639 ",fullTime:"11-2-2024 ,time-12:8"},
 {type:"Success",numbers:"01771470882",message:"Hello, This is test SMS",fullTime:"16-2-2024 ,time-18:49"},
 {type:"Success",numbers:"01771470882",message:"You purchase for Organic course phase 1 is successful. Your order id is: #88782 ",fullTime:"26-6-2024 ,time-2:7"},
+{type:"Success",numbers:"01424546346",message:"You purchase for "Example Course 5" is successful. Your order id is: #19041   --ChemGenie",fullTime:"29-6-2024 ,time-5:20"},
+{type:"Success",numbers:"01540153659",message:"You purchase for "Organic course phase 1" is successful. Your order id is: #10481   --ChemGenie",fullTime:"29-6-2024 ,time-17:51"},

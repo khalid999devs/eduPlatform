@@ -9,6 +9,8 @@ function Stundet() {
   const [students, setData] = useState([]);
   const [skip, setskip] = useState(0);
   const [row, setrow] = useState(50);
+
+
   useEffect(() => {
     fetchStudents(skip, row, setData).then((res) => {
       if (res) setData(res.resutl);
@@ -41,8 +43,9 @@ function Stundet() {
               </section>
             </form>
           </div>
+
           {/* sutdent lists */}
-          <div className='flex justify-center overflow-y-scroll max-w-6xl w-full mx-auto border border-root_bluish'>
+          <div className='max-w-6xl h-auto w-full mx-auto border border-root_bluish'>
             <table className='w-full bg-slate-300 text-darkText shadow-md cursor-default select-text'>
               <thead className='w-full'>
                 <tr className='text-darkText text-md text-left'>
@@ -69,13 +72,14 @@ function Stundet() {
                   </th>
                 </tr>
               </thead>
-              <tbody className='overflow-y-scroll '>
+              <tbody>
                 {students
                   .filter((val) => val.phone.includes(phone))
                   .map((student, id, arr) => {
                     return (
                       <StudentList
-                        id={id}
+                        id={student?.id}
+                        sid={id}
                         key={id}
                         name={student.fullName}
                         email={student.email}
@@ -100,6 +104,7 @@ function Stundet() {
 export default Stundet;
 const StudentList = ({
   id,
+  sid,
   avatar,
   name,
   email,
@@ -108,15 +113,16 @@ const StudentList = ({
   address,
   fb,
   regDate,
+
 }) => {
   return (
     <tr
       key={id}
-      className={`hover:bg-gray-500/20 h-fit row-span-1 transition-colors duration-100 ease-in border-b ${
-        id != arr.length - 1 ? ' border-root_bluish' : 'border-transparent'
-      }`}
+      className={`hover:bg-gray-500/20 h-fit row-span-1 transition-colors duration-100 ease-in border-b ${id != arr.length - 1 ? ' border-root_bluish' : 'border-transparent'
+        } `}
+
     >
-      <td className='py-2 text-center'>{id + 1}</td>
+      <td className='py-2 text-center'>{sid + 1}</td>
       <td className='py-2 text-center font-semibold '>
         {avatar && (
           <img

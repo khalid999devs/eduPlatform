@@ -34,7 +34,7 @@ html {
   @apply gap-3 flex items-center mx-auto;
 }
 
-.create > section {
+.create>section {
   @apply mb-4 w-full flex justify-between flex-col items-start md:flex-row;
 }
 
@@ -42,11 +42,11 @@ html {
   @apply text-sm;
 }
 
-.create > section > input {
+.create>section>input {
   @apply border-0 outline-none p-2.5 rounded-md bg-slate-900/40 text-yellow-50;
 }
 
-.create > section > input:focus {
+.create>section>input:focus {
   @apply border-0 outline-none;
 }
 
@@ -102,6 +102,7 @@ form.gallery-form section input {
   animation: rot-360 15s linear infinite;
   transform-origin: center;
 }
+
 .anime-rot-fast {
   animation: rot-360-fast 1s linear infinite;
   transform-origin: center;
@@ -111,23 +112,32 @@ form.gallery-form section input {
   0% {
     transform: rotate(0deg);
   }
+
   50% {
     transform: rotate(180deg);
   }
+
   100% {
     transform: rotate(720deg);
   }
 }
+
 @keyframes rot-360 {
   0% {
     transform: rotate(0deg);
     filter: brightness(1);
   }
+
   50% {
     filter: brightness(1.5);
   }
+
   100% {
     transform: rotate(360deg);
     filter: brightness(1);
   }
+}
+
+.clientDash .active {
+  @apply bg-secondary-main;
 }

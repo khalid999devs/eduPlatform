@@ -14,72 +14,85 @@ const CQExam = () => {
   const [data, setData] = useState([]);
   const { cid, examid } = useParams();
   const [examInfo, setEInfo] = useState({});
-  const [curtime,setcurtime] = useState(new Date())
+  const [curtime, setcurtime] = useState(new Date())
   useEffect(() => {
     getQuesClient(examid, "question", setData);
     getSingleExamClient(cid, examid, setEInfo);
+    const jsonData = { "questions": [{ "id": "5@7834076", "title": "New Ques 5?", "ansType": "options", "quesOptions": [{ "id": 1, "title": "op1" }, { "id": 2, "title": "op2" }, { "id": 3, "title": "op3" }, { "id": 4, "title": "op4" }, { "id": 5, "title": "op5" }], "mark": 5 }, { "id": "5@8161241", "title": "New Ques 1?", "ansType": "options", "quesOptions": [{ "id": 1, "title": "op1" }, { "id": 2, "title": "op2" }, { "id": 3, "title": "op3" }], "mark": 15 }, { "id": "5@8204966", "title": "New Ques 2?", "ansType": "options", "quesOptions": [{ "id": 1, "title": "op1" }, { "id": 2, "title": "op2" }, { "id": 3, "title": "op3" }, { "id": 4, "title": "op4" }], "mark": 13 }, { "id": "5@8760079", "title": "New Question Image", "ansType": "options", "category": "null", "quesOptions": [{ "id": 1, "title": "op1" }, { "id": 2, "title": "op2" }, { "id": 3, "title": "op3" }, { "id": 4, "title": "op4" }], "mark": 17, "images": [{ "url": "uploads\\questions\\exam@5\\New_Question_Im\\New_Question_Im_exam@5_1719568760062.png", "originalName": "khalid ahammed.png" }, { "url": "uploads\\questions\\exam@5\\New_Question_Im\\New_Question_Im_exam@5_1719568760069.jpeg", "originalName": "pexels-fotoaibe-813692.jpg" }] }], "answers": [{ "id": "5@7834076", "quesAns": [3] }, { "id": "5@8161241", "quesAns": [2, 3] }, { "id": "5@8204966", "quesAns": [2] }, { "id": "5@8760079", "quesAns": [1] }] }
+
+    setData(jsonData.questions);
+
   }, [examid]);
-  
-  const startTime = new Date(examInfo?.examStartTime);
-  const endTime = new Date(examInfo?.examEndTime);
-  useEffect(()=>{
+
+  const startTime = new Date(Number(examInfo?.examStartTime));
+  const endTime = new Date(Number(examInfo?.examEndTime));
+  useEffect(() => {
     const loop = setInterval(() => {
       setcurtime(new Date());
     }, 1000);
-    return ()=> clearInterval(loop)
-  },[])
+    return () => clearInterval(loop)
+  }, [])
+  useEffect(() => {
+    function blockReload(event) {
+      if (data?.length > 0)
+        event?.preventDefault();
+    }
+    window.addEventListener("beforeunload", blockReload);
+    return () => {
+      window.removeEventListener("beforeunload", blockReload);
+    }
 
+  }, [])
   return (
     <div className="w-3/4 mx-auto my-10 min-h-screen">
       <ExamInfo data={examInfo} startTime={startTime} endTime={endTime} curtime={curtime} />
       {data?.length > 0
         ? data?.map((quest, id) => {
-            return (
-              <Questions
-                key={`id${id}`}
-                id={id}
-                qid={quest.id}
-                cid={cid}
-                eid={examid}
-                mark={quest?.mark}
-                title={quest?.title}
-                images={quest?.images}
-              />
-            );
-          })
+          return (
+            <Questions
+              key={`id${id}`}
+              id={id}
+              qid={quest.id}
+              cid={cid}
+              eid={examid}
+              mark={quest?.mark}
+              title={quest?.title}
+              images={quest?.images}
+            />
+          );
+        })
         : null}
     </div>
   );
 };
-const ExamInfo = ({ data, startTime, endTime,curtime }) => {
+const ExamInfo = ({ data, startTime, endTime, curtime }) => {
   let examDur = endTime?.getTime() - startTime?.getTime();
   const durTime = endTime?.getTime() - curtime?.getTime();
   return (
     <div className="text-left px-5 py-2 bg-white">
-      
+
       <h2>Exam name: {data?.name}</h2>
       <h2>Exam topic: {data?.topic}</h2>
       <h2 className="font-semibold">Total Mark: {data?.totalMarks}</h2>
       <h2>
         Start Time:{" "}
-        {`${startTime?.getDate()}-${
-          startTime?.getMonth() + 1
-        }-${startTime?.getFullYear()} || ${startTime?.getHours()}:${startTime?.getMinutes()}:${startTime?.getSeconds()}`}{" "}
-        {"(24H)"}
+
+
+        {startTime?.toLocaleTimeString()} {`[${startTime?.toLocaleDateString()}]`}
       </h2>
       <h2>
-        Finish Time:{" "}
-        {`${endTime?.getDate()}-${
-          endTime?.getMonth() + 1
-        }-${endTime?.getFullYear()} || ${endTime?.getHours()}:${endTime?.getMinutes()}:${endTime?.getSeconds()}`}{" "}
-        {"(24H)"}
+        End Time:{" "}
+
+
+        {endTime?.toLocaleTimeString()} {`[${endTime?.toLocaleDateString()}]`}
       </h2>
+
 
       <h2 className="font-semibold">
         Total Duration: {duration(examDur).hh}:{duration(examDur).mm}:
         {duration(examDur).ss}
       </h2>
-      <Timer durTime={durTime} classes={"p-1 m-5"}/>
+      <Timer durTime={durTime} classes={"p-1 m-5"} />
     </div>
   );
 };
@@ -140,15 +153,15 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
       <section className="flex flex-wrap gap-5 p-5">
         {images?.length > 0
           ? images?.map((image) => {
-              return (
-                <img
-                  className="max-w-sm p-0 rounded-lg overflow-hidden"
-                  width={600}
-                  src={reqImgWrapper(image?.url)}
-                  alt=""
-                />
-              );
-            })
+            return (
+              <img
+                className="max-w-sm p-0 rounded-lg overflow-hidden"
+                width={600}
+                src={reqImgWrapper(image?.url)}
+                alt=""
+              />
+            );
+          })
           : null}
       </section>
       <form onSubmit={handleSubmit} hidden={disable}>
@@ -163,23 +176,24 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
             id={`files${qid}`}
             multiple={true}
             hidden
+            accept={["image/*"]}
             onChange={(e) => setFiles([...e.target.files])}
           />
         </label>
         <section className="flex flex-wrap w-1/2 gap-2">
           {files.length > 0
             ? files.map((file) => {
-                return (
-                  <img
-                    src={URL.createObjectURL(file)}
-                    width={150}
-                    height={150}
-                    onClick={() => {
-                      setFiles(files.filter((f) => f != file));
-                    }}
-                  />
-                );
-              })
+              return (
+                <img
+                  src={URL.createObjectURL(file)}
+                  width={150}
+                  height={150}
+                  onClick={() => {
+                    setFiles(files.filter((f) => f != file));
+                  }}
+                />
+              );
+            })
             : null}
         </section>
 

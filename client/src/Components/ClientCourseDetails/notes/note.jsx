@@ -50,9 +50,8 @@ const Resource = ({ ele, id }) => {
         }}
       >
         <HiChevronRight
-          className={`font-bold text-lg transition-transform ${
-            drop ? 'rotate-90' : 'rotate-0'
-          }`}
+          className={`font-bold text-lg transition-transform ${drop ? 'rotate-90' : 'rotate-0'
+            }`}
         />{' '}
         {ele?.Title}
       </p>
@@ -85,7 +84,7 @@ const Resource = ({ ele, id }) => {
         )}
         {/* drive links */}
         {drop && (
-          <div className='border-2 border-blue-400'>
+          <div className='border-2 border-blue-400 grid'>
             <p className='pl-5 underline decoration-dotted'>Drive Links: </p>
             {driveLinks?.length == 0 && (
               <p className='mx-14 text-red-600'>No Links</p>
@@ -94,11 +93,11 @@ const Resource = ({ ele, id }) => {
               return (
                 <a
                   key={`${val}${uid}`}
-                  className='underline mx-14 w-fit hover:text-purple-700'
+                  className='underline mx-14 w-fit hover:text-purple-700 break-all'
                   href={val}
                   target='_blank'
                 >
-                  {val}
+                  Link {uid + 1}
                 </a>
               );
             })}

@@ -33,6 +33,7 @@ const MCQExam = () => {
     return () => clearInterval(loop);
   }, []);
   useEffect(() => {
+
     if (endTime.getTime() - time.getTime() > 0)
       setlocaldur(endTime.getTime() - time.getTime());
   }, [time]);
@@ -43,8 +44,21 @@ const MCQExam = () => {
           return { questionId: e?.id, optionsId: [] };
         })
       );
+
     }
-  }, [questions?.length > 0]);
+
+    function blockReload(event) {
+      if (data?.length > 0 && !finish) {
+
+        event?.preventDefault()
+
+      }
+    }
+    window.addEventListener("beforeunload", blockReload);
+    return () => {
+      window.removeEventListener("beforeunload", blockReload);
+    }
+  }, [questions?.length]);
 
   useEffect(() => {
     if (localDuration !== null)
@@ -52,7 +66,7 @@ const MCQExam = () => {
         handleSubmit();
       }
   }, [localDuration]);
-  console.log(questions);
+  // console.log(questions);
   const OptionsMemo = ({ id, ques, stdAns, localDuration }) => {
     return (
       <ul className='my-1'>
@@ -64,9 +78,8 @@ const MCQExam = () => {
           return (
             <li
               key={`q${id}?ans${index}`}
-              className={`flex items-center gap-2 space-y-1 cursor-pointer hover:bg-secondary-main rounded-md transition-colors p-1 touch-pan-left ${
-                localDuration < 0 ? 'pointer-events-none' : ''
-              }`}
+              className={`flex items-center gap-2 space-y-1 cursor-pointer hover:bg-secondary-main rounded-md transition-colors p-1 touch-pan-left ${localDuration < 0 ? 'pointer-events-none' : ''
+                }`}
               onClick={() => {
                 if (
                   fID >= 0 &&
@@ -79,11 +92,10 @@ const MCQExam = () => {
               }}
             >
               <span
-                className={`p-px text-black ring-black w-5 h-5 flex justify-center items-center ring-1 rounded-full ${
-                  stdAns[fID]?.optionsId?.includes(option?.id)
-                    ? 'bg-secondary-main'
-                    : 'bg-primary-main'
-                }`}
+                className={`p-px text-black ring-black w-5 h-5 flex justify-center items-center ring-1 rounded-full ${stdAns[fID]?.optionsId?.includes(option?.id)
+                  ? 'bg-secondary-main'
+                  : 'bg-primary-main'
+                  }`}
               >
                 {index + 1}
               </span>
@@ -108,12 +120,13 @@ const MCQExam = () => {
         {
           courseId: cid,
           examId: examid,
+          submittedTime: new Date.now(),
           answers: stdAns,
         },
         examid
       ).then(() => {
         setSubmition(false);
-        window.location.assign('../../');
+        // window.location.assign('../../');
       });
     } catch (error) {
       setSubmition(false);
@@ -132,7 +145,7 @@ const MCQExam = () => {
       )}
       {/*it will show remainder timer  */}
       <Timer durTime={localDuration} classes={'fixed top-20 right-5'} />{' '}
-      <ExamInfo data={exDetails} startTime={startTime} endTime={endTime} />
+      <ExamInfo data={exDetails} startTime={startTime?.toLocaleTimeString()} endTime={endTime?.toLocaleTimeString()} examDur={endTime?.getTime() - startTime?.getTime()} />
       <h1 className='text-xl text-center font-bold my-4'>MCQ Exam</h1>
       <form onSubmit={handleSubmit}>
         {questions.map((ques, id) => (
@@ -164,8 +177,9 @@ const MCQExam = () => {
     </div>
   );
 };
-const ExamInfo = ({ data, startTime, endTime }) => {
-  let examDur = endTime?.getTime() - startTime?.getTime();
+const ExamInfo = ({ data, startTime, endTime, examDur }) => {
+
+
   return (
     <div className='text-left px-5 py-2 bg-white'>
       <h2>Exam name: {data?.name}</h2>
@@ -173,20 +187,16 @@ const ExamInfo = ({ data, startTime, endTime }) => {
       <h2 className='font-semibold'>Total Mark: {data?.totalMarks}</h2>
       <h2>
         Start Time:{' '}
-        {`${startTime?.getDate()}-${
-          startTime?.getMonth() + 1
-        }-${startTime?.getFullYear()} || ${startTime?.getHours()}:${startTime?.getMinutes()}:${startTime?.getSeconds()}`}
+        {startTime}
       </h2>
       <h2>
         Finish Time:{' '}
-        {`${endTime?.getDate()}-${
-          endTime?.getMonth() + 1
-        }-${endTime?.getFullYear()} || ${endTime?.getHours()}:${endTime?.getMinutes()}:${endTime?.getSeconds()}`}
+        {endTime}
       </h2>
 
       <h2 className='font-semibold'>
-        Total Duration: {duration(examDur).hh}:{duration(examDur).mm}:
-        {duration(examDur).ss}
+        Total Duration: {duration(examDur).hh?.toString().padStart(2, 0)}:{duration(examDur).mm?.toString().padStart(2, 0)}:
+        {duration(examDur).ss?.toString().padStart(2, 0)}
       </h2>
     </div>
   );

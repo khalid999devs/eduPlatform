@@ -1,16 +1,36 @@
 .video-container {
   position: relative;
-  width: 100vw;
+  width: auto;
   height: auto;
-  max-width: 1200px;
+  /* max-width: 1200px; */
   aspect-ratio: 16/9;
   display: grid;
   align-items: center;
   margin: 50pt auto;
-  box-shadow: 0px 20px 30pt -20pt #f0a5;
+  box-shadow: 0px 20px 30pt -20pt #ff2d11, 0px -20px 30pt -20pt #1180ff,
+    20px 0px 30pt -10pt #33ff33,
+    -20px 0px 30pt -10pt #f0ff67;
   overflow: hidden;
   z-index: 50;
   background-color: #000;
+  border-radius: 12pt;
+  animation: videoEffect 5s linear infinite forwards;
+}
+
+@keyframes videoEffect {
+
+  0%,
+  100% {
+    box-shadow: 0px 20px 30pt -20pt #ff2d11, 0px -20px 30pt -20pt #1180ff,
+      20px 0px 30pt -10pt #33ff33,
+      -20px 0px 30pt -10pt #f0ff67;
+  }
+
+  60% {
+    box-shadow: 0px 20px 30pt -20pt #e7ff11, 0px -20px 30pt -20pt #7811ff,
+      20px 0px 30pt -10pt #ff8f33,
+      -20px 0px 30pt -10pt #67ff7b;
+  }
 }
 
 .customHeader {
@@ -23,11 +43,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #111111;
+  background: #3f3f3f55;
   color: white;
   font-weight: bold;
   opacity: 100;
   pointer-events: all;
+  backdrop-filter: blur(12px);
 }
 
 iframe {
@@ -116,16 +137,18 @@ iframe {
 
 .video-container li.speed {
   width: 100%;
-  padding: 0 5pt;
-  background-color: white;
+  text-align: center;
+  font-size: small;
+  margin-bottom: 2pt;
+
+  background: white;
   border-radius: 5px;
-  transition: all 200ms ease-in;
-  margin: 0 auto;
+  transition: all 100ms ease;
   color: #232323;
 }
 
-.speed:hover {
-  cursor: pointer;
+.video-container li.speed:hover {
+  background: #0872fd;
   color: aliceblue;
-  background-color: #0872fd;
+  cursor: pointer;
 }

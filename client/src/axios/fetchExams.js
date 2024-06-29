@@ -107,6 +107,7 @@ const getQuesClient = async (examId, mode, setData) => {
         if (res.data.succeed) {
           // setData(res.data?.result?.[id]);
           setData(res.data.result);
+          console.log(res.data);
         }
       })
       .catch((err) => {

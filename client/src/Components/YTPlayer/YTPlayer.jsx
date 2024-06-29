@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useLayoutEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./style.css";
 import {
@@ -7,6 +7,7 @@ import {
   FaPlayCircle,
   FaPauseCircle,
 } from "react-icons/fa";
+import { MdFullscreen, MdFullscreenExit } from 'react-icons/md'
 
 const YTPlayer = () => {
   const playerRef = useRef(null);
@@ -19,6 +20,7 @@ const YTPlayer = () => {
   const [speed, setSpeed] = useState(1);
   const [quality, setQuality] = useState("auto");
   const [qualities, setQualities] = useState([]);
+  const [isFullScreen, setFullScreen] = useState(false)
   const { cid, videoId } = useParams();
 
   const togglePlay = () => {
@@ -82,10 +84,10 @@ const YTPlayer = () => {
     }
   };
   const pauseVideo = () => {
-    if (playerRef.current) playerRef.current.pauseVideo();
+    if (playerRef.current) playerRef.current?.pauseVideo();
   };
   const playVideo = () => {
-    if (playerRef.current) playerRef.current.playVideo();
+    if (playerRef.current) playerRef.current?.playVideo();
   };
   const onPlayerReady = (event) => {
     // You can perform actions when the player is ready
@@ -101,17 +103,17 @@ const YTPlayer = () => {
     // For example, you can get the current time of the video:
 
     setInterval(() => {
-      setCurrentTime(playerRef.current.getCurrentTime());
+      setCurrentTime(playerRef.current?.getCurrentTime());
     }, 1000);
   };
 
   const forwardVideo = () => {
-    const newTime = playerRef.current.getCurrentTime() + 10;
-    playerRef.current.seekTo(newTime, true);
+    const newTime = playerRef.current?.getCurrentTime() + 10;
+    playerRef.current?.seekTo(newTime, true);
   };
   const backwardVideo = () => {
-    const newTime = playerRef.current.getCurrentTime() - 10;
-    playerRef.current.seekTo(newTime, true);
+    const newTime = playerRef.current?.getCurrentTime() - 10;
+    playerRef.current?.seekTo(newTime, true);
   };
 
   const handleSeekChange = (e) => {
@@ -119,19 +121,19 @@ const YTPlayer = () => {
     const newTime = parseFloat(e.target.value);
     setCurrentTime(newTime);
     if (playerRef.current) {
-      playerRef.current.seekTo(newTime, true);
+      playerRef.current?.seekTo(newTime, true);
     }
   };
   const handleSpeedChange = (newSpeed) => {
     setSpeed(newSpeed);
     if (playerRef.current) {
-      playerRef.current.setPlaybackRate(newSpeed, true);
+      playerRef.current?.setPlaybackRate(newSpeed, true);
     }
   };
   const handleQualityChange = (newSpeed) => {
     setQuality(newSpeed);
     if (playerRef.current) {
-      playerRef.current.setPlaybackQuality(newSpeed, true);
+      playerRef.current?.setPlaybackQuality(newSpeed, true);
     }
   };
   const showSpeed = () => {
@@ -139,15 +141,15 @@ const YTPlayer = () => {
   };
   const showQuality = () => {
     setsquality((pre) => !pre);
-    setQualities(playerRef.current.playerInfo.availableQualityLevels);
+    setQualities(playerRef.current?.playerInfo.availableQualityLevels);
   };
-  const speeds = [0.75, 1, 1.25, 1.5, 1.75, 2];
+  const speeds = [0.5, 1, 1.5, 2];
+
   const controller = useMemo(() => {
     return (
       <div
-        className={`custom-controls text-sm hover:opacity-100 group-hover:opacity-100 delay-300 ${
-          isPlaying ? "hover:opacity-100 opacity-0" : "opacity-100"
-        }`}
+        className={`custom-controls text-sm hover:opacity-100 group-hover:opacity-100 delay-300 ${isPlaying ? "hover:opacity-100 opacity-0" : "opacity-100"
+          }  `}
         style={{
           zIndex: "1000",
         }}
@@ -159,6 +161,7 @@ const YTPlayer = () => {
         />
         {/* forward of backward */}
         <div
+          className="text-xs"
           style={{
             display: "flex",
             gap: "5pt",
@@ -187,6 +190,7 @@ const YTPlayer = () => {
             <FaForward />
           </button>
         </div>
+        {/* other controller */}
         <div
           className="vidSetting"
           style={{
@@ -196,12 +200,17 @@ const YTPlayer = () => {
             alignItems: "center",
           }}
         >
-          <button
-            style={{ width: "fit-content", position: "relative" }}
-            onClick={showSpeed}
-          >
-            Speed
-            <ul onClick={showSpeed} className="absolute left-4">
+          {/* speed controll */}
+          <div className="relative">
+
+            <button
+              style={{ width: "fit-content", position: "relative" }}
+              onClick={showSpeed}
+              className="text-xs"
+            >
+              Speed
+            </button>
+            <ul onClick={showSpeed} className="absolute left-2">
               {sspeed &&
                 speeds.map((ele, id) => {
                   return (
@@ -213,12 +222,14 @@ const YTPlayer = () => {
                         showSpeed();
                       }}
                     >
-                      {ele} x
+                      {`${ele}x`}
                     </li>
                   );
                 })}
             </ul>
-          </button>
+          </div>
+
+          {/* quality -- hidden by now */}
           <button
             style={{ width: "fit-content", display: "none" }}
             onClick={showQuality}
@@ -243,19 +254,27 @@ const YTPlayer = () => {
             </ul>
           </button>
         </div>
+        {/* duration shower */}
         <p
-          className="text-xs md:text-base"
+          className="text-xs pointer-events-none"
           style={{
             backgroundColor: "#0872fd",
             padding: "5pt",
             borderRadius: "5pt",
-            letterSpacing: "1pt",
+            letterSpacing: "-.5px",
           }}
         >
           {`${convertTime(currentTime).m}:${convertTime(currentTime).s}`}
           {" \\ "}
           {`${convertTime(duration).m}:${convertTime(duration).s}`}
         </p>
+        <button className="text-white" style={{
+          display: 'none'
+        }} onClick={() => {
+          setFullScreen(pre => !pre)
+        }}>
+          {!isFullScreen ? <MdFullscreen /> : <MdFullscreenExit />}
+        </button>
       </div>
     );
   }, [
@@ -265,98 +284,87 @@ const YTPlayer = () => {
     togglePlay,
     isPlaying,
     handleSeekChange,
+    setFullScreen, isFullScreen
   ]);
+
   return (
     <div
-      className="fixed top-0 left-0 w-screen h-screen bg-black z-50"
-      id={videoId + cid}
+      className="video-container group "
+      onContextMenu={(e) => e.preventDefault()}
+      onKeyDown={(e) => {
+        if (
+          e.key === "F12" ||
+          (e.ctrlKey && e.shiftKey && e.key === "I") ||
+          e.key === "Tab"
+        ) {
+          e.preventDefault();
+        }
+      }}
+      onKeyDownCapture={(e) => {
+        if (
+          e.key === "F12" ||
+          (e.ctrlKey && e.shiftKey && e.key === "I") ||
+          e.key === "Tab"
+        ) {
+          e.preventDefault();
+        }
+      }}
     >
       <div
-        className="video-container group"
+        ref={playerRef}
         onContextMenu={(e) => e.preventDefault()}
         onKeyDown={(e) => {
           if (
             e.key === "F12" ||
-            (e.ctrlKey && e.shiftKey && e.key === "I") ||
+            (e.ctrlKey && e.shiftKey && e.code === "I") ||
             e.key === "Tab"
           ) {
             e.preventDefault();
           }
         }}
-        onKeyDownCapture={(e) => {
-          if (
-            e.key === "F12" ||
-            (e.ctrlKey && e.shiftKey && e.key === "I") ||
-            e.key === "Tab"
-          ) {
-            e.preventDefault();
-          }
+
+      />
+      {/* video default control blocker */}
+      <div
+        className="blockbefore transition"
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          backgroundColor: !isPlaying ? "#1116" : "#0000",
+          zIndex: "0",
+          pointerEvents: "all",
+        }}
+        onClick={() => {
+          togglePlay();
+          if (!isPlaying) playVideo();
+          else pauseVideo();
+        }}
+      />
+      <div
+        className={`centerController ${isPlaying ? "hide" : "active"}`}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <div
-          ref={playerRef}
-          onContextMenu={(e) => e.preventDefault()}
-          onKeyDown={(e) => {
-            if (
-              e.key === "F12" ||
-              (e.ctrlKey && e.shiftKey && e.key === "I") ||
-              e.key === "Tab"
-            ) {
-              e.preventDefault();
-            }
-          }}
-          onKeyDownCapture={(e) => {
-            if (
-              e.key === "F12" ||
-              (e.ctrlKey && e.shiftKey && e.key === "I") ||
-              e.key === "Tab"
-            ) {
-              e.preventDefault();
-            }
-          }}
+        <PPButton
+          Click={togglePlay}
+          isPlaying={isPlaying}
+          pauseVideo={pauseVideo}
+          playVideo={playVideo}
         />
-        <div
-          className="blockbefore transition-colors"
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            backgroundColor: !isPlaying ? "#0005" : "#0000",
-            zIndex: "0",
-            pointerEvents: "all",
-          }}
-          onClick={() => {
-            togglePlay();
-            if (!isPlaying) playVideo();
-            else pauseVideo();
-          }}
-        />
-        <div
-          className={`centerController ${isPlaying ? "hide" : "active"}`}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PPButton
-            Click={togglePlay}
-            isPlaying={isPlaying}
-            pauseVideo={pauseVideo}
-            playVideo={playVideo}
-          />
-        </div>
-        <div
-          className="customHeader"
-          style={{
-            // display: "none",
-            zIndex: "1000",
-          }}
-        >
-          <p>{title}</p>
-        </div>
-        {controller}
       </div>
+      <div
+        className="customHeader transition-opacity duration-100 ease-out"
+        style={{
+          zIndex: "1000",
+        }}
+      >
+        <p>{title}</p>
+      </div>
+      {controller}
     </div>
   );
 };
