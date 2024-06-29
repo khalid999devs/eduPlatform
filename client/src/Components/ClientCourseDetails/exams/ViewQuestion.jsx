@@ -9,6 +9,7 @@ const ViewQuestion = () => {
   useEffect(() => {
     getQuesClient(examid, "answer", setData);
   }, []);
+  console.table(cid, examid, data);
   return (
     <div>
       <h1 className="w-fit mx-auto my-10 font-bold uppercase text-xl">
@@ -21,7 +22,8 @@ const ViewQuestion = () => {
           if (ele?.images && ele?.ansType == "file") {
             images = ele?.images;
           }
-          return (
+          //return
+          (
             <section
               key={`quesid${ele?.id}`}
               className="w-[400px] max-w-sm m-5 p-5 rounded-md ring-4 ring-yellow-400"

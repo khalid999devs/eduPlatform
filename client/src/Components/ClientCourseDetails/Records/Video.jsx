@@ -12,7 +12,7 @@ function Video({ sl, title = "", link = "", desc = "" }) {
       </p>
       <p className="text-left pl-5">{title}</p>
       <span
-        className="flex items-center justify-center gap-1 hover:ring-red-500 hover:ring transition-all cursor-default"
+        className="flex items-center justify-center gap-1 bg-rose-200 hover:bg-red-400 hover:text-white cursor-pointer rounded-md transition-all cursor-default"
         target="_blank"
         title={title}
         onClick={() => {
@@ -30,7 +30,7 @@ function Video({ sl, title = "", link = "", desc = "" }) {
           return (
             <>
               {" "}
-              <span key={value}>{value}</span> <br />{" "}
+              <span key={`value_${value}`}>{value}</span> <br />{" "}
             </>
           );
         })}

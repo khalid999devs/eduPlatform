@@ -13,9 +13,10 @@ function ChatBox({ courseId, isAdmin }) {
 
   useEffect(() => {
     fetchChat(courseId, setChats);
-    setInterval(() => {
+    let loop = setInterval(() => {
       fetchChat(courseId, setChats);
     }, 15000);
+    return () => clearInterval(loop)
   }, [courseId]);
   return (
     <div className="bg-trans_bluish/0 rounded-md py-1 max-w-6xl  mx-auto h-[85vh] overflow-y-hidden">
@@ -37,7 +38,7 @@ function ChatBox({ courseId, isAdmin }) {
           setReplyId={setReplyId}
           cid={courseId}
           replyMsg={
-            chats.sort((a, b) => {
+            chats?.sort((a, b) => {
               let x = a.createdAt;
               let y = b.createdAt;
               if (x < y) return -1;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   AiFillExperiment,
   AiFillPlayCircle,
@@ -24,63 +24,61 @@ const StudentCoursePage = () => {
         className="bg-primary-main rounded-b-lg p-2 border border-t-transparent border-onPrimary-main shadow-lg shadow-onPrimary-main/20 my-8
       "
       >
-        <ul className="capitalize flex gap-5 justify-center">
+        <ul className="capitalize flex gap-5 justify-center clientDash">
           <li>
-            <button
-              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold ${
-                currentTab == "details" ? "bg-secondary-main" : ""
-              }`}
+            <NavLink
+              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold`}
+              to={"details"}
               onClick={() => {
                 handleTab("details");
               }}
             >
               <span className="hidden md:inline-block">Details</span>{" "}
               <PiNotebook className="text-lg" />
-            </button>
+            </NavLink>
           </li>
           <li>
-            <button
-              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold ${
-                currentTab == "record" ? "bg-secondary-main" : ""
-              }`}
+            <NavLink
+              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold`}
+              to={"record"}
               onClick={() => {
                 handleTab("record");
               }}
             >
               <span className="hidden md:inline-block">record</span>{" "}
               <AiFillPlayCircle className="text-lg" />
-            </button>
+            </NavLink>
           </li>
           <li>
-            <button
-              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold ${
-                currentTab == "exam" ? "bg-secondary-main" : ""
-              }`}
+            <NavLink
+              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold`}
+              to={'exam'}
               onClick={() => {
                 handleTab("exam");
               }}
             >
               <span className="hidden md:inline-block">Exam</span>{" "}
               <AiFillExperiment className="text-lg" />
-            </button>
+            </NavLink>
           </li>
           <li>
-            <button
-              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold ${
-                currentTab == "chat" ? "bg-secondary-main" : ""
-              }`}
+            <NavLink
+              className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold `}
+              to={'chat'}
               onClick={() => {
                 handleTab("chat");
               }}
             >
               <span className="hidden md:inline-block">Discussion</span>{" "}
               <AiFillWechat className="text-lg" />
-            </button>
+            </NavLink>
           </li>
         </ul>
       </nav>
 
-      <Outlet context={courseInfo} />
+      <div>
+        <Outlet context={courseInfo} />
+      </div>
     </div>
   );
 };
