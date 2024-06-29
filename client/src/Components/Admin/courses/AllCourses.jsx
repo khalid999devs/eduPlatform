@@ -11,15 +11,9 @@ function AllCourse() {
   }, []);
   if (isAdmin)
     return (
-<<<<<<< HEAD
-      <div className='w-full h-full items-center p-5 flex flex-col gap-5 xl:items-start '>
-        <div className='h-1/2 w-full flex flex-col items-center'>
-          <section className='float-left ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md my-4 flex'>
-=======
-      <div className="w-full h-full p-5 grid grid-cols-1 xl:grid-cols-2 gap-5 items-start overflow-auto">
-        <div className="h-auto w-full max-w-max flex flex-col items-center">
-          <section className="ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md my-4 flex">
->>>>>>> 6a7fa79a1495694840da12c89563e81168a34721
+      <div className='w-full h-full p-5 grid grid-cols-1 xl:grid-cols-2 gap-5 items-start overflow-auto'>
+        <div className='h-auto w-full max-w-max flex flex-col items-center'>
+          <section className='ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md my-4 flex'>
             <input
               className='border-0 outline-none  bg-transparent'
               name='titleSrc'
@@ -32,13 +26,8 @@ function AllCourse() {
               <MdSearch />
             </label>
           </section>
-<<<<<<< HEAD
-          <div className='flex justify-center flex-auto overflow-y-scroll w-full min-w-max h-auto gap-1 items-start my-4 px-2  resize'>
+          <div className='flex justify-center flex-auto overflow-y-scroll w-full min-w-max h-full gap-1 items-start my-4 px-2 resize-none'>
             <table className='w-full mx-auto bg-slate-300 text-darkText shadow-md cursor-default select-none'>
-=======
-          <div className="flex justify-center flex-auto overflow-y-scroll w-full min-w-max h-full gap-1 items-start my-4 px-2 resize-none">
-            <table className="w-full mx-auto bg-slate-300 text-darkText shadow-md cursor-default select-none">
->>>>>>> 6a7fa79a1495694840da12c89563e81168a34721
               {/* title bar */}
               <thead className='sticky top-0 left-0'>
                 <tr className='w-full bg-slate-700 text-white'>
@@ -89,7 +78,7 @@ function AllCourse() {
           </div>
         </div>
 
-        <div className="flex-1 w-full">
+        <div className='flex-1 w-full'>
           <Outlet />
         </div>
       </div>
@@ -104,14 +93,9 @@ const Coursecard = ({ allData, id, sl, found }) => {
     >
       <td className=' text-center'>{sl + 1}</td>
       <td
-<<<<<<< HEAD
         className={`font-semibold tracking-normal capitalize text-sm text-left px-10 py-2 ${
           found ? 'border border-red-500' : ''
         } `}
-=======
-        className={`font-semibold tracking-normal capitalize text-sm text-left px-10 py-2 ${found ? "border border-red-500" : ""
-          } `}
->>>>>>> 6a7fa79a1495694840da12c89563e81168a34721
       >
         {allData.title} (cid:{allData.id})
       </td>
