@@ -1,4 +1,10 @@
-const { courses, exams, clientexams, clientcourses } = require('../models');
+const {
+  courses,
+  exams,
+  clientexams,
+  clientcourses,
+  sequelize,
+} = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -311,12 +317,12 @@ const addStuAnsFiles = async (req, res) => {
   });
 };
 
-async function processEvaluation(evaluationType) {
+async function processEvaluation(evaluationType, clientTime) {
   const allExams = await exams.findAll({ where: { isCronClosed: 0 } });
   const currentTime = Date.now();
 
   if (allExams.length < 1) {
-    return { msg: 'No exam to evaluate!', succeed: false };
+    return { msg: 'No exam to evaluate!', mode: 'noexam', succeed: false };
   }
 
   if (allExams.length > 0) {
@@ -326,7 +332,9 @@ async function processEvaluation(evaluationType) {
             (exam) => Number(exam.serverExamEndTime) < currentTime
           )
         : evaluationType === 'manual'
-        ? allExams
+        ? allExams.filter(
+            (exam) => Number(exam.examEndTime) + 10 * 60 * 1000 < currentTime
+          )
         : [];
 
     for (const exam of targetExams) {
@@ -398,7 +406,7 @@ async function processEvaluation(evaluationType) {
 
             otherData.examName = exam.name;
             otherData.topic = exam.topic;
-            otherData.category = oQuesAnsObj.category;
+            otherData.category = exam.category;
           });
 
           return {
@@ -409,12 +417,17 @@ async function processEvaluation(evaluationType) {
             score: score,
             isFileChecked: isFileChecked,
             otherData: JSON.stringify(otherData),
+            duration:
+              Number(stuAnswerObj.submittedTime) - Number(exam.examStartTime),
           };
         });
         // await clientexams.destroy({ where: { examId: exam.id } });
         await clientexams.bulkCreate(stuAnswers);
         exam.isCronClosed = 1;
+      } else {
+        exam.isCronClosed = 1;
       }
+
       if (!(stuAnsFiles?.length > 0)) {
         exam.isFinalClosed = 1;
       }
@@ -446,8 +459,13 @@ cron.schedule('0 0 0 * * *', async () => {
 });
 
 const manualEvaluateQuiz = async (req, res) => {
+  const { currTime } = req.query;
+  console.log(currTime);
   try {
-    const metaObj = await processEvaluation('manual');
+    const metaObj = await processEvaluation(
+      'manual',
+      currTime ? Number(currTime) : null
+    );
 
     let result = await clientexams.findAll();
     result = result.map((singleClientExam) => {
@@ -532,23 +550,30 @@ const getExamResultClient = async (req, res) => {
 };
 
 const getExamResultAdmin = async (req, res) => {
-  const { clientId, examId, mode } = req.body;
+  const { clientId, examId, mode, skip, rowNum } = req.body;
 
   let examResults = [];
   let msg = 'Success';
 
   if (mode === 'all') {
-    examResults = await clientexams.findAll({
-      where: { examId: examId },
-      attributes: { exclude: ['answers'] },
-    });
+    // examResults = await clientexams.findAll({
+    //   where: { examId: examId },
+    //   attributes: { exclude: ['answers'] },
+    // });
+    [examResults] = await sequelize.query(
+      `SELECT cl.id, cl.fullName, cl.image, cl.phone, cl.email, cl.userName, ce.score, ce.duration, ce.isFileChecked, ce.otherData, ce.examId FROM clients AS cl RIGHT JOIN clientexams AS ce ON cl.id = ce.clientId WHERE ce.examId=${examId} ORDER BY ce.score DESC, ce.duration ASC LIMIT ${
+        skip || 0
+      }, ${rowNum || 500};`
+    );
 
     examResults = examResults.map((examResult) => {
       return {
-        ...examResult.dataValues,
+        ...examResult,
         otherData: JSON.parse(examResult.otherData),
       };
     });
+
+    // console.log(examResults, Date.now());
   } else if (mode === 'single') {
     examResults = await getSingleClientExmResult(examId, clientId, examResults);
   } else {
@@ -630,6 +655,37 @@ const getExamInfosClient = async (req, res) => {
   });
 };
 
+const getCourseBasedExams = async (req, res) => {
+  const { courseId, mode } = req.body;
+  let result;
+  let whereClause = {
+    category: {
+      [Op.or]: [mode, 'quiz+written'],
+    },
+  };
+  if (mode === 'evaluated') {
+    whereClause.isFinalClosed = true;
+    delete whereClause.category;
+  }
+  if (!(courseId === 'all')) {
+    whereClause.courseId = courseId;
+  }
+
+  result = await exams.findAll({
+    where: whereClause,
+    attributes: {
+      exclude: ['quesAns', 'serverExamEndTime', 'updatedAt'],
+    },
+    order: [['id', 'DESC']],
+  });
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully fetched the exams data',
+    result,
+  });
+};
+
 module.exports = {
   setExamInfo,
   addSingleQuesAns,
@@ -644,4 +700,5 @@ module.exports = {
   getExamResultAdmin,
   getExam,
   getExamInfosClient,
+  getCourseBasedExams,
 };

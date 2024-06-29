@@ -134,14 +134,24 @@ const getPubSingleCourse = async (req, res) => {
 };
 
 const getPubAllCourses = async (req, res) => {
-  const allCourses = await courses.findAll({
-    attributes: { exclude: ['classInfo'] },
-  });
-  if (allCourses.length > 0) {
-    allCourses.forEach((course) => {
-      course.instructor = JSON.parse(course.instructor);
+  const { mode } = req.query;
+  let allCourses;
+  if (!(mode === 'short')) {
+    allCourses = await courses.findAll({
+      attributes: { exclude: ['classInfo'] },
     });
+    if (allCourses.length > 0) {
+      allCourses.forEach((course) => {
+        course.instructor = JSON.parse(course.instructor);
+      });
+    }
+  } else {
+    allCourses = await courses.findAll({
+      attributes: ['id', 'title'],
+    });
+    // console.log(mode);
   }
+
   res.status(200).json({
     succeed: true,
     msg: 'All courses found',

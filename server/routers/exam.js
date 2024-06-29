@@ -14,6 +14,7 @@ const {
   getExamResultAdmin,
   getExam,
   getExamInfosClient,
+  getCourseBasedExams,
 } = require('../controllers/exam');
 const adminValidate = require('../middlewares/adminTokenVerify');
 const clientValidate = require('../middlewares/clientTokenVerify');
@@ -42,6 +43,7 @@ router.post(
   upload.array('examsAns'),
   addStuAnsFiles
 );
+router.post('/get-course-based-exams', adminValidate, getCourseBasedExams);
 
 router.put('/delete-single-ques', adminValidate, deleteSingleQuesAns);
 router.put('/edit-exam-info/:id', adminValidate, editExamInfo);

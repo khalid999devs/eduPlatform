@@ -48,6 +48,9 @@ import ContactAdmin from './Pages/admin/Contact.jsx';
 import YTPlayer from './Components/YTPlayer/YTPlayer.jsx';
 import Orders from './Pages/admin/Orders.jsx';
 import AdminExams from './Pages/admin/AdminExams.jsx';
+import ExamLists from './Components/Admin/Exams/ExamLists.jsx';
+import StudentLists from './Components/Admin/Exams/StudentLists.jsx';
+import WrittenEvaluation from './Pages/admin/WrittenEvaluation.jsx';
 // import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
 // import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
 
@@ -201,10 +204,24 @@ const router = createBrowserRouter([
         element: <ContactAdmin />,
       },
       {
-        path: '/abs-admin/exams',
+        path: '/abs-admin/exams/:courseVal/:mode',
         element: <AdminExams />,
+        errorElement: <ErrorPage />,
+        children: [
+          {
+            index: true,
+            element: <ExamLists />,
+          },
+          {
+            path: 'results/:examId',
+            element: <StudentLists />,
+          },
+        ],
       },
-
+      {
+        path: '/abs-admin/exams/:examId/written/evaluation/:clientId',
+        element: <WrittenEvaluation />,
+      },
       {
         path: '/abs-admin/course',
         element: <AllCourse />,
