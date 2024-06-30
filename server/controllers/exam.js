@@ -317,6 +317,37 @@ const addStuAnsFiles = async (req, res) => {
   });
 };
 
+const mergerAnsFileArrays = (qA, fA) => {
+  let merged = { ...fromArrayToObjId(qA, 'clientId') };
+
+  fA.forEach((item) => {
+    const qObj = merged[item.clientId];
+    const fAs = qObj.fileAnswers || [];
+    if (qObj) {
+      merged[item.clientId].fileAnswers = [
+        ...fAs,
+        { questionId: item.questionId, files: item.files },
+      ];
+    } else {
+      merged[item.clientId] = {
+        clientId: item.clientId,
+        courseId: item.courseId,
+        examId: item.examId,
+        submittedTime: item.submittedTime,
+        answers: [],
+        fileAnswers: [{ questionId: item.questionId, files: item.files }],
+      };
+    }
+  });
+
+  let mergedArray = [];
+  for (let key in merged) {
+    mergedArray.push(merged[key]);
+  }
+
+  return mergedArray;
+};
+
 async function processEvaluation(evaluationType, clientTime) {
   const allExams = await exams.findAll({ where: { isCronClosed: 0 } });
   const currentTime = Date.now();
@@ -341,12 +372,21 @@ async function processEvaluation(evaluationType, clientTime) {
       const quesAns = JSON.parse(exam.quesAns);
       let stuAnswers = await redis.lrange(`stuAnswers@${exam.id}`, 0, -1);
       let stuAnsFiles = await redis.lrange(`stuAnsFiles@${exam.id}`, 0, -1);
-      let stuAnsFilesObj = {};
+      // let stuAnsFilesObj = {};
 
       if (stuAnsFiles?.length > 0) {
         stuAnsFiles = stuAnsFiles.map((stuAnsFile) => JSON.parse(stuAnsFile));
-        stuAnsFilesObj = fromArrayToObjId(stuAnsFiles, 'questionId');
+        // stuAnsFilesObj = fromArrayToObjId(stuAnsFiles, 'questionId');
+      } else {
+        stuAnsFiles = [];
       }
+      if (stuAnswers?.length > 0) {
+        stuAnswers = stuAnswers.map((stuAnswer) => JSON.parse(stuAnswer));
+      } else {
+        stuAnswers = [];
+      }
+
+      stuAnswers = mergerAnsFileArrays(stuAnswers, stuAnsFiles);
 
       if (stuAnswers?.length > 0) {
         const oAllQuesAnsObj = mergeArraysToObjKey(
@@ -354,11 +394,15 @@ async function processEvaluation(evaluationType, clientTime) {
           quesAns.answers,
           'id'
         );
-        stuAnswers = stuAnswers.map((stuAnswer) => JSON.parse(stuAnswer));
+        // stuAnswers = stuAnswers.map((stuAnswer) => JSON.parse(stuAnswer));
 
         stuAnswers = stuAnswers.map((stuAnswerObj) => {
           const stuAnswersObjAll = fromArrayToObjId(
             stuAnswerObj.answers,
+            'questionId'
+          );
+          const stuAnsFilesObj = fromArrayToObjId(
+            stuAnswerObj.fileAnswers || [],
             'questionId'
           );
 
@@ -371,23 +415,27 @@ async function processEvaluation(evaluationType, clientTime) {
             const targetStuAns = stuAnswersObjAll[oQuesAnsObj.id] || {};
 
             let mark = oQuesAnsObj.mark;
-            let files = [];
+            let fileObj = {};
+
             if (stuAnsFilesObj[oQuesAnsObj.id]) {
               targetStuAns.questionId =
                 stuAnsFilesObj[oQuesAnsObj.id].questionId;
               targetStuAns.isCorrect = false;
 
               isFileChecked = 0;
-              files = stuAnsFilesObj[oQuesAnsObj.id].files?.map((file) => {
-                return {
-                  originalname: file.originalname,
-                  path: file.path,
-                  filename: file.filename,
-                  destination: file.destination,
-                };
-              });
+              fileObj.writtenScore = 0;
+              fileObj.files = stuAnsFilesObj[oQuesAnsObj.id].files?.map(
+                (file) => {
+                  return {
+                    originalname: file.originalname,
+                    path: file.path,
+                    filename: file.filename,
+                    destination: file.destination,
+                  };
+                }
+              );
             }
-            if (targetStuAns) {
+            if (stuAnswersObjAll[oQuesAnsObj.id]) {
               if (
                 areArraysEqualSet(oQuesAnsObj.quesAns, targetStuAns.optionsId)
               ) {
@@ -401,7 +449,7 @@ async function processEvaluation(evaluationType, clientTime) {
             ansArr.push({
               ...targetStuAns,
               mark,
-              files,
+              ...fileObj,
             });
 
             otherData.examName = exam.name;
