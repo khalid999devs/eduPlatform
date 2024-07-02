@@ -2,6 +2,12 @@ const multer = require('multer');
 const { existsSync, mkdirSync } = require('fs');
 const { resolve } = require('path');
 const { BadRequestError } = require('../errors');
+
+const sanitizeFilename = (name) => {
+  // Replace the characters \ / : * ? " < > | with an underscore
+  return name.replace(/[\\/:*?"<>|]/g, '_');
+};
+
 //file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -25,25 +31,25 @@ const storage = multer.diskStorage({
     } else if (file.fieldname === 'resources') {
       destName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/${req.body.Title.split(' ').join('_')}`
+        `../uploads/${file.fieldname}/${sanitizeFilename(
+          req.body.Title.split(' ').join('_')
+        )}`
       );
     } else if (file.fieldname === 'discussions') {
       const discStr = req.body.question || req.body.reply;
 
       destName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/${discStr
-          .split(' ')
-          .join('_')
-          .slice(0, 10)}`
+        `../uploads/${file.fieldname}/${sanitizeFilename(
+          discStr.split(' ').join('_').slice(0, 10)
+        )}`
       );
     } else if (file.fieldname === 'questions') {
       destName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/exam@${req.body.examId}/${req.body.title
-          .split(' ')
-          .join('_')
-          .slice(0, 15)}`
+        `../uploads/${file.fieldname}/exam@${
+          req.body.examId
+        }/${sanitizeFilename(req.body.title.split(' ').join('_').slice(0, 15))}`
       );
     }
 
@@ -62,22 +68,22 @@ const storage = multer.diskStorage({
         `../uploads/${file.fieldname}/exam@${req.body.examId}/stu@${req.user.id}`
       );
     } else if (file.fieldname === 'resources') {
-      pathName = `uploads/${file.fieldname}/${req.body.Title.split(' ').join(
-        '_'
+      pathName = `uploads/${file.fieldname}/${sanitizeFilename(
+        req.body.Title.split(' ').join('_')
       )}`;
     } else if (file.fieldname === 'discussions') {
       const discStr = req.body.question || req.body.reply;
-      pathName = `uploads/${file.fieldname}/${discStr
-        .split(' ')
-        .join('_')
-        .slice(0, 10)}`;
+      pathName = `uploads/${file.fieldname}/${sanitizeFilename(
+        discStr.split(' ').join('_').slice(0, 10)
+      )}`;
     } else if (file.fieldname === 'questions') {
       pathName = `uploads/${file.fieldname}/exam@${
         req.body.examId
-      }/${req.body.title.split(' ').join('_').slice(0, 15)}`;
+      }/${sanitizeFilename(req.body.title.split(' ').join('_').slice(0, 15))}`;
     }
     cb(null, pathName);
   },
+
   filename: (req, file, cb) => {
     let type = file.mimetype.split('/');
     let fileExt = type[type.length - 1];
@@ -99,17 +105,21 @@ const storage = multer.diskStorage({
       }
     } else if (file.fieldname === 'courses') {
       fileName =
-        req.body.title.split(' ').join('').slice(0, 6) + `@${Date.now()}`;
+        sanitizeFilename(req.body.title.split(' ').join('').slice(0, 6)) +
+        `@${Date.now()}`;
     } else if (file.fieldname === 'resources') {
-      fileName = req.body.Title.split(' ').join('_') + `_${Date.now()}`;
+      fileName =
+        sanitizeFilename(req.body.Title.split(' ').join('_')) +
+        `_${Date.now()}`;
     } else if (file.fieldname === 'discussions') {
       const discStr = req.body.question || req.body.reply;
       fileName = `${
-        discStr.split(' ').join('_').slice(0, 10) + `_${Date.now()}`
+        sanitizeFilename(discStr.split(' ').join('_').slice(0, 10)) +
+        `_${Date.now()}`
       }`;
     } else if (file.fieldname === 'questions') {
       fileName =
-        req.body.title.split(' ').join('_').slice(0, 15) +
+        sanitizeFilename(req.body.title.split(' ').join('_').slice(0, 15)) +
         '_exam@' +
         req.body.examId +
         `_${Date.now()}`;

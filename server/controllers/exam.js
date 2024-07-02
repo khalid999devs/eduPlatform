@@ -98,7 +98,7 @@ const deleteExamInfo = async (req, res) => {
   const quesAns = JSON.parse(exam.quesAns);
   try {
     quesAns.questions.forEach((ques) => {
-      deleteMultipleFiles(ques.images);
+      if (ques.images) deleteMultipleFiles(ques.images);
     });
   } catch (error) {
     throw new CustomAPIError(error.message);
@@ -319,15 +319,18 @@ const addStuAnsFiles = async (req, res) => {
 
 const mergerAnsFileArrays = (qA, fA) => {
   let merged = { ...fromArrayToObjId(qA, 'clientId') };
+  const isWrittenOnly = qA.length === 0;
 
   fA.forEach((item) => {
     const qObj = merged[item.clientId];
-    const fAs = qObj.fileAnswers || [];
     if (qObj) {
+      const fAs = qObj.fileAnswers || [];
       merged[item.clientId].fileAnswers = [
         ...fAs,
         { questionId: item.questionId, files: item.files },
       ];
+      if (isWrittenOnly)
+        merged[item.clientId].submittedTime = item.submittedTime;
     } else {
       merged[item.clientId] = {
         clientId: item.clientId,
@@ -367,6 +370,14 @@ async function processEvaluation(evaluationType, clientTime) {
             (exam) => Number(exam.examEndTime) + 10 * 60 * 1000 < currentTime
           )
         : [];
+
+    if (targetExams.length < 1) {
+      return {
+        msg: 'Please wait for the Exam end-time(it is 10 minutes after the actual end time)!',
+        mode: '',
+        succeed: false,
+      };
+    }
 
     for (const exam of targetExams) {
       const quesAns = JSON.parse(exam.quesAns);
@@ -508,7 +519,7 @@ cron.schedule('0 0 0 * * *', async () => {
 
 const manualEvaluateQuiz = async (req, res) => {
   const { currTime } = req.query;
-  console.log(currTime);
+  // console.log(currTime);
   try {
     const metaObj = await processEvaluation(
       'manual',
@@ -526,7 +537,7 @@ const manualEvaluateQuiz = async (req, res) => {
 
     res.json({
       succeed: true,
-      msg: 'Successfully done evaluation',
+      msg: 'Successfully done!',
       result: metaObj?.succeed === false ? [] : result,
       ...metaObj,
     });

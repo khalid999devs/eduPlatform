@@ -41,6 +41,7 @@ const ExamLists = () => {
       .then((res) => {
         // console.log(res.data);
         if (res.data.succeed) {
+          setIsManualEval(false);
           setExamData(res.data.result);
           setFilteredData(res.data.result);
         }
@@ -63,7 +64,7 @@ const ExamLists = () => {
       })
       .then((res) => {
         if (res.data.succeed) {
-          setIsManualEval(false);
+          setIsManualEval(() => false);
           setPopup((popup) => {
             return { ...popup, text: res.data.msg, state: 'success' };
           });
@@ -118,10 +119,11 @@ const ExamLists = () => {
             }}
           />
         </div>
+
         {isManualEval && (
           <div>
             <PrimaryButton
-              text={'Evaluate'}
+              text={mode === 'quiz' ? 'Evaluate' : 'Ready Papers'}
               classes={'bg-onPrimary-main text-primary-main'}
               onClick={handleManualEvaluate}
             />
@@ -145,21 +147,26 @@ const ExamLists = () => {
               const isEvaluated =
                 mode === 'quiz' ? item.isCronClosed : item.isFinalClosed;
               const isLive =
-                Number(item.examEndTime) > Date.now() + 10 * 60 * 1000;
+                Number(item.examEndTime) + 10 * 60 * 1000 > Date.now();
 
-              if (!isEvaluated && !isLive && !isManualEval && mode === 'quiz')
+              if (
+                !isEvaluated &&
+                !isLive &&
+                !isManualEval &&
+                !item.isCronClosed
+              )
                 setIsManualEval(true);
 
               return (
                 <tr
                   key={value}
                   className={`break-word relative mt-4 rounded-md border border-1 transition-all duration-500 ${
-                    isEvaluated || isLive || mode === 'written'
+                    isEvaluated || item.isCronClosed
                       ? 'cursor-pointer hover:shadow-md'
                       : ''
                   }`}
                   onClick={() => {
-                    if (isEvaluated || mode === 'written') {
+                    if (isEvaluated || item.isCronClosed) {
                       navigate(
                         `/abs-admin/exams/${courseVal}/${mode}/results/${item.id}`,
                         {

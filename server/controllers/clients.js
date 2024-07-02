@@ -262,7 +262,7 @@ const getAllClients = async (req, res) => {
   let result = await clients.findAll({
     include: {
       model: clientcourses,
-      required: true,
+      // required: true,
     },
     attributes: { exclude: ['password', 'otp', 'otpCount', 'otpTime'] },
     offset: Number(skip),

@@ -19,7 +19,7 @@ const resultTableHeads = [
   'Email',
   'Phone',
   'Written Evaluation',
-  'Exam duration',
+  'Exam duration(m:s)',
   'Category',
 ];
 
@@ -41,7 +41,7 @@ const StudentLists = () => {
       )
       .then((res) => {
         if (res.data.succeed) {
-          console.log(res.data);
+          // console.log(res.data);
           setResultData(res.data.result);
           setFilteredData(res.data.result);
         }
@@ -197,7 +197,7 @@ const StudentLists = () => {
                         Number(item.duration) / 1000 / 60
                       ).toString() +
                         ':' +
-                        ((Number(item.duration) / 1000) % 60)}
+                        Math.round((Number(item.duration) / 1000) % 60)}
                     </td>
                     <td className='text-xs text-gray-900 px-3 py-4 whitespace-nowrap'>
                       {item.otherData?.category}

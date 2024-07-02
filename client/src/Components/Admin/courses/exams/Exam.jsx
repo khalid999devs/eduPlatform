@@ -502,7 +502,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                             className='border p-1 border-black text-black'
                             key={qOpt?.title}
                           >
-                            {String.fromCharCode(97 + qid)}. {qOpt?.title}
+                            {qOpt?.id}. {qOpt?.title}
                           </li>
                         );
                       })}

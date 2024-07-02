@@ -11,8 +11,8 @@ function AllCourse() {
   }, []);
   if (isAdmin)
     return (
-      <div className='w-full h-full p-5 grid grid-cols-1 xl:grid-cols-2 gap-5 items-start overflow-auto'>
-        <div className='h-auto w-full max-w-max flex flex-col items-center'>
+      <div className='max-w-[1100px] m-auto w-full h-full p-5 grid grid-cols-1 gap-5 items-start overflow-auto'>
+        <div className='h-auto w-full flex flex-col items-center'>
           <section className='ring-1 ring-slate-800 shadow-lg shadow-slate-600/20 text-sm w-fit p-2 rounded-md my-4 flex'>
             <input
               className='border-0 outline-none  bg-transparent'

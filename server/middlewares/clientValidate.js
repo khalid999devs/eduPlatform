@@ -40,12 +40,33 @@ const passwordValidate = async (req, res, next) => {
 
 const clientRegValidate = async (req, res, next) => {
   const { fullName, email, phone, password } = req.body;
+  const isOnlyPhone = false;
+  const isOnlyEmail = false;
+
   if (fullName && (email || phone) && password) {
-    const isEmailThere = await clients.findOne({
-      where: { email: email },
+    let whereOr = [];
+    if (email?.length > 0 && phone?.length > 0) {
+      whereOr = [{ email: email }, { phone: phone }];
+    } else if (email?.length > 0) {
+      whereOr = [{ email: email }];
+      isOnlyEmail = true;
+    } else {
+      whereOr = [{ phone: phone }];
+      isOnlyPhone = true;
+    }
+    const isEmailPhoneThere = await clients.findOne({
+      where: { [Op.or]: whereOr },
     });
-    if (isEmailThere) {
-      throw new UnauthenticatedError(`Already registered with ${email}`);
+    if (isEmailPhoneThere) {
+      throw new UnauthenticatedError(
+        `Already registered with ${
+          isOnlyPhone
+            ? phone
+            : isOnlyEmail
+            ? email
+            : `this ${email} or ${phone}`
+        }`
+      );
     }
 
     const hashedPass = hashSync(password, hashSalt);
@@ -58,6 +79,8 @@ const clientRegValidate = async (req, res, next) => {
       userName: username,
       password: hashedPass,
     };
+    if (isOnlyEmail) delete phone;
+    else if (isOnlyPhone) delete email;
 
     req.user = data;
     next();
