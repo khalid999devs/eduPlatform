@@ -42,7 +42,7 @@ const CQExam = () => {
       window.removeEventListener("beforeunload", blockReload);
     }
 
-  }, [])
+  }, [data])
   return (
     <div className="w-3/4 mx-auto my-10 min-h-screen">
       <ExamInfo data={examInfo} startTime={startTime} endTime={endTime} curtime={curtime} />
@@ -78,13 +78,13 @@ const ExamInfo = ({ data, startTime, endTime, curtime }) => {
         Start Time:{" "}
 
 
-        {startTime?.toLocaleTimeString()} {`[${startTime?.toLocaleDateString()}]`}
+        {startTime?.toLocaleTimeString()}
       </h2>
       <h2>
         End Time:{" "}
 
 
-        {endTime?.toLocaleTimeString()} {`[${endTime?.toLocaleDateString()}]`}
+        {endTime?.toLocaleTimeString()}
       </h2>
 
 
@@ -180,14 +180,15 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
             onChange={(e) => setFiles([...e.target.files])}
           />
         </label>
-        <section className="flex flex-wrap w-1/2 gap-2">
+        <section className="flex flex-wrap w-auto gap-2">
           {files.length > 0
             ? files.map((file) => {
               return (
                 <img
+                  className="aspect-square"
                   src={URL.createObjectURL(file)}
-                  width={150}
-                  height={150}
+                  width={100}
+                  height={50}
                   onClick={() => {
                     setFiles(files.filter((f) => f != file));
                   }}
@@ -197,13 +198,13 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
             : null}
         </section>
 
-        <button
+        {duration > 0 && <button
           className="rounded-md bg-slate-950 text-white px-3 py-1 m-5"
           type="submit"
           disabled={load}
         >
           {load ? "submitting..." : "Submit"}
-        </button>
+        </button>}
       </form>
       {disable && msg != "" ? <p>{msg}</p> : null}
     </div>

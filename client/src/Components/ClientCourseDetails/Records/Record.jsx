@@ -11,7 +11,7 @@ function RecordVideo() {
   }, [courseInfo]);
   return (
     <div className="w-full mx-auto">
-      <h2>This is record page</h2>
+      <h2 className="text-center font-bold text-3xl my-10">Recorded Class</h2>
       <div>
         {rcdClass
           ?.sort((a, b) => {
