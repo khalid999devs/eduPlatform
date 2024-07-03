@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAllExamClient } from '../../../axios/global';
 import { Link, useParams } from 'react-router-dom';
-
+import PrimaryButton from '../../Buttons/PrimaryButton'
 function ExamPage() {
   const [data, setdata] = useState([]);
   const { cid } = useParams();
@@ -17,17 +17,11 @@ function ExamPage() {
           Exam Lists
         </h1>
         {data?.map((exam, eid) => {
-          let startTime = new Date(
-            exam?.examStartTime?.includes('-')
-              ? exam?.examStartTime
-              : Number(exam?.examStartTime)
-          );
-          let endTime = new Date(
-            exam?.examEndTime?.includes('-')
-              ? exam?.examEndTime
-              : Number(exam?.examEndTime)
+          let startTime = new Date(Number(exam?.examStartTime));
+          let endTime = new Date(Number(exam?.examEndTime)
           );
           let curTime = new Date();
+          console.log(startTime, endTime);
           return (
             <div
               key={`eid${eid}`}
@@ -45,15 +39,15 @@ function ExamPage() {
               <p>Exam Starting time: {showTime(startTime)}</p>
               <p>Exam Ending time: {showTime(endTime)}</p>
 
-              {startTime < curTime.getTime() > 0 ? (
+              {startTime < curTime.getTime() ? (
                 endTime > curTime.getTime() ? (
                   <Link
                     to={
                       exam?.category == 'quiz'
                         ? `quiz/${exam?.id}`
                         : exam?.category == 'written'
-                        ? `written/${exam?.id}`
-                        : ''
+                          ? `written/${exam?.id}`
+                          : `quiz_written/${exam?.id}`
                     }
                   >
                     <button
@@ -63,7 +57,7 @@ function ExamPage() {
                       Take Exam
                     </button>
                   </Link>
-                ) : (
+                ) : (exam?.category == 'quiz') ? (
                   <Link to={`viewQuestion/${exam?.id}`}>
                     <button
                       type='button'
@@ -72,7 +66,7 @@ function ExamPage() {
                       View Question
                     </button>
                   </Link>
-                )
+                ) : <PrimaryButton disabled={true} classes={'bg-black text-yellow-400 opacity-70'} text={'Pending'} />
               ) : null}
             </div>
           );
@@ -83,18 +77,15 @@ function ExamPage() {
 }
 
 function showTime(time) {
-  const date = new Date(Number(time));
-  return `${addZero(date.getDate())}-${addZero(date.getMonth() + 1)}-${addZero(
-    date.getFullYear()
-  )} at ${printTime(date.getHours(), date.getMinutes())}`;
+  // const date = new Date(time);
+  return `${time?.toLocaleDateString()} at ${time?.toLocaleTimeString()}`;
 }
 function addZero(e) {
   return e < 10 ? `0${e}` : e;
 }
 function printTime(hh, mm) {
-  return `${addZero(checkHours(hh)?.time)}:${addZero(mm)}  ${
-    checkHours(hh)?.format
-  }`;
+  return `${addZero(checkHours(hh)?.time)}:${addZero(mm)}  ${checkHours(hh)?.format
+    }`;
 }
 function checkHours(hour) {
   if (hour == 0) {

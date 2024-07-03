@@ -77,22 +77,20 @@ const Orders = () => {
       {/* mode buttons */}
       <div className='flex gap-3 mb-2'>
         <PrimaryButton
-          classes={`!py-2 ${
-            mode === 'pending'
+          classes={`!py-2 ${mode === 'pending'
               ? 'bg-onPrimary-main text-primary-main'
               : 'bg-primary-main text-onPrimary-main'
-          }`}
+            }`}
           text={'Pending'}
           onClick={() => {
             navigate('/abs-admin/orders/pending');
           }}
         />
         <PrimaryButton
-          classes={`!py-2 ${
-            mode === 'verified'
+          classes={`!py-2 ${mode === 'verified'
               ? 'bg-onPrimary-main text-primary-main'
               : 'bg-primary-main text-onPrimary-main'
-          }`}
+            }`}
           text={'Verified'}
           onClick={() => {
             navigate('/abs-admin/orders/verified');
@@ -137,46 +135,46 @@ const Orders = () => {
             <>
               {mode === 'pending'
                 ? pendingOrders.map((order, key) => {
-                    return (
-                      <OrderList
-                        key={key}
-                        id={key + 1}
-                        name={order.paymentInfo?.userInfo?.fullName}
-                        email={order.paymentInfo?.userInfo?.email}
-                        phone={order.paymentInfo?.phone}
-                        courseName={order.paymentInfo?.courseTitle}
-                        bkashNo={order.paymentInfo?.bkashData?.bkashNo}
-                        transactionId={
-                          order.paymentInfo?.bkashData?.transactionId
-                        }
-                        date={order.paymentInfo?.enrollTime}
-                        mode={mode}
-                        handleVerifyClick={handleVerifyClick}
-                        clientId={order.clientId}
-                        courseId={order.courseId}
-                      />
-                    );
-                  })
+                  return (
+                    <OrderList
+                      key={key}
+                      id={key + 1}
+                      name={order.paymentInfo?.userInfo?.fullName}
+                      email={order.paymentInfo?.userInfo?.email}
+                      phone={order.paymentInfo?.phone}
+                      courseName={order.paymentInfo?.courseTitle}
+                      bkashNo={order.paymentInfo?.bkashData?.bkashNo}
+                      transactionId={
+                        order.paymentInfo?.bkashData?.transactionId
+                      }
+                      date={order.paymentInfo?.enrollTime}
+                      mode={mode}
+                      handleVerifyClick={handleVerifyClick}
+                      clientId={order.clientId}
+                      courseId={order.courseId}
+                    />
+                  );
+                })
                 : verifiedOrders.map((order, key) => {
-                    return (
-                      <OrderList
-                        key={key}
-                        id={key + 1}
-                        name={order.paymentInfo?.userInfo?.fullName}
-                        email={order.paymentInfo?.userInfo?.email}
-                        phone={order.paymentInfo?.phone}
-                        courseName={order.paymentInfo?.courseTitle}
-                        bkashNo={order.paymentInfo?.bkashData?.bkashNo}
-                        transactionId={
-                          order.paymentInfo?.bkashData?.transactionId
-                        }
-                        date={order.createdDate}
-                        mode={mode}
-                        clientId={order.clientId}
-                        courseId={order.courseId}
-                      />
-                    );
-                  })}
+                  return (
+                    <OrderList
+                      key={key}
+                      id={key + 1}
+                      name={order.paymentInfo?.userInfo?.fullName}
+                      email={order.paymentInfo?.userInfo?.email}
+                      phone={order.paymentInfo?.phone}
+                      courseName={order.paymentInfo?.courseTitle}
+                      bkashNo={order.paymentInfo?.bkashData?.bkashNo}
+                      transactionId={
+                        order.paymentInfo?.bkashData?.transactionId
+                      }
+                      date={order.createdDate}
+                      mode={mode}
+                      clientId={order.clientId}
+                      courseId={order.courseId}
+                    />
+                  );
+                })}
             </>
           </tbody>
         </table>

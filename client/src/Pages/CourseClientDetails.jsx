@@ -29,7 +29,7 @@ const CourseClientdetails = () => {
             classes={"bg-yellow-400 text-black m-5 hover:bg-yellow-300"}
             text={"Visit now"}
             onClick={() => {
-              navigate(`/courses/${id}`);
+              navigate(`/courses/${cid}`);
             }}
           />
         </section>

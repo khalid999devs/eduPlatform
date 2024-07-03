@@ -161,9 +161,8 @@ export const SelectDropdown = ({
 
   return (
     <div
-      className={`relative w-full inline-block mb-4 ${
-        disabled ? 'grayscale pointer-events-none' : ''
-      }`}
+      className={`relative w-full inline-block mb-4 ${disabled ? 'grayscale pointer-events-none' : ''
+        }`}
     >
       <div className='flex w-full items-center '>
         <button
@@ -176,9 +175,8 @@ export const SelectDropdown = ({
             {selectedOption || 'Select an option'}
           </span>
           <svg
-            className={`w-4 h-4 transition-transform ${
-              isOpen ? 'transform rotate-180' : ''
-            }`}
+            className={`w-4 h-4 transition-transform ${isOpen ? 'transform rotate-180' : ''
+              }`}
             fill='none'
             stroke='currentColor'
             viewBox='0 0 24 24'
@@ -202,9 +200,8 @@ export const SelectDropdown = ({
               <button
                 key={option}
                 onClick={() => handleSelectOption(option)}
-                className={`block rounded-md px-4 py-2 my-px text-gray-800 transition-colors hover:bg-blue-600 hover:text-white w-full text-left ${
-                  selectedOption == option ? 'bg-blue-500 text-white' : ''
-                }`}
+                className={`block rounded-md px-4 py-2 my-px text-gray-800 transition-colors hover:bg-blue-600 hover:text-white w-full text-left ${selectedOption == option ? 'bg-blue-500 text-white' : ''
+                  }`}
                 type='button'
               >
                 {option.toUpperCase()}
@@ -318,9 +315,8 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
             </section>
             {/* question option */}
             <section
-              className={`grid border p-2 rounded-md shadow space-y-2 ${
-                category === 'written' ? 'hidden' : ''
-              }`}
+              className={`grid border p-2 rounded-md shadow space-y-2 ${category === 'written' ? 'hidden' : ''
+                }`}
             >
               <label htmlFor='opt'>Options: </label>
               <input
@@ -347,9 +343,8 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
             </section>
             {/* question answer */}
             <section
-              className={`grid border p-2 rounded-md shadow space-y-2 ${
-                category === 'written' ? 'hidden' : ''
-              }`}
+              className={`grid border p-2 rounded-md shadow space-y-2 ${category === 'written' ? 'hidden' : ''
+                }`}
             >
               <label htmlFor='ans'>
                 Answer:{' '}
@@ -592,23 +587,21 @@ const ExamLists = ({ data, id, setData }) => {
                     </li>
                     <li className='p-2 text-green-600 border border-fuchsia-500'>
                       Exam Start:{' '}
-                      {`${exst.getDate()}/${
-                        exst.getMonth() + 1
-                      }/${exst.getFullYear()}, ${printTime(
-                        exst.getHours(),
-                        exst.getMinutes(),
-                        exst.getSeconds()
-                      )}`}
+                      {`${exst.getDate()}/${exst.getMonth() + 1
+                        }/${exst.getFullYear()}, ${printTime(
+                          exst.getHours(),
+                          exst.getMinutes(),
+                          exst.getSeconds()
+                        )}`}
                     </li>
                     <li className='p-2 text-rose-500 border border-fuchsia-500'>
                       Exam End:{' '}
-                      {`${exet.getDate()}/${
-                        exet.getMonth() + 1
-                      }/${exet.getFullYear()}, ${printTime(
-                        exet.getHours(),
-                        exet.getMinutes(),
-                        exet.getSeconds()
-                      )}`}
+                      {`${exet.getDate()}/${exet.getMonth() + 1
+                        }/${exet.getFullYear()}, ${printTime(
+                          exet.getHours(),
+                          exet.getMinutes(),
+                          exet.getSeconds()
+                        )}`}
                     </li>
                     <li className='p-2 text-red-700 border border-fuchsia-500 font-semibold'>
                       Exam Marks: {ele?.totalMarks}
@@ -639,9 +632,8 @@ function addZero(e) {
   return e < 10 ? `0${e}` : e;
 }
 function printTime(hh, mm, ss) {
-  return `${addZero(checkHours(hh)?.time)}:${addZero(mm)}:${addZero(ss)} ${
-    checkHours(hh)?.format
-  }`;
+  return `${addZero(checkHours(hh)?.time)}:${addZero(mm)}:${addZero(ss)} ${checkHours(hh)?.format
+    }`;
 }
 function checkHours(hour) {
   if (hour == 0) {
