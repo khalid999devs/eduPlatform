@@ -554,22 +554,39 @@ async function getSingleClientExmResult(examId, clientId, examResults) {
   examResults = await clientexams.findOne({
     where: { examId: examId, clientId: clientId },
   });
+
   if (!examResults) {
     throw new NotFoundError(
       'Did not found this particular exam data! You did not give the exam or evaluation is pending!'
     );
   }
   examResults.answers = JSON.parse(examResults.answers);
+
   examResults.otherData = JSON.parse(examResults.otherData);
   const exam = await exams.findOne({ where: { id: examId } });
   let quesAns = JSON.parse(exam.quesAns);
 
-  const mergedQuesAns = mergeArraysToObjKey(
-    quesAns.questions,
-    quesAns.answers,
-    'id'
-  );
-  examResults.dataValues.quesAns = mergedQuesAns;
+  const stuAndIds = fromArrayToObjId(examResults.answers, 'questionId');
+  const answersIds = fromArrayToObjId(quesAns.answers, 'id');
+  let mergedArray = quesAns.questions || [];
+  mergedArray = quesAns.questions.map((item) => {
+    let obj = {};
+    if (answersIds[item.id]) {
+      obj = { ...answersIds[item.id] };
+    }
+    if (stuAndIds[item.id]) {
+      obj.stuAns = stuAndIds[item.id];
+    }
+    return { ...item, ...obj };
+  });
+
+  // const mergedQuesAns = mergeArraysToObjKey(
+  //   quesAns.questions,
+  //   quesAns.answers,
+  //   'id'
+  // );
+  delete examResults.dataValues.answers;
+  examResults.dataValues.quesAns = mergedArray;
   return examResults;
 }
 
@@ -745,6 +762,57 @@ const getCourseBasedExams = async (req, res) => {
   });
 };
 
+//written evaluation admin
+const writtenEvaluationSave = async (req, res) => {
+  const {
+    writtenScore,
+    prevWrittenScore,
+    questionId,
+    examId,
+    clientId,
+    courseId,
+    mark,
+  } = req.body;
+
+  let targetAns;
+  if (req.files?.length > 0) {
+    targetAns = await clientexams.findOne({ where: { examId, clientId } });
+    let stuAns = JSON.parse(targetAns.answers);
+    stuAns = stuAns.map((item) => {
+      if (item.questionId === questionId) {
+        item.writtenScore = Number(writtenScore);
+        item.isCorrect = Number(writtenScore) > Number(mark / 2);
+        deleteMultipleFiles(item.files);
+        item.files = req.files;
+        item.isChecked = true;
+      }
+      return item;
+    });
+
+    targetAns.score =
+      Number(targetAns.score) - Number(prevWrittenScore) + Number(writtenScore);
+    targetAns.isFileChecked = true;
+    targetAns.answers = JSON.stringify(stuAns);
+    await targetAns.save();
+
+    const remainCount = await clientexams.count({
+      where: { isFileChecked: false, examId },
+    });
+
+    if (remainCount !== null || remainCount !== undefined) {
+      if (remainCount <= 0)
+        await exams.update({ isFinalClosed: true }, { where: { id: examId } });
+    }
+    targetAns.answers = stuAns;
+  }
+
+  res.json({
+    succeed: true,
+    result: targetAns,
+    msg: 'Successfully saved!',
+  });
+};
+
 module.exports = {
   setExamInfo,
   addSingleQuesAns,
@@ -760,4 +828,5 @@ module.exports = {
   getExam,
   getExamInfosClient,
   getCourseBasedExams,
+  writtenEvaluationSave,
 };

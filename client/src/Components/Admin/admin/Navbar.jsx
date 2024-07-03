@@ -63,7 +63,7 @@ const LeftPanel = () => {
   }
   return (
     <div
-      className={`w-full px-5 sticky mb-4 py-2 top-0 left-0 mx-auto h-16 min-h-max pointer-events-auto flex items-center duration-700 ease-out rounded-xl border-0 shadow-lg bg-trans_bluish/70 backdrop-blur z-50 text-sm`}
+      className={`w-full px-5 sticky mb-4 py-2 top-0 left-0 mx-auto h-16 min-h-max pointer-events-auto flex items-center duration-700 ease-out rounded-xl border-0 shadow-lg bg-trans_bluish/70 backdrop-blur z-30 text-sm`}
     >
       <button
         className='justify-center items-center p-1 transition-transform duration-200 text-slate-600 text-lg font-semibold mx-5 bg-white rounded-md'

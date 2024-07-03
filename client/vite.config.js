@@ -8,4 +8,7 @@ export default defineConfig({
   // optimizeDeps: {
   //   include: ['@zoomus/websdk'],
   // },
+  optimizeDeps: {
+    include: ['react-canvas-draw'],
+  },
 });

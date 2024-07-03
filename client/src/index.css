@@ -1,18 +1,18 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 5pt;
   background: #0d1d41bb;
   border-radius: 50pt;
@@ -22,7 +22,7 @@ html {
   width: 100%;
   background-color: #d86d6d;
   border-radius: 50pt;
-}
+} */
 
 /* login form create class*/
 .create {
@@ -34,7 +34,7 @@ html {
   @apply gap-3 flex items-center mx-auto;
 }
 
-.create>section {
+.create > section {
   @apply mb-4 w-full flex justify-between flex-col items-start md:flex-row;
 }
 
@@ -42,11 +42,11 @@ html {
   @apply text-sm;
 }
 
-.create>section>input {
+.create > section > input {
   @apply border-0 outline-none p-2.5 rounded-md bg-slate-900/40 text-yellow-50;
 }
 
-.create>section>input:focus {
+.create > section > input:focus {
   @apply border-0 outline-none;
 }
 

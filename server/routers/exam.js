@@ -15,6 +15,7 @@ const {
   getExam,
   getExamInfosClient,
   getCourseBasedExams,
+  writtenEvaluationSave,
 } = require('../controllers/exam');
 const adminValidate = require('../middlewares/adminTokenVerify');
 const clientValidate = require('../middlewares/clientTokenVerify');
@@ -22,6 +23,15 @@ const upload = require('../middlewares/uploadFile');
 const { uploadMemory } = require('../middlewares/uploadMemory');
 
 router.get('/manual-evaluate-quiz-exams', adminValidate, manualEvaluateQuiz);
+
+//save evaluation exam
+router.post(
+  '/written-eval-save',
+  adminValidate,
+  upload.array('examsAns'),
+  writtenEvaluationSave
+);
+
 router.post('/get-exam-results-client', clientValidate, getExamResultClient);
 router.post('/get-exam-results-admin', adminValidate, getExamResultAdmin);
 router.post('/get-exam-admin', adminValidate, getExam);

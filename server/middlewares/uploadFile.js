@@ -26,7 +26,9 @@ const storage = multer.diskStorage({
     if (file.fieldname === 'examsAns') {
       destName = resolve(
         __dirname,
-        `../uploads/${file.fieldname}/exam@${req.body.examId}/stu@${req.user.id}`
+        `../uploads/${file.fieldname}/exam@${req.body.examId}/stu@${
+          req?.user?.id || req.body.clientId
+        }`
       );
     } else if (file.fieldname === 'resources') {
       destName = resolve(
@@ -63,10 +65,9 @@ const storage = multer.diskStorage({
 
     let pathName = `uploads/${file.fieldname}`;
     if (file.fieldname === 'examsAns') {
-      pathName = resolve(
-        __dirname,
-        `../uploads/${file.fieldname}/exam@${req.body.examId}/stu@${req.user.id}`
-      );
+      pathName = `uploads/${file.fieldname}/exam@${req.body.examId}/stu@${
+        req?.user?.id || req.body.clientId
+      }`;
     } else if (file.fieldname === 'resources') {
       pathName = `uploads/${file.fieldname}/${sanitizeFilename(
         req.body.Title.split(' ').join('_')
@@ -90,7 +91,9 @@ const storage = multer.diskStorage({
 
     let fileName = '';
     if (file.fieldname === 'examsAns') {
-      fileName = `ansfile_${req.body.examId}_${req.user.id}_@${Date.now()}`;
+      fileName = `ansfile_${req.body.examId}_${
+        req?.user?.id || req.body.clientId
+      }_@${Date.now()}`;
     } else if (file.fieldname === 'students') {
       let { fullName, name } = req.body;
 

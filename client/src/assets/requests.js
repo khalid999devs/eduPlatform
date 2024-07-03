@@ -65,6 +65,7 @@ const reqs = {
   GET_QUES_CLIENT: '/api/exam/get-all-question',
 
   ADMIN_MANUAL_EVALUATE_EXAM: '/api/exam/manual-evaluate-quiz-exams',
+  ADMIN_WRITTEN_EVALUATE_EXAM: '/api/exam/written-eval-save',
   GET_ADMIN_COURSE_BASED_EXAMS: '/api/exam/get-course-based-exams',
   ADMIN_GET_EXAM_RESULTS: '/api/exam/get-exam-results-admin',
 

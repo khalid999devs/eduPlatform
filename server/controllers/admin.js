@@ -51,7 +51,7 @@ const adminLogin = async (req, res) => {
     role: 'admin',
   };
   const token = sign(user, process.env.ADMIN_SECRET, {
-    expiresIn: '1h',
+    expiresIn: '2h',
   });
   attachTokenToResponse('token', { res, token, expiresInDay: 1 });
   res.json({ succeed: true, msg: 'successfully logged in' });

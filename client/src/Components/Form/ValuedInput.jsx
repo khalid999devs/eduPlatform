@@ -1,12 +1,21 @@
 import { IoEye } from 'react-icons/io5';
 import { IoEyeOff } from 'react-icons/io5';
 
-const ValuedInput = ({ inputProps, label, alert, type, show, onShowClick }) => {
+const ValuedInput = ({
+  inputProps,
+  label,
+  alert,
+  type,
+  show,
+  onShowClick,
+  classes,
+  labelClasses,
+}) => {
   return (
-    <div className='grid gap-2 w-full'>
+    <div className={'grid gap-2 w-full'}>
       <label
         htmlFor={inputProps.name}
-        className='text-sm font-medium opacity-60'
+        className={'text-sm font-medium opacity-60 ' + labelClasses}
       >
         {label}
       </label>
@@ -14,7 +23,10 @@ const ValuedInput = ({ inputProps, label, alert, type, show, onShowClick }) => {
         <input
           type={type || 'text'}
           {...inputProps}
-          className='p-3 text-md border border-opacity-30 border-onPrimary-main outline-none rounded-md w-full'
+          className={
+            'p-3 text-md border border-opacity-30 border-onPrimary-main outline-none rounded-md w-full ' +
+            classes
+          }
         />
         {(show === true || show === false) && (
           <div

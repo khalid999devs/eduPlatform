@@ -74,7 +74,7 @@ const StudentLists = () => {
           <h3
             className='text-md font-medium text-opacity-50 text-onPrimary-main cursor-pointer'
             onClick={() => {
-              navigate(-1);
+              navigate(`/abs-admin/exams/${courseVal}/${mode}`);
             }}
           >
             {courseOptions?.find((op) => op.value == courseVal)?.title}
@@ -173,7 +173,20 @@ const StudentLists = () => {
                         }`}
                       >
                         {item.isFileChecked ? (
-                          'Evaluated'
+                          <PrimaryButton
+                            classes={
+                              '!py-1.5 !px-3 bg-green-700 text-primary-main'
+                            }
+                            textClasses={'!text-xs !normal-case'}
+                            text={'Evaluated'}
+                            onClick={() => {
+                              if (item.otherData?.category !== 'quiz') {
+                                navigate(
+                                  `/abs-admin/exams/${examId}/written/evaluation/${item.id}`
+                                );
+                              }
+                            }}
+                          />
                         ) : (
                           <PrimaryButton
                             classes={
