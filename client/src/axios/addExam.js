@@ -1,5 +1,5 @@
-import axios from 'axios';
-import reqs from '../assets/requests';
+import axios from "axios";
+import reqs from "../assets/requests";
 
 const addExam = async (data, setExamListData) => {
   try {
@@ -10,7 +10,7 @@ const addExam = async (data, setExamListData) => {
       .then((res) => {
         if (res.data.succeed) {
           alert(
-            'Exam added successfully. Now you can add questions and answers to it.'
+            "Exam added successfully. Now you can add questions and answers to it."
           );
           setExamListData((examData) => {
             return [...examData, res.data.exam];
@@ -32,7 +32,7 @@ const addSingleQues = async (data, toggleQues) => {
       .put(reqs.ADD_SINGLE_QUES, data, {
         withCredentials: true,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((res) => {
@@ -49,14 +49,28 @@ const addSingleQues = async (data, toggleQues) => {
     alert(error);
   }
 };
-const addStudentAns = async (data, examId) => {
+const addStudentAns = async (data, examId, setMessage) => {
+  alert("called");
   try {
-    axios.post(reqs.ADD_STU_ANS, {
-      fullAns: data,
-      examId: examId,
-    });
+    axios
+      .post(
+        reqs.ADD_STU_ANS,
+        {
+          fullAns: data,
+          examId: examId,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        console.log("examdone1", examId);
+        setMessage(res.data?.msg);
+      });
   } catch (error) {
     console.log(error);
+  } finally {
+    console.log("examdone", examId);
   }
 };
 const addStdFilesAns = async (data, setmsg) => {
