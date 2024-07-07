@@ -9,6 +9,6 @@ export default defineConfig({
   //   include: ['@zoomus/websdk'],
   // },
   optimizeDeps: {
-    include: ['react-canvas-draw'],
+    include: ['react-canvas-draw', 'chart.js', 'react-chartjs-2'],
   },
 });

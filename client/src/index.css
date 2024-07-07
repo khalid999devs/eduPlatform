@@ -141,3 +141,19 @@ form.gallery-form section input {
 .clientDash .active {
   @apply bg-secondary-main;
 }
+
+@media screen and (min-width: 800px) {
+  .dashboard-container {
+    max-width: 1200px;
+    margin: auto;
+    min-height: '100vh';
+    /* height: 100%; */
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+      'd1 d1'
+      'd2 d3';
+  }
+}

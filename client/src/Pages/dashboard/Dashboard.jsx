@@ -3,10 +3,10 @@ import { Outlet } from 'react-router-dom';
 import Nav from '../../Components/ClientDashboard/Nav';
 import Header from '../../Components/ClientDashboard/Header';
 import { getClient } from '../../axios/getClientInfo';
-import {} from 'react-router-dom';
 const ProfileContext = createContext('');
 
 const Dashboard = () => {
+  const [profileFetchTrigger, setProfileFetchTrigger] = useState(false);
   const [userProfile, setUserProfile] = useState({
     id: 0,
     userName: '',
@@ -23,15 +23,17 @@ const Dashboard = () => {
       },
     ],
   });
+
   useEffect(() => {
     getClient(setUserProfile);
-  }, []);
+  }, [profileFetchTrigger]);
 
   return (
     <ProfileContext.Provider
       value={{
         userProfile,
         setUserProfile,
+        setProfileFetchTrigger,
       }}
     >
       <div className='px-5 m-auto my-10 '>

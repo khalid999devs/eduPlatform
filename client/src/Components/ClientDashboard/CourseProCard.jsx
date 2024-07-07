@@ -20,14 +20,14 @@ const CourseProCard = ({ id }) => {
   return (
     <div
       key={`cid${id}`}
-      className='max-w-md md:max-w-full w-full overflow-hidden rounded-md cursor-pointer transition-transform hover:scale-[101%] hover:shadow-md border md:grid md:grid-cols-[1fr,2fr] md:gap-1'
+      className='overflow-hidden rounded-md cursor-pointer transition-transform hover:scale-[101%] shadow-sm hover:shadow-md border max-w-[250px] h-full w-full'
       onClick={() => {
         navigate(`/courses/onClientReq/${id}`);
       }}
     >
       <div className='w-full grid md:h-full'>
         <img
-          className='w-full h-full aspect-square max-w-sm'
+          className='w-full h-full object-cover max-w-sm'
           width={300}
           height={300}
           src={reqImgWrapper(courseInfo.image)}
@@ -40,7 +40,7 @@ const CourseProCard = ({ id }) => {
             return <Star key={value} />;
           })}
         </div>
-        <h1 className='text-xl'>{courseInfo.title}</h1>
+        <h1 className='text-md'>{courseInfo.title}</h1>
         <div className='mt-1 hidden'>
           <h3 className='text-sm opacity-60 mb-3 md:mb-2'>
             Sessional progress:

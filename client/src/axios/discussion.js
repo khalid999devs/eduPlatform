@@ -1,5 +1,5 @@
-import reqs from "../assets/requests";
-import axios from "axios";
+import reqs from '../assets/requests';
+import axios from 'axios';
 export const admin = {
   //POST request for ADD Discussion
   addDiscussion: async (data) => {
@@ -64,28 +64,32 @@ export const admin = {
 };
 export const client = {
   //POST request for ADD Discussion
-  addDiscussion: async (data) => {
-    try {
+  addDiscussion: (data) => {
+    return new Promise((resolve, reject) => {
       axios
         .post(reqs.ADD_DISC_CLIENT, data, {
           withCredentials: true,
         })
         .then((res) => {
-          // window.location.reload()
+          resolve(res.data);
+        })
+        .catch((err) => {
+          alert(err.response.data.msg);
         });
-    } catch (error) {}
+    });
   },
+
   //POST request for REPLY Discussion
-  reply: async (data) => {
-    try {
+  reply: (data) => {
+    return new Promise((resolve, reject) => {
       axios
         .post(reqs.REPLY_DISC_CLIENT, data, {
           withCredentials: true,
         })
         .then((res) => {
-          // window.location.reload()
+          resolve(res.data);
         });
-    } catch (error) {}
+    });
   },
   //GET request for Discussion
   getDiscussion: async (courseId, setData) => {

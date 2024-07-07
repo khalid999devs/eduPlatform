@@ -6,6 +6,7 @@ import PrimaryButton from '../../Buttons/PrimaryButton';
 import { MdFileUpload, MdInfo, MdStickyNote2 } from 'react-icons/md';
 import { FcDatabase } from 'react-icons/fc';
 import { HiChevronRight } from 'react-icons/hi2';
+import ValuedInput from '../../Form/ValuedInput';
 
 import {
   addResources,
@@ -22,6 +23,12 @@ function EachCourse() {
   const [data, setData] = useState({});
   const [upImg, setUpImg] = useState(null);
   const [imgSrc, setImgSrc] = useState(null);
+  const [zoomInfo, setZoomInfo] = useState({
+    zoomId: '',
+    zoomPass: '',
+    zoomLink: '',
+  });
+  const [fetchTrigger, setFetchTrigger] = useState(false);
 
   //image handler to update image
   const handleImg = (e) => {
@@ -29,7 +36,7 @@ function EachCourse() {
   };
   useEffect(() => {
     adminFCourse(id, setData);
-  }, [id]);
+  }, [id, fetchTrigger]);
   // update image
   const updateImage = async () => {
     const imgData = new FormData();
@@ -47,6 +54,18 @@ function EachCourse() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  useEffect(() => {
+    if (data?.classInfo?.zoomId) {
+      setZoomInfo((zoomInfo) => ({ ...zoomInfo, ...data.classInfo }));
+    }
+  }, [data]);
+  const handleZoomInfoChange = (e) => {
+    setZoomInfo((zoomInfo) => ({
+      ...zoomInfo,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   //first time fetch data
@@ -68,12 +87,52 @@ function EachCourse() {
           <h1 className='text-center text-darkText font-semibold text-2xl mb-6'>
             Course Info <MdInfo className=' inline-block text-purple-600 ' />
           </h1>
-          <div className='grid grid-cols-1 items-start gap-2 w-4/5 mx-auto mb-5 text-sm'>
+
+          {/* zoom infos */}
+          <div className='max-w-[300px] w-full m-auto my-3 grid gap-2 p-6 shadow-md rounded-lg'>
+            <h2 className='text-[.95rem] font-semibold text-secondary-dark mb-1'>
+              Zoom Informations:
+            </h2>
+            <div className='grid gap-3'>
+              <ValuedInput
+                containerClasses={'!gap-1'}
+                label={'Meeting ID'}
+                inputProps={{
+                  value: zoomInfo.zoomId,
+                  onChange: handleZoomInfoChange,
+                  placeholder: '123 456 78...',
+                  name: 'zoomId',
+                }}
+              />
+              <ValuedInput
+                containerClasses={'!gap-1'}
+                label={'Meeting Pass'}
+                inputProps={{
+                  value: zoomInfo.zoomPass,
+                  onChange: handleZoomInfoChange,
+                  placeholder: 'SJfw34',
+                  name: 'zoomPass',
+                }}
+              />
+              <ValuedInput
+                containerClasses={'!gap-1'}
+                label={'Invite Link'}
+                inputProps={{
+                  value: zoomInfo.zoomLink,
+                  onChange: handleZoomInfoChange,
+                  placeholder: 'https://zoom.us/j/5551112222',
+                  name: 'zoomLink',
+                }}
+              />
+            </div>
+          </div>
+
+          <div className='grid grid-cols-1 items-start gap-2 w-4/5 mt-8 mx-auto mb-5 text-sm'>
             <section className='grid'>
               <label className='capitalize'>title:</label>
               <input
                 className='adminInputBox'
-                value={data?.title}
+                value={data?.title || ''}
                 type='text'
                 onChange={(e) =>
                   setData((pre) => ({ ...pre, title: e.target.value }))
@@ -84,7 +143,7 @@ function EachCourse() {
               <label className='capitalize'>price:</label>
               <input
                 className='adminInputBox'
-                value={data?.price}
+                value={data?.price || ''}
                 type='number'
                 onChange={(e) =>
                   setData((pre) => ({ ...pre, price: e.target.value }))
@@ -95,7 +154,7 @@ function EachCourse() {
               <label className='capitalize'>tags:</label>
               <input
                 className='adminInputBox'
-                value={data?.tags}
+                value={data?.tags || ''}
                 onChange={(e) =>
                   setData((pre) => ({ ...pre, tags: e.target.value }))
                 }
@@ -106,7 +165,7 @@ function EachCourse() {
               <textarea
                 className='adminInputBox resize-none'
                 rows={4}
-                value={data?.description}
+                value={data?.description || ''}
                 type='text'
                 onChange={(e) =>
                   setData((pre) => ({ ...pre, description: e.target.value }))
@@ -117,7 +176,7 @@ function EachCourse() {
               <label className='capitalize'>Schedule:</label>
               <input
                 className='adminInputBox'
-                value={data?.schedule}
+                value={data?.schedule || ''}
                 onChange={(e) =>
                   setData((pre) => ({ ...pre, schedule: e.target.value }))
                 }
@@ -128,7 +187,9 @@ function EachCourse() {
               classes={'bg-sky-500 text-white px-4 py-2 '}
               textClasses={'rounded-md'}
               type={'submit'}
-              onClick={() => updateCourse(id, data)}
+              onClick={() =>
+                updateCourse(data.id, data, zoomInfo, setFetchTrigger)
+              }
             />
           </div>
           <div className='relative w-max mx-auto'>

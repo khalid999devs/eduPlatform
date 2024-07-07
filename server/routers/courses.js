@@ -14,6 +14,7 @@ const {
   addResource,
   deleteResource,
   deleteCourse,
+  editClassInfo,
 } = require('../controllers/courses');
 const {
   startDiscussion,
@@ -90,6 +91,7 @@ router.post(
   upload.array('discussions'),
   addReplyToDiscussion
 );
+router.post('/edit-classinfo', adminValidate, editClassInfo);
 
 //reviews
 router.post('/add-review', clientValidate, addReviewData);

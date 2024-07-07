@@ -2,6 +2,7 @@ import { MdSearch } from 'react-icons/md';
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { fetchCourse, fetchStudents } from '../../../axios/global';
+import { reqImgWrapper } from '../../../assets/requests';
 
 function Stundet() {
   const [phone, setPhone] = useState('');
@@ -9,7 +10,6 @@ function Stundet() {
   const [students, setData] = useState([]);
   const [skip, setskip] = useState(0);
   const [row, setrow] = useState(50);
-
 
   useEffect(() => {
     fetchStudents(skip, row, setData).then((res) => {
@@ -45,8 +45,8 @@ function Stundet() {
           </div>
 
           {/* sutdent lists */}
-          <div className='max-w-6xl h-auto w-full mx-auto border border-root_bluish'>
-            <table className='w-full bg-slate-300 text-darkText shadow-md cursor-default select-text'>
+          <div className='max-w-6xl h-auto w-full mx-auto border border-root_bluish overflow-x-auto'>
+            <table className='w-full bg-slate-300 text-darkText shadow-md cursor-default select-text min-w-[900px]'>
               <thead className='w-full'>
                 <tr className='text-darkText text-md text-left'>
                   <th className='sticky top-0 left-0  shadow-root_bluish/20 shadow-lg  py-2 px-4 bg-gray-100 text-center'>
@@ -82,6 +82,7 @@ function Stundet() {
                         sid={id}
                         key={id}
                         name={student.fullName}
+                        avatar={student.image}
                         email={student.email}
                         phone={student.phone}
                         arr={arr}
@@ -113,26 +114,24 @@ const StudentList = ({
   address,
   fb,
   regDate,
-
 }) => {
   return (
     <tr
       key={id}
-      className={`hover:bg-gray-500/20 h-fit row-span-1 transition-colors duration-100 ease-in border-b ${id != arr.length - 1 ? ' border-root_bluish' : 'border-transparent'
-        } `}
-
+      className={`hover:bg-gray-500/20 h-fit row-span-1 transition-colors duration-100 ease-in border-b ${
+        id != arr.length - 1 ? ' border-root_bluish' : 'border-transparent'
+      } `}
     >
       <td className='py-2 text-center'>{sid + 1}</td>
-      <td className='py-2 text-center font-semibold '>
-        {avatar && (
-          <img
-            className='w-10 h-10 rounded-full object-cover select-none'
-            src={avatar}
-            alt='Avatar'
-            width={100}
-            height={100}
-          />
-        )}
+      <td className='py-2 text-center font-semibold flex items-center gap-1 pr-2'>
+        <img
+          src={avatar ? reqImgWrapper(avatar) : '/Images/avatar.webp'}
+          alt={'Avatar'}
+          width={'100%'}
+          height={'100%'}
+          className={`h-[30px] w-[30px] object-cover rounded-full`}
+        />
+
         <p className='text-left pl-2'>{name}</p>
       </td>
       <td className='py-2 text-left'>{email || '-'}</td>

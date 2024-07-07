@@ -8,6 +8,7 @@ const {
   validatePayment,
   getAllPendingOrders,
   confirmSingleOrder,
+  getAllClientBasedOrders,
 } = require('../controllers/orders');
 const clientValidate = require('../middlewares/clientTokenVerify');
 const adminValidate = require('../middlewares/adminTokenVerify');
@@ -15,6 +16,7 @@ const adminValidate = require('../middlewares/adminTokenVerify');
 router.get('/verified-orders', adminValidate, getAllVerifiedOrders);
 router.get('/orders-client', clientValidate, clientInvoices);
 router.get('/pending-orders', adminValidate, getAllPendingOrders);
+router.get('/client-orders', clientValidate, getAllClientBasedOrders);
 
 router.post('/create-order', clientValidate, createOrder);
 router.post('/pay-init', clientValidate, paymentInit);

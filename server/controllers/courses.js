@@ -186,7 +186,7 @@ const getCourseByUser = async (req, res) => {
   let course;
   course = await courses.findOne({
     where: { id: courseId },
-    attributes: { exclude: ['classInfo'] },
+    // attributes: { exclude: ['classInfo'] },
   });
   if (adminId || userId) {
     course = await courses.findOne({
@@ -207,10 +207,12 @@ const getCourseByUser = async (req, res) => {
     course.resources.forEach((resource) => {
       resource.filesUrl = JSON.parse(resource.filesUrl);
     });
-    if (adminId) course.classInfo = JSON.parse(course.classInfo);
-    else if (userId) {
-      delete course.dataValues['classInfo'];
-    }
+    //for zoom webs
+    // if (adminId) course.classInfo = JSON.parse(course.classInfo);
+    // else if (userId) {
+    //   delete course.dataValues['classInfo'];
+    // }
+    course.classInfo = JSON.parse(course.classInfo);
   }
   if (!course) {
     throw new NotFoundError('No course found!');
@@ -359,6 +361,26 @@ const deleteResource = async (req, res) => {
   });
 };
 
+const editClassInfo = async (req, res) => {
+  const { courseId, classInfo } = req.body;
+  const classData = {
+    zoomId: classInfo.zoomId,
+    zoomPass: classInfo.zoomPass,
+    zoomLink: classInfo.zoomLink,
+  };
+  await courses.update(
+    {
+      classInfo: JSON.stringify(classData),
+    },
+    { where: { id: courseId } }
+  );
+  res.json({
+    succeed: true,
+    msg: 'Successfully updated',
+    classInfo: classData,
+  });
+};
+
 const getZoomCreds = async (req, res) => {
   console.log(req.user);
   const userId = req.user.id;
@@ -427,4 +449,5 @@ module.exports = {
   addResource,
   deleteResource,
   deleteCourse,
+  editClassInfo,
 };

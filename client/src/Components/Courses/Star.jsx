@@ -1,7 +1,7 @@
 const Star = () => {
   return (
     <svg
-      className='w-4 h-4 text-yellow-300 mr-1'
+      className='w-4 h-4 text-yellow-500 mr-1'
       aria-hidden='true'
       xmlns='http://www.w3.org/2000/svg'
       fill='currentColor'

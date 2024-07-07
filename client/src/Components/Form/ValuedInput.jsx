@@ -10,9 +10,10 @@ const ValuedInput = ({
   onShowClick,
   classes,
   labelClasses,
+  containerClasses,
 }) => {
   return (
-    <div className={'grid gap-2 w-full'}>
+    <div className={'grid gap-2 w-full ' + containerClasses}>
       <label
         htmlFor={inputProps.name}
         className={'text-sm font-medium opacity-60 ' + labelClasses}

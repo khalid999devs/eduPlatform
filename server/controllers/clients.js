@@ -1,8 +1,9 @@
-const { clients, sequelize, clientcourses, orders } = require('../models');
+const { clients, clientcourses, Sequelize } = require('../models');
 const {
   BadRequestError,
   UnauthenticatedError,
   NotFoundError,
+  UnauthorizedError,
 } = require('../errors');
 const { hashSync, compare } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
@@ -23,6 +24,65 @@ const registration = async (req, res) => {
     succeed: true,
     msg: 'Congratulations!! Your registration is successful.',
   });
+};
+
+const editProfile = async (req, res) => {
+  const { data } = req.body;
+  const id = req.user?.id;
+  if (!id)
+    throw new UnauthorizedError(
+      'You do not have permission to change this information!'
+    );
+
+  let finder = [{ phone: data.phone }, { email: data.email }];
+  if (data.email && !data.phone) finder = [{ email: data.email }];
+  else if (!data.email && data.phone) finder = [{ phone: data.phone }];
+
+  if (data?.phone?.length > 0 || data?.email?.length > 0) {
+    const isAnotherUser = await clients.findOne({
+      where: {
+        [Sequelize.Op.or]: finder,
+        id: {
+          [Sequelize.Op.ne]: id,
+        },
+      },
+    });
+
+    if (isAnotherUser?.fullName)
+      throw new BadRequestError(
+        `This Email or phone number already used by other student.`
+      );
+  } else {
+    throw new BadRequestError('Email or Phone number must be provided');
+  }
+
+  await clients.update(
+    { ...data, email: data.email || null, phone: data.phone || null },
+    { where: { id } }
+  );
+  res.json({
+    succeed: true,
+    msg: 'Successfully edited',
+    result: data,
+  });
+};
+
+const editImage = async (req, res) => {
+  const id = req.user?.id;
+  const avatar = req.file.path;
+  const prevAvatar = await clients.findOne({
+    attributes: ['id', 'image'],
+    where: { id },
+  });
+  if (!prevAvatar.id)
+    throw new NotFoundError('Could not find any student with this id!');
+  if (avatar) {
+    if (prevAvatar.image) deleteFile(prevAvatar.image);
+    prevAvatar.image = avatar;
+    await prevAvatar.save();
+  }
+
+  res.json({ succeed: true, msg: 'Successfully updated image', image: avatar });
 };
 
 const login = async (req, res) => {
@@ -87,7 +147,7 @@ const getUser = async (req, res) => {
   let extraInfo = {};
   extraInfo = await clients.findOne({
     where: { id: id },
-    attributes: ['fullName', 'image', 'email', 'phone', 'address'],
+    attributes: ['fullName', 'image', 'email', 'phone', 'address', 'fb'],
     include: {
       model: clientcourses,
     },
@@ -286,23 +346,13 @@ const getClientOnId = async (req, res) => {
   let clientUser;
   clientUser = await clients.findOne({
     where: { id: id },
-    attributes: { exclude: ['password'] },
-    include: {
-      model: ParEvents,
-      as: 'ParEvent',
-    },
+    attributes: { exclude: ['password', 'otp', 'otpCount', 'otpTime'] },
   });
 
   res.json({
     succeed: true,
-    mode: mode,
     result: clientUser,
-    msg: 'participant found',
-  });
-
-  res.json({
-    succeed: false,
-    msg: 'something went wrong finding the client',
+    msg: 'Successfully Fetched!',
   });
 };
 
@@ -352,4 +402,6 @@ module.exports = {
   getAllClients,
   getClientOnId,
   profileView,
+  editProfile,
+  editImage,
 };

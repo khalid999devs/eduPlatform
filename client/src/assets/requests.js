@@ -18,6 +18,7 @@ const reqs = {
   IS_ADMIN_VALID: '/api/admin/auth',
 
   //client auth
+  GET_DASHBOARD_ANALYTICS: '/api/client/analytics',
   CLIENT_REG: '/api/client/reg',
   CLIENT_LOGIN: '/api/client/login',
   CLIENT_LOGOUT: '/api/client/logout',
@@ -25,6 +26,8 @@ const reqs = {
   DELETE_ACCOUNT: '/api/client/deleteAcc',
   RESET_PASS_SET_TOKEN: '/api/client/rPassToken',
   RESET_PASS_OTP_VERIFY: '/api/client/rPassVerify',
+  EDIT_PROFILE_INFO: '/api/client/edit-info',
+  UPDATE_PROFILE_IMAGE: '/api/client/update-image',
 
   //courses
   ADD_RECORD_CLASS: '/api/course/add-recorded-class',
@@ -40,6 +43,7 @@ const reqs = {
   UPDATE_COURSE: '/api/course/edit-course',
   UPDATE_IMAGE: '/api/course/update-image',
   ZOOM_CRED: '/api/course/zoom-creds',
+  EDIT_CLASS_INFO: '/api/course/edit-classinfo',
 
   //contact
   SEND_MESSAGE: '/api/contact/sendMessage',
@@ -89,6 +93,7 @@ const reqs = {
   GET_PENDING_ORDERS_ADMIN: '/api/order/pending-orders',
   GET_VERIFIED_ORDERS_ADMIN: '/api/order/verified-orders',
   CONFIRM_SINGLE_ORDER_ADMIN: '/api/order/confirm-single-order',
+  GET_ALL_CLIETN_BASED_ORDERS: '/api/order/client-orders',
 };
 
 export default reqs;

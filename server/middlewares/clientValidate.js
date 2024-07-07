@@ -4,6 +4,7 @@ const { validate } = require('deep-email-validator');
 const { UnauthenticatedError, BadRequestError } = require('../errors');
 const { hashSync, compare } = require('bcryptjs');
 const deleteFile = require('../utils/deleteFile');
+const { Op } = require('sequelize');
 const hashSalt = Number(process.env.SALT);
 
 const emailValidate = async (req, res, next) => {
@@ -40,8 +41,9 @@ const passwordValidate = async (req, res, next) => {
 
 const clientRegValidate = async (req, res, next) => {
   const { fullName, email, phone, password } = req.body;
-  const isOnlyPhone = false;
-  const isOnlyEmail = false;
+
+  let isOnlyPhone = false;
+  let isOnlyEmail = false;
 
   if (fullName && (email || phone) && password) {
     let whereOr = [];
@@ -72,15 +74,15 @@ const clientRegValidate = async (req, res, next) => {
     const hashedPass = hashSync(password, hashSalt);
     const username = fullName.split(' ')[0].toLowerCase() + `@${Date.now()}`;
 
-    const data = {
+    let data = {
       fullName: fullName.trim(),
       email,
       phone: phone.trim(),
       userName: username,
       password: hashedPass,
     };
-    if (isOnlyEmail) delete phone;
-    else if (isOnlyPhone) delete email;
+    if (isOnlyEmail) delete data.phone;
+    else if (isOnlyPhone) delete data.email;
 
     req.user = data;
     next();

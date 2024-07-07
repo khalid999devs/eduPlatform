@@ -1,12 +1,12 @@
-import FixedCard from "../Components/CourseDetails/FixedCard";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState, createContext, useContext } from "react";
-import { clientFCourse } from "../axios/fetchCourses";
-import { ContextConsumer } from "../App";
-import PrimaryButton from "../Components/Buttons/PrimaryButton";
-import StudentCoursePage from "../Components/ClientCourseDetails/StudentCoursePage";
+import FixedCard from '../Components/CourseDetails/FixedCard';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState, createContext, useContext } from 'react';
+import { clientFCourse } from '../axios/fetchCourses';
+import { ContextConsumer } from '../App';
+import PrimaryButton from '../Components/Buttons/PrimaryButton';
+import StudentCoursePage from '../Components/ClientCourseDetails/StudentCoursePage';
 
-const CourseContext = createContext("");
+const CourseContext = createContext('');
 
 const CourseClientdetails = () => {
   const { cid } = useParams();
@@ -14,20 +14,22 @@ const CourseClientdetails = () => {
   const [courseInfo, setCourse] = useState({});
   const navigate = useNavigate();
 
+  // console.log(courseInfo);
+
   useEffect(() => {
     clientFCourse(cid, setCourse);
   }, [cid]);
   if (!user?.enrolledCourses?.find(() => ({ courseId: cid })))
     return (
-      <div className="min-h-screen">
-        <h1 className="text-red-600 text-center text-2xl font-bold mt-24">
+      <div className='min-h-screen'>
+        <h1 className='text-red-600 text-center text-2xl font-bold mt-24'>
           You are not allowed to view this page.
         </h1>
-        <section className="p-20">
+        <section className='p-20'>
           <p>It seems you have not enrolled this course.</p>
           <PrimaryButton
-            classes={"bg-yellow-400 text-black m-5 hover:bg-yellow-300"}
-            text={"Visit now"}
+            classes={'bg-yellow-400 text-black m-5 hover:bg-yellow-300'}
+            text={'Visit now'}
             onClick={() => {
               navigate(`/courses/${cid}`);
             }}
@@ -37,7 +39,7 @@ const CourseClientdetails = () => {
     );
   return (
     <CourseContext.Provider value={{ courseInfo, setCourse }}>
-      <div className="px-3 w-full m-auto my-10 relative">
+      <div className='px-3 w-full m-auto my-10 relative'>
         {!user?.enrolledCourses.find(() => ({ courseId: cid })) && (
           <FixedCard
             cardDetails={{

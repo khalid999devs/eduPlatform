@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "chart.js": "^4.4.3",
     "node-cron": "^3.0.3"
   }
 }

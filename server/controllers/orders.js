@@ -4,6 +4,8 @@ const {
   orders,
   clients,
   clientcourses,
+  sequelize,
+  Sequelize,
 } = require('../models');
 const {
   BadRequestError,
@@ -309,6 +311,29 @@ const getAllPendingOrders = async (req, res) => {
   });
 };
 
+const getAllClientBasedOrders = async (req, res) => {
+  const query = `
+  SELECT o.*,c.title,c.price
+  FROM orders AS o
+  RIGHT JOIN courses AS c ON o.courseId = c.id
+  WHERE o.clientId = ${req.user.id}
+  ORDER BY o.id DESC
+`;
+  let result = await sequelize.query(query, {
+    type: Sequelize.QueryTypes.SELECT,
+  });
+
+  result = result.map((item) => {
+    item.paymentInfo = JSON.parse(item.paymentInfo);
+    return item;
+  });
+  res.json({
+    succeed: true,
+    msg: 'Successful',
+    result,
+  });
+};
+
 //for admin
 const confirmSingleOrder = async (req, res) => {
   const { clientId, courseId } = req.body;
@@ -426,4 +451,5 @@ module.exports = {
   ipnListener,
   getAllPendingOrders,
   confirmSingleOrder,
+  getAllClientBasedOrders,
 };
