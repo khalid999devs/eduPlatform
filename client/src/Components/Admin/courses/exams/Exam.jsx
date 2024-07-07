@@ -13,7 +13,7 @@ import {
   getSingleExamAdmin,
 } from '../../../../axios/global';
 import { reqImgWrapper } from '../../../../assets/requests';
-const options = ['quiz', 'written', 'quiz+written'];
+const options = ['quiz', 'written']; // 'quiz+written'
 const ansTypes = ['options', 'file'];
 
 function Exam() {
