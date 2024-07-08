@@ -3,6 +3,7 @@ import InputBox from './inputBox';
 import RootSms from './rootsms';
 import { client } from '../../../axios/discussion';
 import { useParams } from 'react-router-dom';
+
 const fetchChat = (id, setChats) => {
   client.getDiscussion(id, setChats);
 };
@@ -14,12 +15,7 @@ function ChatBox({ isAdmin }) {
   const [chats, setChats] = useState([]);
   const { cid } = useParams();
   const scrollRef = useRef(null);
-  useEffect(() => {
-    // setInterval(() => {
-    fetchChat(cid, setChats);
-    // console.warn('calling multiple');
-    // }, 10000);
-  }, []);
+
   useEffect(() => {
     fetchChat(cid, setChats);
   }, [cid]);
@@ -30,7 +26,6 @@ function ChatBox({ isAdmin }) {
       behavior: 'smooth',
     });
   }, [ownInput]);
-  // console.log(chats);
 
   return (
     <div className='bg-trans_bluish/0 rounded-md py-1 max-w-6xl  mx-auto h-[65vh] overflow-y-hidden'>

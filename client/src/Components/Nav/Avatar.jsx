@@ -9,7 +9,7 @@ const Avatar = ({ user, logout }) => {
     <div className='flex flex-row gap-2 w-max h-full p-1 py-0 relative [&:hover>#tooltip]:block [&:hover>#tooltip]:opacity-100 items-center z-50 cursor-pointer px-2 md:px-1 lg:px-2'>
       <div
         className={`w-[40px] h-[40px] border-2 border-solid rounded-full overflow-hidden ${
-          window.location.pathname === '/dashboard'
+          window.location.pathname.includes('/dashboard')
             ? '!border-secondary-dark'
             : '!border-primary-dark'
         }`}

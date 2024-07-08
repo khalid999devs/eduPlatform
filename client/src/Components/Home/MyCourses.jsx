@@ -20,7 +20,7 @@ const MyCourses = ({ user }) => {
       <h1 className='inline-flex font-bold text-5xl pb-2'>
         Explore Courses &nbsp; <BiBookReader className='text-cyan-500 ' />
       </h1>
-      <div className='flex flex-row m-auto items-center justify-center lg:justify-start w-2/3 overflow-x-scroll flex-wrap lg:flex-nowrap px-2 py-6 gap-6'>
+      <div className='flex flex-row m-auto items-center justify-center lg:justify-start w-2/3 flex-wrap lg:flex-nowrap px-2 py-6 gap-6'>
         {courses
           .sort((a, b) => {
             let x = new Date(a.createdAt).getTime();

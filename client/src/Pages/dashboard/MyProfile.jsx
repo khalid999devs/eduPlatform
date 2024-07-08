@@ -95,7 +95,7 @@ const MyProfile = () => {
             <ValuedInput
               label={'Full Name*'}
               inputProps={{
-                value: profileInfo?.fullName,
+                value: profileInfo?.fullName || '',
                 name: 'fullName',
                 onChange: handleChange,
                 placeholder: 'Enter your Full Name',
@@ -105,7 +105,7 @@ const MyProfile = () => {
             <ValuedInput
               label={'Email Address'}
               inputProps={{
-                value: profileInfo.email,
+                value: profileInfo.email || '',
                 name: 'email',
                 onChange: handleChange,
                 placeholder: 'example@gmail.com',
@@ -114,7 +114,7 @@ const MyProfile = () => {
             <ValuedInput
               label={'Mobile no.'}
               inputProps={{
-                value: profileInfo.phone,
+                value: profileInfo.phone || '',
                 name: 'phone',
                 onChange: handleChange,
                 placeholder: '01XXXXXXXXX',
@@ -124,7 +124,7 @@ const MyProfile = () => {
             <ValuedInput
               label={'Address'}
               inputProps={{
-                value: profileInfo.address,
+                value: profileInfo.address || '',
                 name: 'address',
                 onChange: handleChange,
                 placeholder: 'Enter your address',
@@ -134,7 +134,7 @@ const MyProfile = () => {
             <ValuedInput
               label={'Facebook ID'}
               inputProps={{
-                value: profileInfo.fb,
+                value: profileInfo.fb || '',
                 name: 'fb',
                 onChange: handleChange,
                 placeholder: 'https://facebook.com/example',

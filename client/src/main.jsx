@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+
 import ErrorPage from './Pages/ErrorPage.jsx';
 import Home from './Pages/Home.jsx';
 import ClientLogin from './Pages/ClientLogin.jsx';
@@ -276,6 +278,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
-  <RouterProvider router={router} />
+  <HelmetProvider>
+    <RouterProvider router={router} />
+  </HelmetProvider>
+
   // </React.StrictMode>
 );
