@@ -6,6 +6,7 @@ const Coursecard = ({
   onClick,
   hasEnrolled,
 }) => {
+  console.log(image);
   return (
     <>
       <div

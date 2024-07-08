@@ -117,10 +117,37 @@ const getQuesClient = async (examId, mode, setData) => {
     alert(error);
   }
 };
+const getExamResultClient = async (examId, mode, setData, setMessage) => {
+  /*question | answer */
+  try {
+    axios
+      .post(
+        reqs.GET_EXAMRES_CLIENT,
+        { mode: mode, examId: examId },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        if (res.data.succeed) {
+          // setData(res.data?.result?.[id]);
+          setData(res.data.result);
+          // console.log(res.data);
+        }
+      })
+      .catch((err) => {
+        setMessage(err);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
   getExamAdmin,
   getQuesClient,
   getAllExamClient,
   getSingleExamAdmin,
   getSingleExamClient,
+  getExamResultClient,
 };

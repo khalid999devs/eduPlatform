@@ -70,7 +70,7 @@ function ExamPage() {
                         Take Exam
                       </button>
                     </Link>
-                  ) : exam?.category === "quiz" ? (
+                  ) : (
                     <Link to={`viewQuestion/${exam?.id}`}>
                       <button
                         type="button"
@@ -79,12 +79,6 @@ function ExamPage() {
                         View Question
                       </button>
                     </Link>
-                  ) : (
-                    <PrimaryButton
-                      disabled={true}
-                      classes={"bg-black text-yellow-400 opacity-70"}
-                      text={"Pending"}
-                    />
                   )
                 ) : null}
               </div>

@@ -34,7 +34,7 @@ html {
   @apply gap-3 flex items-center mx-auto;
 }
 
-.create > section {
+.create>section {
   @apply mb-4 w-full flex justify-between flex-col items-start md:flex-row;
 }
 
@@ -42,11 +42,11 @@ html {
   @apply text-sm;
 }
 
-.create > section > input {
+.create>section>input {
   @apply border-0 outline-none p-2.5 rounded-md bg-slate-900/40 text-yellow-50;
 }
 
-.create > section > input:focus {
+.create>section>input:focus {
   @apply border-0 outline-none;
 }
 
@@ -156,4 +156,8 @@ form.gallery-form section input {
       'd1 d1'
       'd2 d3';
   }
+}
+
+.glass-box {
+  @apply rounded-md ring-2 ring-slate-400 bg-slate-200/50 text-slate-600 px-3 py-1 my-1 dark:bg-slate-700/50 dark:text-slate-200;
 }
