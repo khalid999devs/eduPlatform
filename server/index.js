@@ -1,7 +1,9 @@
 require('dotenv').config();
 require('express-async-errors');
+const http = require('http');
 const express = require('express');
 const app = express();
+const server = http.createServer(app);
 const db = require('./models');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -86,6 +88,8 @@ app.use('/api/notification', notificationRouter);
 const errorHandlerMiddleWare = require('./middlewares/errorHandler');
 const notFoundMiddleWare = require('./middlewares/notFound');
 const { redis } = require('./utils/redis');
+const { startWebSocketServer } = require('./controllers/WebSocket');
+
 app.use(notFoundMiddleWare);
 app.use(errorHandlerMiddleWare);
 
@@ -102,3 +106,5 @@ db.sequelize
   .catch((err) => {
     console.log(err);
   });
+
+startWebSocketServer(server);
