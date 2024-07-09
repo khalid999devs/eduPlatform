@@ -73,25 +73,23 @@ function Stundet() {
                 </tr>
               </thead>
               <tbody>
-                {students
-                  .filter((val) => val.phone.includes(phone))
-                  .map((student, id, arr) => {
-                    return (
-                      <StudentList
-                        id={student?.id}
-                        sid={id}
-                        key={id}
-                        name={student.fullName}
-                        avatar={student.image}
-                        email={student.email}
-                        phone={student.phone}
-                        arr={arr}
-                        address={student.address}
-                        fb={student.fb}
-                        regDate={student.createdAt}
-                      />
-                    );
-                  })}
+                {students.map((student, id, arr) => {
+                  return (
+                    <StudentList
+                      id={student?.id}
+                      sid={id}
+                      key={id}
+                      name={student.fullName}
+                      avatar={student.image}
+                      email={student.email}
+                      phone={student.phone}
+                      arr={arr}
+                      address={student.address}
+                      fb={student.fb}
+                      regDate={student.createdAt}
+                    />
+                  );
+                })}
 
                 {/* <!-- Add more rows for additional students --> */}
               </tbody>
