@@ -64,7 +64,7 @@ const addStudentAns = async (data, examId, setMessage) => {
         }
       )
       .then((res) => {
-        console.log("examdone1", examId);
+        // console.log("examdone1", examId);
         setMessage(res.data?.msg);
       });
   } catch (error) {
@@ -74,17 +74,15 @@ const addStudentAns = async (data, examId, setMessage) => {
   }
 };
 const addStdFilesAns = async (data, setmsg) => {
-  try {
-    axios
-      .post(reqs.ADD_STU_FANS, data, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setmsg(res.data?.msg);
-      })
-      .catch((err) => console.log(err));
-  } catch (error) {
-    console.log(error);
-  }
+
+  axios
+    .post(reqs.ADD_STU_FANS, data, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      setmsg(res.data?.msg);
+    })
+    .catch((err) => {console.log(err); setmsg("Failed to submit")});
+
 };
 export { addExam, addSingleQues, addStudentAns, addStdFilesAns };

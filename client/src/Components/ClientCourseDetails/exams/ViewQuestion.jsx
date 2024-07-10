@@ -10,8 +10,7 @@ const ViewQuestion = () => {
   const { examid } = useParams();
   useEffect(() => {
     getExamResultClient(examid, "single", setData, setError);
-  }, []);
-  console.log(data);
+  }, []); 
 
   return (
     <div className="p-2">

@@ -127,6 +127,7 @@ const CQExam = () => {
                 mark={quest?.mark}
                 title={quest?.title}
                 images={quest?.images}
+                allowSubmit={curtime?.getTime() < endTime?.getTime()}
               />
             );
           })
@@ -157,7 +158,7 @@ const ExamInfo = ({ data, startTime, endTime, curtime }) => {
     </div>
   );
 };
-const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
+const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
   const [files, setFiles] = useState([]);
   const [disable, setDis] = useState(false);
   const [load, setLoad] = useState(false);
@@ -172,13 +173,14 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
       setDis(false);
       setLoad(false);
       return;
-    } else {
+    } else if (allowSubmit) {
       fData.append(
         "ansInfo",
         JSON.stringify({
           courseId: cid,
           examId: eid,
           questionId: qid,
+          submittedTime: Number(Date.now())
         })
       );
       fData.append("examId", eid);
@@ -189,11 +191,11 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
       //   console.log(ele);
       // });
 
-      addStdFilesAns(fData)
+      addStdFilesAns(fData,setmsg)
         .then(() => {
-          alert("Submitted");
           setLoad(false);
           setDis(true);
+           
         })
         .catch(() => {
           alert("problem in submitting answers.");
@@ -259,7 +261,7 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
             : null}
         </section>
 
-        {duration > 0 && (
+        {allowSubmit &&
           <button
             className="rounded-md bg-slate-950 text-white px-3 py-1 m-5"
             type="submit"
@@ -267,9 +269,9 @@ const Questions = ({ id, qid, eid, cid, title, mark, images }) => {
           >
             {load ? "submitting..." : "Submit"}
           </button>
-        )}
+        }
       </form>
-      {disable && msg != "" ? <p>{msg}</p> : null}
+      {disable && msg != "" ? <p className="text-blue-600 bg-blue-200 rounded-md px-4 py-2">{msg}</p> : null}
     </div>
   );
 };

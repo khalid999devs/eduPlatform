@@ -124,7 +124,7 @@ const MCQExam = () => {
         {
           courseId: cid,
           examId: examid,
-          submittedTime: Date.now(),
+          submittedTime: Number(Date.now()),
           answers: stdAns,
         },
         examid,
