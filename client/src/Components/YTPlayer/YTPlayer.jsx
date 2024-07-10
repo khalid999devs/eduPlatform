@@ -94,7 +94,8 @@ const YTPlayer = () => {
     // For example, you can play the video:
     let tit = event.target.videoTitle;
     let dur = event.target.getDuration();
-    setTitle(tit);
+    let customTitle = localStorage.getItem("customTitle");
+    setTitle(customTitle ? customTitle : "Record Class");
     setDuration(dur);
   };
 
@@ -360,9 +361,13 @@ const YTPlayer = () => {
         className="customHeader transition-opacity duration-100 ease-out"
         style={{
           zIndex: "1000",
+          background: isPlaying ? "#fff1": "",
+          opacity: isPlaying ?"0.5": "1",
+          transitionProperty:"background",
+          transitionDelay: "300ms"
         }}
       >
-        <p>{title}</p>
+        <p className={`transition-colors pl-3 duration-300 delay-500 ${isPlaying ? 'text-transparent': ''}`}>{title}</p>
       </div>
       {controller}
     </div>

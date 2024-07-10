@@ -23,7 +23,7 @@ function ExamPage() {
         <h1 className="text-3xl font-bold text-center mt-5 mb-10">
           Exam Lists
         </h1>
-        {data
+        {data?.length > 0 ? data
           ?.sort((a, b) => {
             let x = Number(a?.examStartTime);
             let y = Number(b?.examStartTime);
@@ -76,14 +76,14 @@ function ExamPage() {
                         type="button"
                         className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
                       >
-                        View Question
+                        See Result
                       </button>
                     </Link>
                   )
                 ) : null}
               </div>
             );
-          })}
+          }) : <div className="text-rose-600 font-semibold">No Exam has been created in this course.</div>}
       </div>
     </div>
   );

@@ -252,7 +252,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
             Add question
           </h3>
           <form
-            className='grid grid-cols-3 gap-1 place-items-stretch w-full'
+            className='flex flex-col gap-1 w-full'
             onSubmit={(e) => {
               e.preventDefault();
               const quesOptions = opt.map((val, vid) => ({
@@ -298,7 +298,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
               files.forEach((file) => {
                 form.append('questions', file);
               });
-              addSingleQues(form, toggleQues);
+              addSingleQues(form, toggleQues,setData);
             }}
           >
             {/* question title */}

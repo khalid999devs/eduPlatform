@@ -14,8 +14,11 @@ function Video({ sl, title = "", link = "", desc = "" }) {
       </p>
       <p className="text-left pl-5">{title}</p>
       <a href={`record/${vid[vid.length - 1]}`}
-        className="flex items-center justify-center gap-1 bg-rose-200 hover:bg-red-400 hover:text-white cursor-pointer rounded-md transition-all cursor-default"
+        className="flex items-center justify-center gap-1 p-2 w-fit mx-auto bg-rose-200 hover:bg-red-400 hover:text-white cursor-pointer rounded-md transition-all cursor-default"
         title={title}
+        onClick={()=>{
+           localStorage.setItem("customTitle", title)
+        }}
       >
         <AiFillPlayCircle fill="#2f2f2f" /> Play Now
       </a>

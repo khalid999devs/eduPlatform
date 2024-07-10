@@ -26,28 +26,28 @@ const addExam = async (data, setExamListData) => {
   }
 };
 
-const addSingleQues = async (data, toggleQues) => {
-  try {
-    axios
-      .put(reqs.ADD_SINGLE_QUES, data, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        if (res.data.succeed) {
-          //here instead of reloading, we should set the ques data here.
-          window.location.reload();
-          // toggleQues(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  } catch (error) {
-    alert(error);
-  }
+const addSingleQues = async (data, toggleQues, setQues) => {
+
+  axios
+    .put(reqs.ADD_SINGLE_QUES, data, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
+      if (res.data.succeed) {
+        //here instead of reloading, we should set the ques data here.
+        // window.location.reload();
+        alert(res.data.msg)
+        toggleQues(true);
+        setQues({ questions: res.data?.exam?.quesAns?.questions });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
 };
 const addStudentAns = async (data, examId, setMessage) => {
   alert("called");

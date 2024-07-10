@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import {
-  AiFillExperiment,
+import { 
   AiFillPlayCircle,
   AiFillWechat,
 } from "react-icons/ai";
 import { PiNotebook } from "react-icons/pi";
 import { CourseContextConsumer } from "../../Pages/CourseClientDetails";
+import { FaBook } from "react-icons/fa";
 
 const StudentCoursePage = () => {
   const [currentTab, setCurTab] = useState(localStorage?.value);
@@ -58,7 +58,7 @@ const StudentCoursePage = () => {
               }}
             >
               <span className="hidden md:inline-block">Exam</span>{" "}
-              <AiFillExperiment className="text-lg" />
+              <FaBook className="text-lg" />
             </NavLink>
           </li>
           <li>
