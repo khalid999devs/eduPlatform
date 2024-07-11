@@ -1,12 +1,10 @@
-import { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { 
-  AiFillPlayCircle,
-  AiFillWechat,
-} from "react-icons/ai";
-import { PiNotebook } from "react-icons/pi";
-import { CourseContextConsumer } from "../../Pages/CourseClientDetails";
-import { FaBook } from "react-icons/fa";
+import { useState } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { AiFillPlayCircle, AiFillWechat } from 'react-icons/ai';
+import { PiNotebook } from 'react-icons/pi';
+import { CourseContextConsumer } from '../../Pages/CourseClientDetails';
+import { FaBook } from 'react-icons/fa';
+import { Helmet } from 'react-helmet-async';
 
 const StudentCoursePage = () => {
   const [currentTab, setCurTab] = useState(localStorage?.value);
@@ -18,35 +16,38 @@ const StudentCoursePage = () => {
   }
   return (
     <div
-      className={`left-side ${currentTab == "chat" ? "h-[75vh] mb-10" : ""}`}
+      className={`left-side ${currentTab == 'chat' ? 'h-[75vh] mb-10' : ''}`}
     >
+      <Helmet>
+        <title>{courseInfo?.title + ' | ChemGenie'}</title>
+      </Helmet>
       <nav
-        className="bg-primary-main rounded-b-lg p-2 border border-t-transparent border-onPrimary-main shadow-lg shadow-onPrimary-main/20 my-8
-      "
+        className='bg-primary-main rounded-b-lg p-2 border border-t-transparent border-onPrimary-main shadow-lg shadow-onPrimary-main/20 my-8
+      '
       >
-        <ul className="capitalize flex gap-5 justify-center clientDash">
+        <ul className='capitalize flex gap-5 justify-center clientDash'>
           <li>
             <NavLink
               className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold`}
-              to={"details"}
+              to={'details'}
               onClick={() => {
-                handleTab("details");
+                handleTab('details');
               }}
             >
-              <span className="hidden md:inline-block">Details</span>{" "}
-              <PiNotebook className="text-lg" />
+              <span className='hidden md:inline-block'>Details</span>{' '}
+              <PiNotebook className='text-lg' />
             </NavLink>
           </li>
           <li>
             <NavLink
               className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold`}
-              to={"record"}
+              to={'record'}
               onClick={() => {
-                handleTab("record");
+                handleTab('record');
               }}
             >
-              <span className="hidden md:inline-block">record</span>{" "}
-              <AiFillPlayCircle className="text-lg" />
+              <span className='hidden md:inline-block'>record</span>{' '}
+              <AiFillPlayCircle className='text-lg' />
             </NavLink>
           </li>
           <li>
@@ -54,11 +55,11 @@ const StudentCoursePage = () => {
               className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold`}
               to={'exam'}
               onClick={() => {
-                handleTab("exam");
+                handleTab('exam');
               }}
             >
-              <span className="hidden md:inline-block">Exam</span>{" "}
-              <FaBook className="text-lg" />
+              <span className='hidden md:inline-block'>Exam</span>{' '}
+              <FaBook className='text-lg' />
             </NavLink>
           </li>
           <li>
@@ -66,11 +67,11 @@ const StudentCoursePage = () => {
               className={`px-2 flex gap-2 items-center hover:bg-secondary-main p-2 text-onPrimary-main rounded-md cursor-pointer transition-all ease-in hover:font-semibold `}
               to={'chat'}
               onClick={() => {
-                handleTab("chat");
+                handleTab('chat');
               }}
             >
-              <span className="hidden md:inline-block">Discussion</span>{" "}
-              <AiFillWechat className="text-lg" />
+              <span className='hidden md:inline-block'>Discussion</span>{' '}
+              <AiFillWechat className='text-lg' />
             </NavLink>
           </li>
         </ul>
