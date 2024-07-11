@@ -15,8 +15,7 @@ const Hero = () => {
             Chemistry With Afnan
           </h1>
           <p className='text-md'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Non,
-            accusantium error voluptas.
+          By understanding how students learn best, we create engaging lessons and a deeper understanding of this scientific field.
           </p>
           <PrimaryButton
             text={'Start Learning'}

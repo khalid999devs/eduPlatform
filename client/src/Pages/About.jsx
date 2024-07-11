@@ -9,17 +9,11 @@ const About = () => {
       <h1 className="text-center text-2xl font-semibold">About</h1>
       <div className="m-5">
         <p className="border-l-4 border-black/40 pl-4 rounded-l-xl text-blue-400">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A amet
-          blanditiis, veritatis accusamus dolor beatae, illum libero cum id
-          voluptatem temporibus animi! Autem quod iusto placeat quam, iure nobis
-          consectetur!
+        ChemGenie is a dynamic online chemistry education platform designed to make learning chemistry engaging and accessible for students of all levels. Our comprehensive resources, including interactive lessons, videos, and quizzes, help students master complex concepts and excel in their studies.
         </p>
         <br />
         <p className="border-l-4 border-black/40 pl-4 rounded-l-xl text-indigo-700">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A amet
-          blanditiis, veritatis accusamus dolor beatae, illum libero cum id
-          voluptatem temporibus animi! Autem quod iusto placeat quam, iure nobis
-          consectetur!
+        At ChemGenie, we believe that understanding chemistry is the key to unlocking the mysteries of the natural world. Our platform offers a blend of theoretical knowledge and practical applications, ensuring students gain a deep and lasting understanding of chemical principles through a user-friendly and interactive online experience.
         </p>
       </div>
       <Gallery />

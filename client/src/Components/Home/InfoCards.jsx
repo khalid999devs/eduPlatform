@@ -18,10 +18,10 @@ const InfoCards = () => {
       <InfoCard
         icon={<BsFillPeopleFill />}
         text={'Community Members'}
-        number={'26,000+'}
+        number={'24.6K+'} 
       />
       <InfoCard icon={<PiStudentBold />} text={'Students'} number={'6000+'} />
-      <InfoCard icon={<GiSandsOfTime />} text={'Hours'} number={'300+'} />
+      <InfoCard icon={<GiSandsOfTime />} text={'Hours'} number={'300+'} /> 
     </div>
   );
 };

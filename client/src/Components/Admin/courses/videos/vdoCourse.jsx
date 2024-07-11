@@ -7,7 +7,7 @@ const VdoUpload = ({ id }) => {
     videoURL: "",
     videoTitle: "",
     videoLength: 30,
-    desc: "Instant here 2 lorem ipsum doonor sit maet\nmobeui derum ipsum donot idsum",
+    desc: "",
   });
 
   return (

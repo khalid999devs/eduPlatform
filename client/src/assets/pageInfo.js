@@ -8,13 +8,13 @@ export const contacts = {
   socials: [
     {
       name: 'Facebook',
-      link: 'https://facebook.com',
+      link: 'https://www.facebook.com/share/xSKpjbCvGH24TTtR/',
       icon: FaFacebook,
       color: '#0866FF',
     },
     {
       name: 'Youtube',
-      link: 'https://youtube.com',
+      link: 'https://www.youtube.com/@chemgenie', // oreee etto young
       icon: FaYoutube,
       color: '#FF0000',
     },

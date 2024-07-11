@@ -18,13 +18,12 @@ const FooterMain = () => {
             <h1 className="text-2xl font-bold text-secondary-main opacity-80">
               Chemgenie
             </h1>
-          </div>
-          <div>
-            <p className="font-[300] text-onPrimary-light opacity-90 text-sm max-w-[80%]">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint ea
-              excepturi et id eveniet? Voluptas.
+            <p className="opacity-60 text-xs">
+              &copy; 2023 - {new Date().getFullYear()} Chemgenie all rights
+              reserved
             </p>
           </div>
+          <div></div>
         </div>
 
         {/* quick link */}
@@ -50,7 +49,7 @@ const FooterMain = () => {
         </div>
 
         {/* contact */}
-        <div className="flex flex-col gap-3 md:gap-6">
+        <div className="flex flex-col gap-3 md:gap-6  ">
           <div>
             <h2 className="text-xl font-medium text-onPrimary-light">
               Contact
@@ -63,7 +62,7 @@ const FooterMain = () => {
             <PrimaryButton
               text={"contact us"}
               classes={
-                "bg-purple-500 w-fit my-4 px-5 py-2 hover:bg-purple-600 hover:text-purple-50 transition-colors"
+                "bg-purple-500 hidden w-fit my-4 px-5 py-2 hover:bg-purple-600 hover:text-purple-50 transition-colors"
               }
               onClick={() => {
                 navigate("/contact-us");
@@ -94,7 +93,7 @@ const FooterMain = () => {
           </div>
         </div> */}
       </div>
-      <div className="grid place-items-center gap-8 mt-10">
+      <div className="grid place-items-center gap-4 mt-10">
         <div className="flex flex-row gap-4 pt-2">
           {contacts.socials.map((social, value) => {
             return (
@@ -109,10 +108,14 @@ const FooterMain = () => {
             );
           })}
         </div>
-        <p className="opacity-60 text-xs">
-          &copy; 2023 -{" "}
-          {new Date().getFullYear() > 2023 && new Date().getFullYear()} Chemgeni
-          all rights reserved
+
+        <p className="opacity-80 text-xs">
+          Developed by{" "}
+          <a href="https://devgenit.com" target="_blank">
+            <span class="bg-clip-text text-transparent bg-gradient-to-tr from-orange-500 via-rose-500 to-purple-500 font-bold">
+              DevGenit
+            </span>
+          </a>
         </p>
       </div>
     </div>
