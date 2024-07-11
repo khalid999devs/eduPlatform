@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getQuesClient,
   addStdFilesAns,
@@ -7,13 +7,19 @@ import {
 } from "../../../axios/global";
 import { reqImgWrapper } from "../../../assets/requests";
 import Timer from "./Timer";
-
+import { MdClose } from "react-icons/md";
 //main component
+
 const CQExam = () => {
   const [data, setData] = useState([]);
   const { cid, examid } = useParams();
   const [examInfo, setEInfo] = useState({});
-  const [curtime, setcurtime] = useState(new Date());
+  const [finish, setFinish] = useState(false);
+  const startTime = new Date(Number(examInfo?.examStartTime));
+  const endTime = new Date(Number(examInfo?.examEndTime));
+  const curTime = Date.now();
+  const navigate = useNavigate();
+
   useEffect(() => {
     getQuesClient(examid, "question", setData);
     getSingleExamClient(cid, examid, setEInfo);
@@ -87,17 +93,20 @@ const CQExam = () => {
       ],
     };
 
-    setData(jsonData.questions);
+    // setData(jsonData.questions);
   }, [examid]);
 
-  const startTime = new Date(Number(examInfo?.examStartTime));
-  const endTime = new Date(Number(examInfo?.examEndTime));
   useEffect(() => {
-    const loop = setInterval(() => {
-      setcurtime(new Date());
+    let loop = setTimeout(() => {
+      if (!finish || curTime > endTime.getTime()) {
+        navigate(`/courses/onClientReq/${cid}/exam`, {
+          preventScrollReset: false,
+        });
+      }
     }, 1000);
-    return () => clearInterval(loop);
-  }, []);
+    return () => clearTimeout(loop);
+  }, [finish]);
+
   useEffect(() => {
     function blockReload(event) {
       if (data?.length > 0) event?.preventDefault();
@@ -107,19 +116,20 @@ const CQExam = () => {
       window.removeEventListener("beforeunload", blockReload);
     };
   }, [data]);
+
   return (
     <div className="w-3/4 mx-auto my-10 min-h-screen">
       <ExamInfo
         data={examInfo}
         startTime={startTime}
         endTime={endTime}
-        curtime={curtime}
+        setFinish={setFinish}
       />
       {data?.length > 0
         ? data?.map((quest, id) => {
             return (
               <Questions
-                key={`id${id}`}
+                key={`qid+${id}`}
                 id={id}
                 qid={quest.id}
                 cid={cid}
@@ -127,7 +137,7 @@ const CQExam = () => {
                 mark={quest?.mark}
                 title={quest?.title}
                 images={quest?.images}
-                allowSubmit={curtime?.getTime() < endTime?.getTime()}
+                allowSubmit={!finish}
               />
             );
           })
@@ -135,13 +145,13 @@ const CQExam = () => {
     </div>
   );
 };
-const ExamInfo = ({ data, startTime, endTime, curtime }) => {
+const ExamInfo = ({ data, startTime, endTime, setFinish }) => {
   let examDur = endTime?.getTime() - startTime?.getTime();
-  const durTime = endTime?.getTime() - curtime?.getTime();
   return (
     <div className="text-left px-5 py-2 bg-white">
       <h2>Exam name: {data?.name}</h2>
       <h2>Exam topic: {data?.topic}</h2>
+      <h2>Exam Type: {data?.category?.toUpperCase()}</h2>
       <h2 className="font-semibold">Total Mark: {data?.totalMarks}</h2>
       <h2>Start Time: {startTime?.toLocaleTimeString()}</h2>
       <h2>End Time: {endTime?.toLocaleTimeString()}</h2>
@@ -154,13 +164,12 @@ const ExamInfo = ({ data, startTime, endTime, curtime }) => {
         NB:- If you have already taken the exam then just leave the page. After
         finishing the exam, you can see the answer paper
       </p>
-      <Timer durTime={durTime} classes={"p-1 m-5"} />
+      <Timer classes={"p-1 m-5"} endTime={endTime} setSubmit={setFinish} />
     </div>
   );
 };
 const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
   const [files, setFiles] = useState([]);
-  const [disable, setDis] = useState(false);
   const [load, setLoad] = useState(false);
   const [msg, setmsg] = useState("");
   const handleSubmit = (e) => {
@@ -180,7 +189,7 @@ const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
           courseId: cid,
           examId: eid,
           questionId: qid,
-          submittedTime: Number(Date.now())
+          submittedTime: Number(Date.now()),
         })
       );
       fData.append("examId", eid);
@@ -191,19 +200,17 @@ const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
       //   console.log(ele);
       // });
 
-      addStdFilesAns(fData,setmsg)
+      addStdFilesAns(fData, setmsg)
         .then(() => {
           setLoad(false);
-          setDis(true);
-           
         })
         .catch(() => {
           alert("problem in submitting answers.");
           setLoad(false);
-          setDis(false);
         });
     }
   };
+
   return (
     <div>
       {/* header */}
@@ -215,24 +222,25 @@ const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
       </section>
       <section className="flex flex-wrap gap-5 p-5">
         {images?.length > 0
-          ? images?.map((image) => {
+          ? images?.map((image, iid) => {
               return (
                 <img
+                  key={"qImgId+" + iid}
                   className="max-w-sm p-0 rounded-lg overflow-hidden"
                   width={600}
                   src={reqImgWrapper(image?.url)}
-                  alt=""
+                  alt="img file"
                 />
               );
             })
           : null}
       </section>
-      <form onSubmit={handleSubmit} hidden={disable}>
+      <form onSubmit={handleSubmit}>
         <label
           className="border-2 border-dashed border-purple-500 p-10 m-5 flex items-start justify-center rounded-xl bg-purple-100 text-purple-700 hover:bg-violet-200 transition-colors font-bold tracking-wider font-sans"
           htmlFor={`files${qid}`}
         >
-          Drop your answers
+          Add Answers
           <input
             type="file"
             name={`files${qid}`}
@@ -245,23 +253,33 @@ const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
         </label>
         <section className="flex flex-wrap w-auto gap-2">
           {files.length > 0
-            ? files.map((file) => {
+            ? files.map((file, fid, arr) => {
                 return (
-                  <img
-                    className="aspect-square"
-                    src={URL.createObjectURL(file)}
-                    width={100}
-                    height={50}
-                    onClick={() => {
-                      setFiles(files.filter((f) => f != file));
-                    }}
-                  />
+                  <div className="relative" key={"fileId_" + fid}>
+                    <span
+                      className="absolute -right-1 -top-1 p-1 rounded-full bg-red-500"
+                      onClick={() =>
+                        setFiles(arr.filter((pro, pid) => pid != fid))
+                      }
+                    >
+                      <MdClose />
+                    </span>
+                    <img
+                      className="aspect-square"
+                      src={URL.createObjectURL(file)}
+                      width={100}
+                      height={50}
+                      onClick={() => {
+                        setFiles(files.filter((f) => f != file));
+                      }}
+                    />
+                  </div>
                 );
               })
             : null}
         </section>
 
-        {allowSubmit &&
+        {allowSubmit && (
           <button
             className="rounded-md bg-slate-950 text-white px-3 py-1 m-5"
             type="submit"
@@ -269,9 +287,11 @@ const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
           >
             {load ? "submitting..." : "Submit"}
           </button>
-        }
+        )}
       </form>
-      {disable && msg != "" ? <p className="text-blue-600 bg-blue-200 rounded-md px-4 py-2">{msg}</p> : null}
+      {msg != "" ? (
+        <p className="text-blue-600 bg-blue-200 rounded-md px-4 py-2">{msg}</p>
+      ) : null}
     </div>
   );
 };

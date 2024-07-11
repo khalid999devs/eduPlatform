@@ -1,6 +1,21 @@
+import { useEffect, useState } from "react";
 import "./timer.css";
 
-function Timer({ durTime, classes }) {
+function Timer({ classes, endTime, setSubmit }) {
+  const [time, settime] = useState(new Date());
+  const [durTime, setdur] = useState(0);
+  useEffect(() => {
+    const loop = setInterval(() => {
+      let newTime = new Date();
+      settime(newTime);
+    }, 1000);
+    return () => clearInterval(loop);
+  }, []);
+  useEffect(() => {
+    let dur = endTime?.getTime() - time?.getTime();
+    setdur(dur);
+    setSubmit(dur < 0);
+  }, [time]);
   return (
     <div className={`${classes} px-4 ring rounded-md bg-primary-main text-sm`}>
       <div className="my-5 flex items-center justify-center gap-2">

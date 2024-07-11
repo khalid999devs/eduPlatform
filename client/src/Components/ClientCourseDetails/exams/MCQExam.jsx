@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Timer from "./Timer";
 import {
   addStudentAns,
@@ -14,6 +14,9 @@ const MCQExam = () => {
   const [stdAns, setAns] = useState([]);
   const [submition, setSubmition] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  let isFinishedBefore = localStorage.getItem(`quiz${examid}`);
+
   // fetch questions
   useEffect(() => {
     getQuesClient(examid, "question", setques);
@@ -23,20 +26,6 @@ const MCQExam = () => {
   const startTime = new Date(Number(exDetails?.examStartTime));
   const endTime = new Date(Number(exDetails?.examEndTime));
 
-  const [time, settime] = useState(new Date());
-  const [localDuration, setlocaldur] = useState(null);
-
-  useEffect(() => {
-    const loop = setInterval(() => {
-      let newTime = new Date();
-      settime(newTime);
-    }, 1000);
-    return () => clearInterval(loop);
-  }, []);
-  useEffect(() => {
-    if (endTime.getTime() - time.getTime() > 0)
-      setlocaldur(endTime.getTime() - time.getTime());
-  }, [time]);
   useEffect(() => {
     if (questions.length > 0) {
       setAns(
@@ -45,26 +34,23 @@ const MCQExam = () => {
         })
       );
     }
+
     // prevent false reload while in exam
     function blockReload(event) {
-      if (questions?.length > 0) {
-        event?.preventDefault();
-      }
+      if (!isFinishedBefore)
+        if (questions?.length > 0) {
+          event?.preventDefault();
+        }
     }
     window.addEventListener("beforeunload", blockReload);
     return () => {
       window.removeEventListener("beforeunload", blockReload);
     };
-  }, [questions]);
+  }, [questions, isFinishedBefore]);
 
   useEffect(() => {
-    if (localDuration !== null)
-      if (localDuration <= 0) {
-        setSubmition(true);
-        handleSubmit();
-      }
-  }, [localDuration]);
-  // console.log(questions);
+    if (submition && !isFinishedBefore) handleSubmit();
+  }, [submition, isFinishedBefore]);
   const OptionsMemo = ({ id, quesId, studentAns, quesOptions }) => {
     return (
       <ul className="my-1">
@@ -118,27 +104,46 @@ const MCQExam = () => {
 
   async function handleSubmit(e) {
     e?.preventDefault();
+    if (submition)
+      try {
+        addStudentAns(
+          {
+            courseId: cid,
+            examId: examid,
+            submittedTime: Number(Date.now()),
+            answers: stdAns,
+          },
+          examid,
+          setMessage
+        ).then(() => {
+          localStorage.setItem(`quiz${examid}`, true);
+          // window.location.assign('../../');
+          alert("Exam finished", message);
 
-    try {
-      addStudentAns(
-        {
-          courseId: cid,
-          examId: examid,
-          submittedTime: Number(Date.now()),
-          answers: stdAns,
-        },
-        examid,
-        setMessage
-      ).then(() => {
-        // window.location.assign('../../');
-        alert("Exam finished", message);
-      });
-    } catch (error) {
-      setSubmition(false);
-      console.log(error);
-    }
+          navigate(`/courses/onClientReq/${cid}/exam`, {
+            preventScrollReset: false,
+          });
+        });
+      } catch (error) {
+        setSubmition(false);
+        console.log(error);
+      }
   }
-
+  if (isFinishedBefore) {
+    return (
+      <div className="h-52 w-full grid place-items-center">
+        <p>
+          Exam Finished. Go to{" "}
+          <a
+            className="underline-offset-2 hover:underline-offset-4 transition-all underline decoration-secondary-dark"
+            href={`/courses/onClientReq/${cid}/exam`}
+          >
+            Exam page
+          </a>
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="p-4 rounded w-full my-32 mx-auto">
       {/* submiting shadow page */}
@@ -150,7 +155,11 @@ const MCQExam = () => {
         </div>
       )}
       {/*it will show remainder timer  */}
-      <Timer durTime={localDuration} classes={"fixed top-20 right-5"} />{" "}
+      <Timer
+        classes={"fixed top-20 right-5"}
+        setSubmit={setSubmition}
+        endTime={endTime}
+      />
       <ExamInfo
         data={exDetails}
         startTime={startTime?.toLocaleTimeString()}
@@ -181,7 +190,7 @@ const MCQExam = () => {
             {message}
           </p>
         )}
-        {localDuration > 0 ? (
+        {!submition && (
           <button
             className="bg-onPrimary-main ring ring-slate-500 rounded-sm text-primary-main px-4 py-2 text-base mt-5"
             type="submit"
@@ -189,7 +198,7 @@ const MCQExam = () => {
           >
             Submit
           </button>
-        ) : null}
+        )}
       </form>
     </div>
   );

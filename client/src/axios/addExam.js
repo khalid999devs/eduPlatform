@@ -50,7 +50,7 @@ const addSingleQues = async (data, toggleQues, setQues) => {
 
 };
 const addStudentAns = async (data, examId, setMessage) => {
-  alert("called");
+  
   try {
     axios
       .post(

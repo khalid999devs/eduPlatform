@@ -15,8 +15,7 @@ function ExamPage() {
 
   useEffect(() => {
     getAllExamClient(cid, setdata);
-  }, []);
-
+  }, []); 
   return (
     <div className="min-h-full flex items-center flex-col justify-center relative">
       <div>
@@ -70,7 +69,7 @@ function ExamPage() {
                         Take Exam
                       </button>
                     </Link>
-                  ) : (
+                  ) : exam?.isFinalClosed ? (
                     <Link to={`viewQuestion/${exam?.id}`}>
                       <button
                         type="button"
@@ -79,7 +78,13 @@ function ExamPage() {
                         See Result
                       </button>
                     </Link>
-                  )
+                  ) : <button
+                  type="button"
+                  className="bg-slate-950 text-rose-300 rounded-full px-3 py-1 m-2 opacity-50 pointer-events-none"
+                  disabled={true}
+                >
+                 Pending
+                </button>
                 ) : null}
               </div>
             );
