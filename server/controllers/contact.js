@@ -26,7 +26,7 @@ const getAllMessage = async (req, res) => {
 
 const sendEmailToClient = async (req, res) => {
   const mode = req.params.mode;
-  const { text, subject, email, name } = req.body;
+  const { text, subject, email, name, msgId } = req.body;
   if (!text) {
     throw new Error(`you didn't give any reply`);
   }
@@ -35,7 +35,7 @@ const sendEmailToClient = async (req, res) => {
     const response = await mailer(
       {
         info: {
-          subject: subject,
+          subject: subject || 'We are here for you!',
           body: text,
         },
         client: {
@@ -46,7 +46,7 @@ const sendEmailToClient = async (req, res) => {
       'custom'
     );
     if (mode === 'contact') {
-      await Contact.update({ replied: 1 }, { where: { email: email } });
+      await Contact.update({ replied: 1 }, { where: { id: msgId } });
     }
     res.json({ succeed: true, msg: 'email sent' });
   } catch (error) {

@@ -1,5 +1,4 @@
 import { useOutletContext } from 'react-router-dom';
-import Chart from 'chart.js/auto';
 import { defaults } from 'chart.js/auto';
 import { Bar, Line } from 'react-chartjs-2';
 import RoundedRiseAnime from '../../Components/Utils/RoundedRiseAnime';

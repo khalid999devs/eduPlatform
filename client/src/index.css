@@ -34,7 +34,7 @@ html {
   @apply gap-3 flex items-center mx-auto;
 }
 
-.create>section {
+.create > section {
   @apply mb-4 w-full flex justify-between flex-col items-start md:flex-row;
 }
 
@@ -42,11 +42,11 @@ html {
   @apply text-sm;
 }
 
-.create>section>input {
+.create > section > input {
   @apply border-0 outline-none p-2.5 rounded-md bg-slate-900/40 text-yellow-50;
 }
 
-.create>section>input:focus {
+.create > section > input:focus {
   @apply border-0 outline-none;
 }
 
@@ -146,7 +146,7 @@ form.gallery-form section input {
   .dashboard-container {
     max-width: 1200px;
     margin: auto;
-    min-height: '100vh';
+    min-height: 80vh;
     /* height: 100%; */
     width: 100%;
     display: grid;
