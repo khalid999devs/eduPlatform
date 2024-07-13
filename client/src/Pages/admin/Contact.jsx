@@ -34,7 +34,7 @@ const ContactAdmin = () => {
                     key={`msg-id${id}`}
                     className={`text-center text-sm transition-colors hover:bg-slate-400 cursor-default ${
                       msg?.id === inboxId
-                        ? "bg-green-300 pointer-events-none"
+                        ? "bg-yellow-300 pointer-events-none"
                         : id % 2 == 0
                         ? "bg-slate-200"
                         : "bg-white"
@@ -64,8 +64,10 @@ const SenderInfo = ({ msgId, allmsg, setClose }) => {
   const data = allmsg?.find((ele) => ele?.id === msgId);
   const [msg, setMsg] = useState({ text: "", subject: "" });
   const [res, setResponse] = useState("");
+  const [loader, setLoader] = useState(false);
   function handleReply(e) {
     e.preventDefault();
+    setLoader(true);
     sendReply(
       {
         text: msg.text,
@@ -73,7 +75,8 @@ const SenderInfo = ({ msgId, allmsg, setClose }) => {
         name: data?.name,
         email: data?.email,
       },
-      setResponse
+      setResponse,
+      setLoader
     );
   }
   useEffect(() => {
@@ -148,12 +151,19 @@ const SenderInfo = ({ msgId, allmsg, setClose }) => {
         ) : null}
         <button
           type="submit"
-          className="float-right m-4 px-4 py-2 bg-onPrimary-main text-primary-main rounded-md hover:bg-onPrimary-light hover:text-onPrimary-main transition-colors"
+          className="m-4 px-4 py-2 bg-onPrimary-main text-primary-main rounded-md hover:bg-onPrimary-light hover:text-onPrimary-main transition-colors flex justify-center gap-3 items-center"
+          disabled={loader}
         >
-          Send
+          Send {loader && <Spinner />}
         </button>
       </form>
     </section>
+  );
+};
+
+const Spinner = () => {
+  return (
+    <div className="w-6 h-6 mx-3 rounded-full border-4 border-blue-200 border-b-blue-500 anime-rot-fast "></div>
   );
 };
 export default ContactAdmin;
