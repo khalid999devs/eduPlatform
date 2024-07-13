@@ -62,9 +62,13 @@ const TermsPolicy = () => {
             We use the information we collect from you to personalize your
             experience, improve our website, and better respond to your
             individual needs. Your data is stored securely in our database with
-            fully encrypted passwords.
+            fully encrypted passwords. While we strive to ensure the highest
+            level of data security, we cannot guarantee against all potential
+            data breaches or losses. By using our services, you acknowledge and
+            accept these risks.
           </p>
         </section>
+
         <section className='mt-8'>
           <h3 className='text-xl font-bold mb-4'>Cookie Usage</h3>
           <p>
