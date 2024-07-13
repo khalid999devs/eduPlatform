@@ -1,26 +1,26 @@
-import axios from "axios";
+import axios from 'axios';
 
-axios.defaults.baseURL = "http://localhost:8001";
-// axios.defaults.baseURL = 'https://chem.khalidahammed.com';
+axios.defaults.baseURL = 'http://localhost:8001';
+// axios.defaults.baseURL = 'https://chemapi.chemgenie.app';
 
-import { postCourse } from "./postCourse";
+import { postCourse } from './postCourse';
 import {
   adminFCourse,
   clientFCourse,
   fetchCourse,
   fetchCourses,
-} from "./fetchCourses";
-import { deleteCourse } from "./deleteCourse";
-import { updateCourse, deleteClass } from "./updateCourse";
-import { fetchStudents } from "./fetchStudents";
-import { addClass } from "./addRecord";
+} from './fetchCourses';
+import { deleteCourse } from './deleteCourse';
+import { updateCourse, deleteClass } from './updateCourse';
+import { fetchStudents } from './fetchStudents';
+import { addClass } from './addRecord';
 import {
   addExam,
   addSingleQues,
   addStudentAns,
   addStdFilesAns,
-} from "./addExam";
-import { addResources } from "./addResource";
+} from './addExam';
+import { addResources } from './addResource';
 import {
   getExamAdmin,
   getSingleExamAdmin,
@@ -28,8 +28,8 @@ import {
   getQuesClient,
   getSingleExamClient,
   getExamResultClient,
-} from "./fetchExams";
-import { deleteExam, deleteQuestion } from "./deleteExam";
+} from './fetchExams';
+import { deleteExam, deleteQuestion } from './deleteExam';
 
 export {
   addClass,
