@@ -62,7 +62,7 @@ const FooterMain = () => {
             <PrimaryButton
               text={'contact us'}
               classes={
-                'bg-purple-500 hidden w-fit my-4 px-5 py-2 hover:bg-purple-600 hover:text-purple-50 transition-colors'
+                'bg-purple-500 w-fit my-4 px-5 py-2 hover:bg-purple-600 hover:text-purple-50 transition-colors'
               }
               onClick={() => {
                 navigate('/contact-us');

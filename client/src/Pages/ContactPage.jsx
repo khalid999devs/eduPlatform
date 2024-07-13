@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { sendMessage } from "../axios/sendContact";
 const ContactPage = () => {
   const [contactInfo, setInfo] = useState({
@@ -8,9 +8,8 @@ const ContactPage = () => {
     institute: "",
     message: "",
   });
-  const [response, setResponse] = useState(".");
+  const [response, setResponse] = useState("");
   const [load, setLoad] = useState(false);
-  const [timer, settimer] = useState(5);
   function handleData(e) {
     setInfo((pre) => {
       return { ...pre, [e.target.name]: e.target.value };
@@ -18,14 +17,14 @@ const ContactPage = () => {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    setLoad(true);
     if (
       contactInfo.name.length > 0 &&
       contactInfo.email.length > 0 &&
       contactInfo.phone.length > 0 &&
       contactInfo.institute.length > 0 &&
-      contactInfo.message.length > 0
+      contactInfo.message.length > 20
     ) {
+      setLoad(true);
       sendMessage(contactInfo, setResponse)
         .then((res) => {
           setLoad(false);
@@ -36,21 +35,18 @@ const ContactPage = () => {
             institute: "",
             message: "",
           });
-          settimer(5);
         })
         .catch((err) => {
           console.log(err);
+        })
+        .finally(() => {
           setLoad(false);
         });
+    } else if (contactInfo.message.length < 50) {
+      setResponse("Your message should contain at least 20 letters.");
     }
   }
 
-  useEffect(() => {
-    let loop = setInterval(() => {
-      if (timer > 0) settimer((p) => --p);
-    }, 1000);
-    return () => clearInterval(loop);
-  }, [timer != 0]);
   return (
     <div className="relative rounded-2xl bg-gradient-to-tr from-primary-main to-onPrimary-main grid grid-cols-1 md:grid-cols-2 justify-between gap-10 p-10 shadow-2xl inset-y-5 shadow-primary-dark overflow-hidden z-20">
       {/* absolute bg */}
@@ -115,8 +111,8 @@ const ContactPage = () => {
           <section className="border-b-2 py-2 my-5">
             <input
               className="w-full bg-transparent border-none outline-none"
-              required
               type="text"
+              required
               name="institute"
               autoComplete="off"
               id="institute"
@@ -130,6 +126,7 @@ const ContactPage = () => {
               className="w-full bg-transparent border-none outline-none resize-none"
               rows={3}
               type="text"
+              required
               name="message"
               autoComplete="off"
               id="message"
@@ -138,21 +135,20 @@ const ContactPage = () => {
               onChange={handleData}
             />
           </section>
-          {response.length > 0 && timer > 0 ? (
+          {response.length > 0 ? (
             <div>
-              <p className="text-black border-l-2 border-green-400 font-bold text-left px-2 py-1">
-                {response} {timer}
+              <p className="text-black border-l-2 border-green-400 font-bold text-left px-2 py-1 mb-5">
+                {response}
               </p>
             </div>
-          ) : (
-            <button
-              className="w-full bg-yellow-400 text-white rounded-full py-3 text-base hover:shadow-lg hover:shadow-yellow-400/70 transition-all font-semibold"
-              type="submit"
-              disabled={load}
-            >
-              {load ? <Spinner /> : "Submit"}
-            </button>
-          )}
+          ) : null}
+          <button
+            className="w-full bg-yellow-400 text-white rounded-full py-3 text-base hover:shadow-lg hover:shadow-yellow-400/70 transition-all font-semibold"
+            type="submit"
+            disabled={load}
+          >
+            {load ? <Spinner /> : "Submit"}
+          </button>
         </form>
       </div>
     </div>
@@ -160,7 +156,7 @@ const ContactPage = () => {
 };
 const Spinner = () => {
   return (
-    <div className="w-10 h-10 rounded-full border-4 border-yellow-500 border-b-orange-500 anime-rot-fast "></div>
+    <div className="w-10 h-10 mx-auto rounded-full border-4 border-yellow-500 border-b-orange-500 anime-rot-fast "></div>
   );
 };
 export default ContactPage;
