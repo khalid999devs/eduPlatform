@@ -11,7 +11,7 @@ const htmlCreator = (mode, data) => {
                 <img src="https://github.com/khalid999devs/eduPlatform/blob/main/client/public/Images/emailTemp.png?raw=true" alt="Welcome" width="120" style="display: block; margin-bottom: 20px;" />
                 <h1 style="font-size: 24px; color: #041139; margin: 0;">Welcome to Chemgeine!</h1>
                 <p style="font-size: 16px; color: #1F2937; margin: 20px 0 30px 0;">Hi ${client.fullName}, We are excited to have you on board. Dive into the fascinating world of Chemistry with Chemgeine. Unlock your potential and explore the endless possibilities that chemistry offers.</p>
-                <a href="http://chemgenie.com/courses" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #041139; background-color: #FDE047; text-decoration: none; border-radius: 5px;">Get Started</a>
+                <a href="https://chemgenie.app/courses" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #041139; background-color: #FDE047; text-decoration: none; border-radius: 5px;">Get Started</a>
             </td>
         </tr>
         <tr>
