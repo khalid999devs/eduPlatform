@@ -53,6 +53,7 @@ import AdminExams from './Pages/admin/AdminExams.jsx';
 import ExamLists from './Components/Admin/Exams/ExamLists.jsx';
 import StudentLists from './Components/Admin/Exams/StudentLists.jsx';
 import WrittenEvaluation from './Pages/admin/WrittenEvaluation.jsx';
+import TermsPolicy from './Pages/TermsPolicy.jsx';
 // import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
 // import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
 
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: '/contact-us',
         element: <ContactPage />,
+      },
+      {
+        path: '/terms-policy',
+        element: <TermsPolicy />,
       },
       {
         path: '/dashboard',

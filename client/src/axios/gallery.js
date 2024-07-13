@@ -1,12 +1,12 @@
-import axios from "axios";
-import reqs from "../assets/requests";
+import axios from 'axios';
+import reqs from '../assets/requests';
 const addImage = async (data) => {
   try {
     axios
       .post(reqs.ADD_IMAGE_G, data, {
         withCredentials: true,
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then((res) => {
@@ -38,7 +38,7 @@ const deleteImage = async (id) => {
 const getImageGallery = async (setData) => {
   try {
     axios.get(reqs.GET_IMAGE_G).then((res) => {
-      console.log(res.data.succeed);
+      // console.log(res.data.succeed);
       setData(res.data.result);
     });
   } catch (error) {

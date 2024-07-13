@@ -16,21 +16,29 @@ export const links = [
     name: 'About',
     path: '/about',
   },
+  // {
+  //   name: 'Contact',
+  //   path: '/contact-us',
+  // },
 ];
 
 export const quickLinks = [
+  {
+    name: 'Contact',
+    path: '/contact-us',
+  },
+  {
+    name: 'About',
+    path: '/about',
+  },
   {
     name: 'Courses',
     path: '/courses',
   },
 
   {
-    name: 'About',
-    path: '/about',
-  },
-  {
-    name: 'Policy',
-    path: '/policy',
+    name: 'Privacy Policy',
+    path: '/terms-policy',
   },
 ];
 

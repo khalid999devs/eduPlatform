@@ -1,5 +1,0 @@
-{type:"Success",numbers:"01771470882",message:"You purchase for "Organic Chemistry Batch 24" is successful. Your order id is: #83895   --ChemGenie",fullTime:"2-7-2024 ,time-0:55"},
-{type:"Success",numbers:"01988892068",message:"You purchase for "Organic Chemistry Batch 24" is successful. Your order id is: #93077   --ChemGenie",fullTime:"2-7-2024 ,time-1:7"},
-{type:"Success",numbers:"01771470882",message:"Your http://localhost:5173/ OTP code is 3537",fullTime:"7-7-2024 ,time-23:7"},
-{type:"Success",numbers:"01771470882",message:"Your http://localhost:5173/ OTP code is 9154",fullTime:"7-7-2024 ,time-23:52"},
-{type:"Success",numbers:"01973957394",message:"You purchase for "Example Course 5" is successful. Your order id is: #39705   --ChemGenie",fullTime:"10-7-2024 ,time-22:17"},

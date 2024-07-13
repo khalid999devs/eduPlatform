@@ -14,7 +14,7 @@ const PaymentHistory = () => {
       });
   }, []);
 
-  console.log(orders);
+  // console.log(orders);
 
   return (
     <div className='flex flex-col gap-5 mb-6 w-full '>

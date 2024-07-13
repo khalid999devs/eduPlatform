@@ -7,7 +7,7 @@ import { ContextConsumer } from '../../../App';
 import axios from 'axios';
 import reqs from '../../../assets/requests';
 import Checkbox from '../../Form/Checkbox';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import Popup from '../../Alerts/Popup';
 
 function SignupForm() {
@@ -331,7 +331,19 @@ function SignupForm() {
         <Checkbox
           checked={accept}
           setChecked={setAccept}
-          text={`I accept the tearms and cookies`}
+          text={
+            <p>
+              {' '}
+              I accept the{' '}
+              <Link
+                to={'/terms-policy'}
+                target='_blank'
+                className='hover:underline text-blue-700'
+              >
+                terms and cookies
+              </Link>{' '}
+            </p>
+          }
           name={'acceptTerms'}
         />
         {/* button */}

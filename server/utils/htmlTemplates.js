@@ -1,7 +1,7 @@
 const htmlCreator = (mode, data) => {
-  let subject = data.info.subject,
-    body = data.info.body;
-  text = data.info.text;
+  let subject = data?.info?.subject,
+    body = data?.info?.body;
+  text = data?.info?.text;
 
   let client = data.client;
 

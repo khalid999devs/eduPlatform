@@ -1,4 +1,0 @@
-{succeed:false,fullTime:"2-7-2024 ,time-0:56",mode:"order",email:"bdentrkw@gmail.com"},
-{succeed:false,fullTime:"2-7-2024 ,time-0:58",mode:"order",email:"khalidahammeduzzal@gmail.com"},
-{succeed:false,fullTime:"2-7-2024 ,time-1:7",mode:"order",email:"bitophia@gmail.com"},
-{succeed:false,fullTime:"10-7-2024 ,time-22:17",mode:"order",email:"turya.biswas@gmail.com"},
