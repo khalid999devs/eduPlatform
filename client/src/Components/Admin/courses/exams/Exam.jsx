@@ -311,7 +311,15 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
               files.forEach((file) => {
                 form.append("questions", file);
               });
-              addSingleQues(form, toggleQues, setData);
+              addSingleQues(form, toggleQues, setData)
+                .then()
+                .finally((_) => {
+                  setQues("");
+                  setOpt([]);
+                  setAns([]);
+                  setFiles([]);
+                  setMark(0);
+                });
             }}
           >
             {/* question title */}
