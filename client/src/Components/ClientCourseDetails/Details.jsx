@@ -25,14 +25,12 @@ const Details = () => {
           </h4>
         </div>
         <div>
-          {
-            <ZoomLink
-              val={{
-                link: `live-zoom.${window.location.host}.com/${user?.userName}/${courseInfo?.id}`,
-              }}
-              zoomInfo={courseInfo?.classInfo}
-            />
-          }
+          <ZoomLink
+            val={{
+              link: `live-zoom.${window.location.host}.com/${user?.userName}/${courseInfo?.id}`,
+            }}
+            zoomInfo={courseInfo?.classInfo}
+          />
         </div>
         {/* course component section */}
         <div className='mt-12'>

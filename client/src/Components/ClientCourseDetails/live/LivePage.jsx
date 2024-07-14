@@ -1,5 +1,4 @@
 function ZoomLink({ val, zoomInfo }) {
-  if(false)
   return (
     <div className='dark:text-darkText p-2 m-auto mb-4 max-w-[400px] w-full shadow-md'>
       <h2 className='text-center font-bold text-2xl text-secondary-dark'>
