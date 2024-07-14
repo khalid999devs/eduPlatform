@@ -53,7 +53,7 @@ function App() {
       .get(reqs.CLIENT_LOGOUT, { withCredentials: true })
       .then((res) => {
         if (res.data.succeed) {
-          resetUser(null);
+          resetUser();
           setContextTrigger(!contextTrigger);
         } else {
           throw new Error(res.data.msg);
