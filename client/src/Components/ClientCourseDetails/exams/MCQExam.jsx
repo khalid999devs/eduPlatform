@@ -51,17 +51,23 @@ const MCQExam = () => {
   useEffect(() => {
     if (submition && !isFinishedBefore) handleSubmit();
   }, [submition, isFinishedBefore]);
-  const OptionsMemo = ({ id, quesId, studentAns, quesOptions }) => {
+
+  const OptionsMemo = ({ id, quesId, quesOptions, stdAnsData }) => {
+    let currentOptionStatus = stdAnsData;
+    console.log(stdAnsData);
     return (
       <ul className="my-1">
         {quesOptions?.map((option, index) => {
           return (
             <li
               key={`q${id}?ans${index}`}
-              className={`flex items-center gap-2 space-y-1 cursor-pointer hover:bg-secondary-main rounded-md transition-colors p-1 touch-pan-left  `}
+              className={`flex items-center gap-2 space-y-1 cursor-pointer hover:bg-secondary-main rounded-md transition-colors p-1 touch-pan-left ${
+                currentOptionStatus == option?.id ? "bg-secondary-main" : ""
+              } `}
               onClick={() => {
+                console.log(currentOptionStatus);
                 if (
-                  studentAns?.optionsId?.findIndex(
+                  stdAns[id]?.optionsId?.findIndex(
                     (ele) => ele === option?.id
                   ) === -1
                 ) {
@@ -72,20 +78,23 @@ const MCQExam = () => {
                   let curData = stdAns[curID];
                   curData = {
                     questionId: quesId,
-                    optionsId: [...stdAns[curID]?.optionsId, option?.id],
+                    optionsId:
+                      stdAns[curID]?.optionsId?.findIndex(
+                        (oldId) => oldId == option?.id
+                      ) >= 0
+                        ? stdAns[curID]?.optionsId?.filter(
+                            (oldId) => oldId != option?.id
+                          )
+                        : [...stdAns[curID]?.optionsId, option?.id],
                   };
                   let arr = stdAns;
                   arr[curID] = curData;
-                  setAns(arr);
+                  setAns(arr); 
                 }
               }}
             >
               <span
-                className={`p-px text-black ring-black w-5 h-5 flex justify-center items-center ring-1 rounded-full ${
-                  studentAns?.optionsId?.includes(option?.id)
-                    ? "bg-secondary-main"
-                    : "bg-primary-main"
-                }`}
+                className={`p-px text-black ring-black w-5 h-5 flex justify-center items-center ring-1 rounded-full `}
               >
                 {index + 1}
               </span>
@@ -180,8 +189,8 @@ const MCQExam = () => {
             <OptionsMemo
               id={id}
               quesId={ques?.id}
-              studentAns={stdAns[id]}
               quesOptions={ques?.quesOptions}
+              stdAnsData={stdAns?.find(f=> f?.questionId === ques?.id)}
             />
           </div>
         ))}

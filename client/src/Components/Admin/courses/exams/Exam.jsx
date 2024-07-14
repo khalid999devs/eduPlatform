@@ -63,7 +63,20 @@ function Exam() {
             courseId: Number(id),
           };
           // console.log(submitData);
-          addExam(submitData, setData);
+          addExam(submitData, setData).finally(() => {
+            setExamData((pre) => {
+              return {
+                name: "",
+                topic: "",
+                category: "",
+                courseId: id,
+                totalMarks: 0,
+                examStartTime: "",
+                examEndTime: "",
+                examCreationTime: new Date().getTime(),
+              };
+            });
+          });
         }}
       >
         <FormInput
@@ -322,7 +335,12 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 category === "written" ? "hidden" : ""
               }`}
             >
-              <label htmlFor="opt">Options: </label>
+              <label htmlFor="opt">
+                Options:{" "}
+                <span className="text-red-500 text-sm">
+                  *add ';' to separate answer as options
+                </span>{" "}
+              </label>
               <input
                 className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
                 type="text"
@@ -330,7 +348,9 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 id="opt"
                 required={ansType === "options"}
                 placeholder="Options"
-                onChange={(e) => setOpt(e.target.value.split(","))}
+                onChange={(e) =>
+                  setOpt(e.target.value.split(";")?.map((op) => op?.trim()))
+                }
               />
               <p className="text-xs flex flex-wrap break-words">
                 {opt.map((e, i) => {
@@ -353,7 +373,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
             >
               <label htmlFor="ans">
                 Answer:{" "}
-                <span className="text-red-500 text-xs">
+                <span className="text-red-500 text-sm">
                   *make sure answer includes in options
                 </span>{" "}
               </label>
@@ -364,7 +384,9 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 id="ans"
                 placeholder="Answer"
                 required={ansType === "options"}
-                onChange={(e) => setAns(e.target.value.split(","))}
+                onChange={(e) =>
+                  setAns(e.target.value.split(";")?.map((op) => op?.trim()))
+                }
               />
               <p className="text-xs flex flex-wrap break-words">
                 {ans.map((e, i) => {
@@ -458,7 +480,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                     className=" ring-1 rounded-sm p-2 m-1 groupques relative"
                   >
                     <span className="float-right m-1 text-red-500 font-semibold">
-                      {quest?.mark} 
+                      {quest?.mark}
                     </span>
                     <p className="text-red-500 mb-1">
                       <span>

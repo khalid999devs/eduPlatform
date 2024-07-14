@@ -38,10 +38,20 @@ const addSingleQues = async (data, toggleQues, setQues) => {
     .then((res) => {
       if (res.data.succeed) {
         //here instead of reloading, we should set the ques data here.
-        // window.location.reload();
+
         alert(res.data.msg)
         toggleQues(true);
-        setQues({ questions: res.data?.exam?.quesAns?.questions });
+        // setQues({ questions: res.data?.exam?.quesAns });
+        const resData = res.data?.exam?.quesAns;
+        setQues({
+          questions: resData?.questions?.map(ele => {
+            return {
+              ...ele, quesAns: resData?.answers?.find(ans => {
+                if (ans?.id === ele?.id) return ans?.quesAns
+              })?.quesAns
+            }
+          })
+        });
       }
     })
     .catch((err) => {
@@ -50,7 +60,7 @@ const addSingleQues = async (data, toggleQues, setQues) => {
 
 };
 const addStudentAns = async (data, examId, setMessage) => {
-  
+
   try {
     axios
       .post(
@@ -82,7 +92,7 @@ const addStdFilesAns = async (data, setmsg) => {
     .then((res) => {
       setmsg(res.data?.msg);
     })
-    .catch((err) => {console.log(err); setmsg("Failed to submit")});
+    .catch((err) => { console.log(err); setmsg("Failed to submit") });
 
 };
 export { addExam, addSingleQues, addStudentAns, addStdFilesAns };

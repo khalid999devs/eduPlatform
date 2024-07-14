@@ -157,7 +157,7 @@ const Card = ({
       ) : null}
       {/* show time */}
       <p
-        className={`text-xs mt-3 group-hover:opacity-100 opacity-0 transition-opacity select-none text-slate-600 font-semibold`}
+        className={`text-xs mt-3 group-hover:opacity-100 md:opacity-0 transition-opacity select-none text-slate-600 font-semibold`}
       >
         sent {showTime(sentTime)}
       </p>

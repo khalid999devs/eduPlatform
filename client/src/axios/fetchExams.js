@@ -38,7 +38,7 @@ const getSingleExamAdmin = async (setData, eid) => {
         if (res.data.succeed) {
           const objData = Object.keys(res.data?.result);
           const newArr = objData.map((ele) => res.data.result[ele]);
-          setData({ questions: newArr });
+          setData({ questions: newArr }); 
         }
       })
       .catch((err) => {

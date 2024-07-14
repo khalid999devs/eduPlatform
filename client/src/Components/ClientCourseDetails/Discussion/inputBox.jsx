@@ -18,7 +18,7 @@ function InputBox({
   function handleInputChange(event) {
     setInputValue((pre) => event.target.value);
     const lines = event.target.value.split('\n');
-    setRows(Math.min(3, lines.length));
+    setRows(Math.min(5, lines.length));
   }
 
   function sendChat(e) {
@@ -68,7 +68,7 @@ function InputBox({
   }
 
   return (
-    <div className='flex flex-col items-start space-x-2 w-full px-5 py-3 text-center relative h-fit mb-4 font-thin tracking-wide text-sm bg-root_bluish/70  rounded-xl '>
+    <div className='flex flex-col items-start space-x-2 w-full px-5 pt-3 text-center relative h-fit tracking-wide text-sm rounded-xl font-normal'>
       {/* photo viewer */}
       <div
         className={`w-full p-2 bg-white ring-1 ring-blue-500/70 mb-5 rounded-xl flex flex-wrap ${
@@ -115,12 +115,12 @@ function InputBox({
         onSubmit={replyId > -1 ? replyChat : sendChat}
       >
         <div
-          className={`flex flex-1 items-center gap-3 p-2.5 dark:bg-stone-900/30 bg-stone-800/70 text-white border-gray-300 flex-grow outline-none border-0 ring-[1.5px] ring-blue-500 ${
+          className={`flex flex-1 items-center gap-3 p-2.5 bg-slate-800 text-slate-200 border-gray-300 flex-grow outline-none border-0 ring-[1.5px] ring-blue-500 ${
             rows > 1 ? 'rounded-lg' : 'rounded-full'
           }`}
         >
           <textarea
-            className={`w-4/5 flex-grow outline-none border-0 bg-transparent`}
+            className={`w-4/5 flex-grow outline-none border-0 bg-transparent placeholder-slate-200 placeholder:opacity-50 font-medium`}
             value={inputValue}
             rows={rows}
             onChange={handleInputChange}
