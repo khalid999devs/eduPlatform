@@ -1,8 +1,8 @@
 import { FaFacebook, FaYoutube } from 'react-icons/fa';
 
 export const contacts = {
-  phone: ['+8801752905580'],
-  bkashNo: ['01771470882', '01839302299'],
+  phone: ['+8801839302299'],
+  bkashNo: ['01839302299'],
   emails: ['afnanbinsiddique@gmail.com'],
   location: 'Motijheel, Dhaka',
   socials: [

@@ -92,7 +92,7 @@ const getAllExamClient = async (courseId, setData) => {
     alert(error);
   }
 };
-const getQuesClient = async (examId, mode, setData) => {
+const getQuesClient = async (examId, mode="question", setData) => {
   /*question | answer */
   try {
     axios
@@ -136,7 +136,7 @@ const getExamResultClient = async (examId, mode, setData, setMessage) => {
         }
       })
       .catch((err) => {
-        setMessage(err);
+        setMessage('You did not give the exam or evaluation is pending');
       });
   } catch (error) {
     console.log(error);

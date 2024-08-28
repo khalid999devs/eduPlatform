@@ -48,53 +48,56 @@ function ExamPage() {
                     </span>
                   </p>
                   <span className="absolute top-2 right-2 text-red-500 font-semibold">
-                    Mark: {exam?.totalMarks}
+                    Total Mark: {exam?.totalMarks}
                   </span>
 
                   <p>Exam Starting time: {showTime(startTime)}</p>
                   <p>Exam Ending time: {showTime(endTime)}</p>
 
-                  {startTime < curTime.getTime() ? (
-                    endTime > curTime.getTime() ? (
-                      <button
-                        type="button"
-                        className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
-                        onClick={() => {
-                          let isConfirm = confirm(
-                            "Are you ready to take the exam?"
-                          );
-                          if (isConfirm) {
-                            navigate(
-                              exam?.category === "quiz"
-                                ? `quiz/${exam?.id}`
-                                : exam?.category === "written"
-                                ? `written/${exam?.id}`
-                                : `quiz_written/${exam?.id}`
-                            );
-                          }
-                        }}
-                      >
-                        Take Exam
-                      </button>
-                    ) : exam?.isFinalClosed ? (
-                      <Link to={`viewQuestion/${exam?.id}`}>
+                  <div className="grid grid-cols-1 mt-4">
+                    {startTime < curTime.getTime() ? (
+                      endTime > curTime.getTime() ? (
                         <button
                           type="button"
                           className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                          onClick={() => {
+                            let isConfirm = confirm(
+                              "Are you ready to take the exam?"
+                            );
+                            if (isConfirm) {
+                              navigate(
+                                exam?.category === "quiz"
+                                  ? `quiz/${exam?.id}`
+                                  : exam?.category === "written"
+                                  ? `written/${exam?.id}`
+                                  : `quiz_written/${exam?.id}`
+                              );
+                            }
+                          }}
+                        >
+                          Take Exam
+                        </button>
+                      ) : exam?.isFinalClosed ? (
+                        <button
+                          type="button"
+                          className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                          onClick={() => {
+                            navigate(`viewQuestion/${exam?.id}`);
+                          }}
                         >
                           See Result
                         </button>
-                      </Link>
-                    ) : (
-                      <button
-                        type="button"
-                        className="bg-slate-950 text-rose-300 rounded-full px-3 py-1 m-2 opacity-50 pointer-events-none"
-                        disabled={true}
-                      >
-                        Pending
-                      </button>
-                    )
-                  ) : null}
+                      ) : (
+                        <button
+                          type="button"
+                          className="bg-slate-950 text-rose-300 rounded-full px-3 py-1 m-2 opacity-50 pointer-events-none"
+                          disabled={true}
+                        >
+                          Pending
+                        </button>
+                      )
+                    ) : null}
+                  </div>
                 </div>
               );
             })

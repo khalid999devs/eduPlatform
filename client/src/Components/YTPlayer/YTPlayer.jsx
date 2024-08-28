@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useMemo, useLayoutEffect } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import { useParams } from "react-router-dom";
 import "./style.css";
 import {
@@ -7,7 +13,7 @@ import {
   FaPlayCircle,
   FaPauseCircle,
 } from "react-icons/fa";
-import { MdFullscreen, MdFullscreenExit } from 'react-icons/md'
+import { MdFullscreen, MdFullscreenExit } from "react-icons/md";
 
 const YTPlayer = () => {
   const playerRef = useRef(null);
@@ -20,7 +26,7 @@ const YTPlayer = () => {
   const [speed, setSpeed] = useState(1);
   const [quality, setQuality] = useState("auto");
   const [qualities, setQualities] = useState([]);
-  const [isFullScreen, setFullScreen] = useState(false)
+  const [isFullScreen, setFullScreen] = useState(false);
   const { cid, videoId } = useParams();
 
   const togglePlay = () => {
@@ -149,8 +155,9 @@ const YTPlayer = () => {
   const controller = useMemo(() => {
     return (
       <div
-        className={`custom-controls text-sm hover:opacity-100 group-hover:opacity-100 delay-300 ${isPlaying ? "hover:opacity-100 opacity-0" : "opacity-100"
-          }  `}
+        className={`custom-controls text-sm hover:opacity-100 group-hover:opacity-100 delay-300 ${
+          isPlaying ? "hover:opacity-100 opacity-0" : "opacity-100"
+        } `}
         style={{
           zIndex: "1000",
         }}
@@ -203,7 +210,6 @@ const YTPlayer = () => {
         >
           {/* speed controll */}
           <div className="relative">
-
             <button
               style={{ width: "fit-content", position: "relative" }}
               onClick={showSpeed}
@@ -269,11 +275,17 @@ const YTPlayer = () => {
           {" \\ "}
           {`${convertTime(duration).m}:${convertTime(duration).s}`}
         </p>
-        <button className="text-white" style={{
-          display: 'none'
-        }} onClick={() => {
-          setFullScreen(pre => !pre)
-        }}>
+        <button
+          className="text-white"
+          style={
+            {
+              // display: 'none'
+            }
+          }
+          onClick={() => {
+            setFullScreen((pre) => !pre);
+          }}
+        >
           {!isFullScreen ? <MdFullscreen /> : <MdFullscreenExit />}
         </button>
       </div>
@@ -285,12 +297,13 @@ const YTPlayer = () => {
     togglePlay,
     isPlaying,
     handleSeekChange,
-    setFullScreen, isFullScreen
+    setFullScreen,
+    isFullScreen,
   ]);
 
   return (
     <div
-      className="video-container group "
+      className={`video-container group`}
       onContextMenu={(e) => e.preventDefault()}
       onKeyDown={(e) => {
         if (
@@ -323,7 +336,6 @@ const YTPlayer = () => {
             e.preventDefault();
           }
         }}
-
       />
       {/* video default control blocker */}
       <div
@@ -361,13 +373,19 @@ const YTPlayer = () => {
         className="customHeader transition-opacity duration-100 ease-out"
         style={{
           zIndex: "1000",
-          background: isPlaying ? "#fff1": "",
-          opacity: isPlaying ?"0.5": "1",
-          transitionProperty:"background",
-          transitionDelay: "300ms"
+          background: isPlaying ? "#fff1" : "",
+          opacity: isPlaying ? "0.5" : "1",
+          transitionProperty: "background",
+          transitionDelay: "300ms",
         }}
       >
-        <p className={`transition-colors pl-3 duration-300 delay-500 ${isPlaying ? 'text-transparent': ''}`}>{title}</p>
+        <p
+          className={`transition-colors pl-3 duration-300 delay-500 ${
+            isPlaying ? "text-transparent" : ""
+          }`}
+        >
+          {title}
+        </p>
       </div>
       {controller}
     </div>
