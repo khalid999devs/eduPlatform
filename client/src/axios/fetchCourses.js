@@ -1,13 +1,14 @@
-import axios from "axios";
-import reqs from "../assets/requests";
+import axios from 'axios';
+import reqs from '../assets/requests';
 //public
-const fetchCourses = async (setData) => {
+const fetchCourses = async (setData, setLoading) => {
   try {
-    axios.get(reqs.GET_COURSES).then((res) => {
-      if (res.status == 200) setData(res.data?.courses);
-    });
+    const res = await axios.get(reqs.GET_COURSES);
+    if (res.data.succeed) setData(res.data?.courses);
+    setLoading && setLoading(false);
   } catch (error) {
-    console.log(error.response);
+    setLoading && setLoading(false);
+    alert(error.response.data.msg);
   }
 };
 //public

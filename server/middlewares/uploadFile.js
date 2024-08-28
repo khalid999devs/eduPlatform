@@ -4,7 +4,6 @@ const { resolve } = require('path');
 const { BadRequestError } = require('../errors');
 
 const sanitizeFilename = (name) => {
-  // Replace the characters \ / : * ? " < > | with an underscore
   return name.replace(/[\\/:*?"<>|]/g, '_');
 };
 

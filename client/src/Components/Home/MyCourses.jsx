@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchCourses } from '../../axios/fetchCourses';
 
+// flex flex-row m-auto items-center justify-center lg:justify-start flex-wrap lg:flex-nowrap
+
 const MyCourses = ({ user }) => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
@@ -20,7 +22,7 @@ const MyCourses = ({ user }) => {
       <h1 className='inline-flex font-bold text-4xl md:text-5xl pb-2'>
         Explore Courses &nbsp; <BiBookReader className='text-cyan-500 ' />
       </h1>
-      <div className='flex flex-row m-auto items-center justify-center lg:justify-start flex-wrap lg:flex-nowrap px-2 py-6 gap-6 w-full'>
+      <div className='flex flex-wrap flex-row m-auto items-center justify-center px-2 py-6 gap-6 w-full'>
         {courses
           .sort((a, b) => {
             let x = new Date(a.createdAt).getTime();
@@ -36,15 +38,17 @@ const MyCourses = ({ user }) => {
             );
             if (value < 5)
               return (
-                <Coursecard
-                  key={value}
-                  cardDetails={course}
-                  onClick={(_) => {
-                    if (hasEnrolled === -1) navigate(`/courses/${course.id}`);
-                    else navigate(`/courses/onClientReq/${course.id}`);
-                  }}
-                  hasEnrolled={hasEnrolled !== -1}
-                />
+                <div key={value}>
+                  <Coursecard
+                    cardDetails={course}
+                    classes={'!h-full'}
+                    onClick={(_) => {
+                      if (hasEnrolled === -1) navigate(`/courses/${course.id}`);
+                      else navigate(`/courses/onClientReq/${course.id}`);
+                    }}
+                    hasEnrolled={hasEnrolled !== -1}
+                  />
+                </div>
               );
           })}
       </div>

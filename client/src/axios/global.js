@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { so } from '../assets/requests';
 
-axios.defaults.baseURL = 'http://localhost:8001';
-// axios.defaults.baseURL = 'https://chemapi.chemgenie.app';
+axios.defaults.baseURL = so || 'http://localhost:8001';
 
 import { postCourse } from './postCourse';
 import {

@@ -5,18 +5,21 @@ const Coursecard = ({
   cardDetails: { title, description, price, id, ratings, image },
   onClick,
   hasEnrolled,
+  classes,
 }) => {
   // console.log(image);
   return (
     <>
       <div
-        className='min-w-[250px] max-w-sm w-full border mx-auto rounded-lg shadow bg-onPrimary-main hover:scale-[101%] duration-200 transition-transform cursor-pointer table-cell'
+        className={
+          'max-w-[350px] w-full border mx-auto rounded-lg shadow bg-onPrimary-main hover:scale-[101%] duration-200 transition-transform cursor-pointer table-cell ' +
+          classes
+        }
         onClick={onClick}
       >
         <img
-          className='rounded-t-lg aspect-auto object-fill w-full'
+          className='rounded-t-lg aspect-auto object-cover h-[200px] w-full'
           src={reqImgWrapper(image)}
-          width={1080}
           alt='product image'
         />
 
@@ -25,7 +28,7 @@ const Coursecard = ({
             {title || 'Lorem ipsum dolor sit amet. lorem10'}
           </h5>
 
-          <p className='text-left text-slate-400 text-[.94rem] mt-1 text-ellipsis line-clamp-3'>
+          <p className='text-left text-slate-400 min-h-[70px] mb-4 h-auto text-[.92rem] mt-1 text-ellipsis line-clamp-3'>
             {description ||
               `Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati
             voluptas culpa quos,`}
