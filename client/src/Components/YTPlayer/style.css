@@ -7,12 +7,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  display: grid;
-  align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
   z-index: 100;
-  background-color: #000;
-  
+  background-color: #010101;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* gap: 2em; */
 }
 
 .customHeader {
@@ -33,27 +35,23 @@
 }
 
 iframe {
-  width: 100%;
+  width: 95%;
+  margin: 0 auto;
   height: auto;
-  max-width: 1920px;
-  max-height: 900px;
+  max-width: 1280;
+  max-height: 720px;
   display: block;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16/10;
   border-radius: 25px;
-
 }
 
 .custom-controls {
-  position: absolute;
+  position: relative;
   bottom: 0;
   left: 0;
-  width: 100%;
+  width: 95%;
   height: 4em;
-  background-color: #061452cc;
-  backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background-color: #0606ff44;
   gap: 1.5rem;
   padding: 10px;
   box-sizing: border-box;
@@ -67,11 +65,11 @@ iframe {
   background: #0872fd;
   border: none;
   border-radius: 5pt;
-  padding: 2pt 5pt;
-  width: 3rem;
+  padding: 2pt;
   text-align: center;
   display: flex;
   justify-content: center;
+  align-items: center;
   color: #232323;
   cursor: pointer;
   transition: color 100ms ease-in;

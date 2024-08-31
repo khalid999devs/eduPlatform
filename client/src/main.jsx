@@ -54,6 +54,7 @@ import ExamLists from "./Components/Admin/Exams/ExamLists.jsx";
 import StudentLists from "./Components/Admin/Exams/StudentLists.jsx";
 import WrittenEvaluation from "./Pages/admin/WrittenEvaluation.jsx";
 import TermsPolicy from "./Pages/TermsPolicy.jsx";
+import ViewResult from "./Components/ClientCourseDetails/exams/ViewResult.jsx";
 // import ZoomEntry from './Pages/zoom/zoomEntry.jsx';
 // import ZoomWeb from './Pages/zoom/zoomWeb.jsx';
 
@@ -155,7 +156,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/courses/onClientReq/:cid/exam/viewQuestion/:examid",
-        element: <ViewQuestion />,
+        element: <ViewQuestion/>,
+      },
+      {
+        path: "/courses/onClientReq/:cid/exam/viewResult/:examid",
+        element: <ViewResult />,
       },
       // <- if purchased, client view course page <-
 

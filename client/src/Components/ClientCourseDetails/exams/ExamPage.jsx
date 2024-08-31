@@ -78,15 +78,26 @@ function ExamPage() {
                           Take Exam
                         </button>
                       ) : exam?.isFinalClosed ? (
-                        <button
-                          type="button"
-                          className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
-                          onClick={() => {
-                            navigate(`viewQuestion/${exam?.id}`);
-                          }}
-                        >
-                          See Result
-                        </button>
+                        <div className="grid grid-cols-2">
+                          <button
+                            type="button"
+                            className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                            onClick={() => {
+                              navigate(`viewQuestion/${exam?.id}`);
+                            }}
+                          >
+                            See Question
+                          </button>
+                          <button
+                            type="button"
+                            className="bg-slate-950 text-yellow-300 hover:bg-slate-600 transition-colors rounded-full px-3 py-1 m-2"
+                            onClick={() => {
+                              navigate(`viewResult/${exam?.id}`);
+                            }}
+                          >
+                            See Result
+                          </button>
+                        </div>
                       ) : (
                         <button
                           type="button"

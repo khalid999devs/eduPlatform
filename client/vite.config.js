@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import commonjs from '@rollup/plugin-commonjs';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import commonjs from "@rollup/plugin-commonjs";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,6 +9,6 @@ export default defineConfig({
   //   include: ['@zoomus/websdk'],
   // },
   optimizeDeps: {
-    include: ['react-canvas-draw', 'chart.js', 'react-chartjs-2'],
+    include: ["react-canvas-draw", "chart.js", "react-chartjs-2"],
   },
 });

@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useLayoutEffect,
-} from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import "./style.css";
 import {
@@ -13,7 +7,7 @@ import {
   FaPlayCircle,
   FaPauseCircle,
 } from "react-icons/fa";
-import { MdFullscreen, MdFullscreenExit } from "react-icons/md";
+import { MdClose, MdFullscreen, MdFullscreenExit } from "react-icons/md";
 
 const YTPlayer = () => {
   const playerRef = useRef(null);
@@ -24,10 +18,13 @@ const YTPlayer = () => {
   const [duration, setDuration] = useState(0);
   const [title, setTitle] = useState("");
   const [speed, setSpeed] = useState(1);
-  const [quality, setQuality] = useState("auto");
-  const [qualities, setQualities] = useState([]);
+  const [quality, setQuality] = useState("hd720");
+
   const [isFullScreen, setFullScreen] = useState(false);
   const { cid, videoId } = useParams();
+
+  const speeds = [0.5, 1, 1.5, 2];
+  const qualities = ["hd720", "large", "medium"];
 
   const togglePlay = () => {
     setIsPlaying((prev) => !prev);
@@ -80,14 +77,7 @@ const YTPlayer = () => {
   };
   const handlecontext = (e) => {
     e.preventDefault();
-    if (
-      e.key === "F12" ||
-      (e.ctrlKey && e.shiftKey && e.key === "I") ||
-      e.key === "Tab"
-    ) {
-      e.preventDefault();
-      window.location.href = "/";
-    }
+    return;
   };
   const pauseVideo = () => {
     if (playerRef.current) playerRef.current?.pauseVideo();
@@ -140,7 +130,7 @@ const YTPlayer = () => {
   const handleQualityChange = (newSpeed) => {
     setQuality(newSpeed);
     if (playerRef.current) {
-      playerRef.current?.setPlaybackQuality(newSpeed, true);
+      playerRef.current?.setPlaybackQuality(newSpeed);
     }
   };
   const showSpeed = () => {
@@ -148,146 +138,116 @@ const YTPlayer = () => {
   };
   const showQuality = () => {
     setsquality((pre) => !pre);
-    setQualities(playerRef.current?.playerInfo.availableQualityLevels);
   };
-  const speeds = [0.5, 1, 1.5, 2];
+  const handleFullScreen = () => {
+    if (playerRef.current && document.requestFullScreen) {
+      playerRef.current?.requestFullscreen();
+    }
+    setFullScreen((pre) => !pre);
+  };
 
   const controller = useMemo(() => {
     return (
       <div
-        className={`custom-controls text-sm hover:opacity-100 group-hover:opacity-100 delay-300 ${
-          isPlaying ? "hover:opacity-100 opacity-0" : "opacity-100"
+        className={`custom-controls text-sm delay-200 flex justify-center items-center ${
+          isPlaying ? "opacity-0 pointer-events-none" : "opacity-100"
         } `}
         style={{
           zIndex: "1000",
         }}
       >
+        {/* duration shower */}
+        <p
+          className="text-[.5rem] pointer-events-none p-2 grid rounded-md"
+          style={{
+            backgroundColor: "#0872fd",
+          }}
+        >
+          <span>
+            {`${convertTime(currentTime).m}:${convertTime(currentTime).s}`}
+          </span>
+          <hr />
+          <span>{`${convertTime(duration).m}:${convertTime(duration).s}`}</span>
+        </p>
         <ProgessBar
           currentTime={currentTime}
           duration={duration}
           handleSeekChange={handleSeekChange}
         />
-        {/* forward of backward */}
-        <div
-          className="text-xs"
-          style={{
-            display: "flex",
-            gap: "5pt",
-          }}
-        >
-          <button
-            style={{
-              height: "fit-content",
-              display: "flex",
-              alignItems: "center",
-              padding: "5pt",
-            }}
-            onClick={backwardVideo}
-          >
-            <FaBackward />
-          </button>
-          <button
-            style={{
-              height: "fit-content",
-              display: "flex",
-              alignItems: "center",
-              padding: "5pt",
-            }}
-            onClick={forwardVideo}
-          >
-            <FaForward />
-          </button>
-        </div>
-        {/* other controller */}
-        <div
-          className="vidSetting"
-          style={{
-            position: "relative",
-            display: "flex",
-            gap: "2pt",
-            alignItems: "center",
-          }}
-        >
-          {/* speed controll */}
-          <div className="relative">
+        <div className="flex-grow-[.25] flex items-center justify-evenly">
+          {/* forward of backward */}
+          <div className="text-xs flex justify-center">
             <button
-              style={{ width: "fit-content", position: "relative" }}
-              onClick={showSpeed}
-              className="text-xs"
+              className="w-5 h-5 flex justify-center items-center"
+              onClick={backwardVideo}
             >
-              Speed
+              <FaBackward />
             </button>
-            <ul onClick={showSpeed} className="absolute left-2">
-              {sspeed &&
-                speeds.map((ele, id) => {
-                  return (
-                    <li
-                      className="speed"
-                      key={id}
-                      onClick={() => {
-                        handleSpeedChange(ele);
-                        showSpeed();
-                      }}
-                    >
-                      {`${ele}x`}
-                    </li>
-                  );
-                })}
-            </ul>
+            <button onClick={forwardVideo}>
+              <FaForward />
+            </button>
+          </div>
+          {/* other controller vidSetting*/}
+          <div className="flex gap-1">
+            {/* speed control */}
+            <div className="relative">
+              <button className="text-xs w-fit" onClick={showSpeed}>
+                Speed
+              </button>
+              <ul onClick={showSpeed} className="absolute left-2">
+                {sspeed &&
+                  speeds.map((ele, id) => {
+                    return (
+                      <li
+                        className="speed"
+                        key={id}
+                        onClick={() => {
+                          handleSpeedChange(ele);
+                          showSpeed();
+                        }}
+                      >
+                        {`${ele}x`}
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
+
+            {/* quality control */}
+            <div className="relative">
+              <button className="w-fit text-xs" onClick={showQuality}>
+                Quality
+                <ul className="absolute left-2" onClick={showQuality}>
+                  {squality &&
+                    qualities.map((ele, id) => {
+                      return (
+                        <li
+                          className="speed"
+                          key={id}
+                          onClick={() => {
+                            handleQualityChange(ele);
+                            showQuality();
+                          }}
+                        >
+                          {ele}
+                        </li>
+                      );
+                    })}
+                </ul>
+              </button>
+            </div>
           </div>
 
-          {/* quality -- hidden by now */}
+          {/* full screen handle */}
           <button
-            style={{ width: "fit-content", display: "none" }}
-            onClick={showQuality}
+            className="text-white"
+            onClick={() => {
+              handleFullScreen();
+            }}
           >
-            Quality
-            <ul onClick={showQuality}>
-              {squality &&
-                qualities.map((ele, id) => {
-                  return (
-                    <li
-                      className="speed"
-                      key={id}
-                      onClick={() => {
-                        handleQualityChange(ele);
-                        showQuality();
-                      }}
-                    >
-                      {ele}
-                    </li>
-                  );
-                })}
-            </ul>
+            {!isFullScreen ? <MdFullscreen /> : <MdFullscreenExit />}
           </button>
         </div>
-        {/* duration shower */}
-        <p
-          className="text-xs pointer-events-none"
-          style={{
-            backgroundColor: "#0872fd",
-            padding: "5pt",
-            borderRadius: "5pt",
-            letterSpacing: "-.5px",
-          }}
-        >
-          {`${convertTime(currentTime).m}:${convertTime(currentTime).s}`}
-          {" \\ "}
-          {`${convertTime(duration).m}:${convertTime(duration).s}`}
-        </p>
-        <button
-          className="text-white"
-          style={
-            {
-              // display: 'none'
-            }
-          }
-          onClick={() => {
-            setFullScreen((pre) => !pre);
-          }}
-        >
-          {!isFullScreen ? <MdFullscreen /> : <MdFullscreenExit />}
-        </button>
       </div>
     );
   }, [
@@ -324,6 +284,7 @@ const YTPlayer = () => {
         }
       }}
     >
+      <HistoryBackBtn />
       <div
         ref={playerRef}
         onContextMenu={(e) => e.preventDefault()}
@@ -407,7 +368,6 @@ const PPButton = ({ isPlaying, Click, playVideo, pauseVideo }) => {
 const ProgessBar = ({ currentTime = 0, duration = 1, handleSeekChange }) => {
   return (
     <input
-      className="custom-progress"
       type="range"
       name="vidRange"
       min={0}
@@ -451,3 +411,17 @@ function convertTime(timeInSecond = 0) {
 function addPrefix(val) {
   return val < 10 ? `0${val}` : val;
 }
+
+const HistoryBackBtn = () => {
+  
+  return (
+    <button
+      className="fixed z-50 top-5 right-5 bg-white grid place-content-center"
+      onClick={() => {
+        window.history.back()
+      }}
+    >
+      <MdClose color="white" />
+    </button>
+  );
+};
