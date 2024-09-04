@@ -61,7 +61,7 @@ const MCQExam = () => {
           return (
             <li
               key={`q${id}?ans${index}`}
-              className={`flex items-center gap-2 space-y-1 cursor-pointer  rounded-md transition-colors p-1 touch-pan-left ${
+              className={`flex items-center gap-2 mb-2 cursor-pointer  rounded-md transition-colors p-1 touch-pan-left ${
                 stdAnsData?.optionsId?.findIndex((o) => o === option?.id) != -1
                   ? 'bg-secondary-main'
                   : 'hover:bg-secondary-main'
@@ -100,9 +100,8 @@ const MCQExam = () => {
               <label
                 className='block pointer-events-none'
                 htmlFor={option + index}
-              >
-                {option?.title}
-              </label>
+                dangerouslySetInnerHTML={{ __html: option?.title }}
+              ></label>
             </li>
           );
         })}
@@ -201,6 +200,7 @@ const MCQExam = () => {
             key={id}
             className='bg-white w-5/6 mx-auto px-5 py-3 my-5 rounded-lg'
           >
+<<<<<<< Updated upstream
             <h2 className='text-lg mt-5 font-semibold pointer-events-none select-none'>
               {id + 1}. {ques?.title}
               <span className='float-right text-red-500'>{ques?.mark}</span>
@@ -217,6 +217,14 @@ const MCQExam = () => {
                   }
                 />
               ))}
+=======
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg mt-5 font-semibold pointer-events-none select-none flex gap-3">
+                {id + 1}.
+                <span dangerouslySetInnerHTML={{ __html: ques?.title }}></span>
+              </h2>
+              <span className="float-right text-red-500 font-semibold">{ques?.mark}</span>
+>>>>>>> Stashed changes
             </div>
 
             <OptionsMemo

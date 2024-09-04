@@ -12,7 +12,11 @@ function Video({ sl, title = '', link = '', desc = '' }) {
       >
         <b>{sl}</b>
       </p>
+<<<<<<< Updated upstream
       <p className='text-left pl-5'>{title}</p>
+=======
+      <p className="text-left pl-5">{title || "Class link"}</p>
+>>>>>>> Stashed changes
       <a
         href={`record/${vid[vid.length - 1]}`}
         className='flex items-center justify-center gap-1 p-2 w-fit mx-auto border bg-white text-black text cursor-pointer rounded-md transition-all'

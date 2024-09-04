@@ -20,7 +20,6 @@ const YTPlayer = () => {
   const [speed, setSpeed] = useState(1);
   const [quality, setQuality] = useState('hd720');
 
-  const [isFullScreen, setFullScreen] = useState(false);
   const { cid, videoId } = useParams();
 
   const speeds = [0.5, 1, 1.5, 2];
@@ -66,6 +65,7 @@ const YTPlayer = () => {
         fs: 0,
         controls: 0,
         rel: 0,
+        modestbranding: 1,
         iv_load_policy: 3,
       },
       events: {
@@ -105,9 +105,6 @@ const YTPlayer = () => {
   };
 
   const onPlayerStateChange = (event) => {
-    // You can perform actions when the player state changes
-    // For example, you can get the current time of the video:
-
     setInterval(() => {
       setCurrentTime(playerRef.current?.getCurrentTime());
     }, 1000);
@@ -148,26 +145,29 @@ const YTPlayer = () => {
   const showQuality = () => {
     setsquality((pre) => !pre);
   };
-  const handleFullScreen = () => {
-    if (playerRef.current && document.requestFullScreen) {
-      playerRef.current?.requestFullscreen();
-    }
-    setFullScreen((pre) => !pre);
-  };
 
   const controller = useMemo(() => {
     return (
       <div
         className={`custom-controls text-sm delay-200 flex justify-center items-center ${
+<<<<<<< Updated upstream
           isPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
+=======
+          isPlaying ? "opacity-0 md:group-hover:opacity-100" : "opacity-100"
+>>>>>>> Stashed changes
         } `}
         style={{
           zIndex: '1000',
         }}
       >
         {/* duration shower */}
+<<<<<<< Updated upstream
         <p
           className='text-[.5rem] pointer-events-none p-2 grid rounded-md'
+=======
+        <div
+          className="text-sm pointer-events-none p-2 flex rounded-md"
+>>>>>>> Stashed changes
           style={{
             backgroundColor: '#0872fd',
           }}
@@ -175,9 +175,9 @@ const YTPlayer = () => {
           <span>
             {`${convertTime(currentTime).m}:${convertTime(currentTime).s}`}
           </span>
-          <hr />
+          {"/"}
           <span>{`${convertTime(duration).m}:${convertTime(duration).s}`}</span>
-        </p>
+        </div>
         <ProgessBar
           currentTime={currentTime}
           duration={duration}
@@ -185,11 +185,16 @@ const YTPlayer = () => {
         />
         <div className='flex-grow-[.25] flex items-center justify-evenly'>
           {/* forward of backward */}
+<<<<<<< Updated upstream
           <div className='text-xs flex justify-center'>
             <button
               className='w-5 h-5 flex justify-center items-center'
               onClick={backwardVideo}
             >
+=======
+          <div className="text-sm flex gap-3 justify-center">
+            <button onClick={backwardVideo}>
+>>>>>>> Stashed changes
               <FaBackward />
             </button>
             <button onClick={forwardVideo}>
@@ -246,6 +251,7 @@ const YTPlayer = () => {
               </button>
             </div>
           </div>
+<<<<<<< Updated upstream
 
           {/* full screen handle */}
           <button
@@ -256,6 +262,8 @@ const YTPlayer = () => {
           >
             {!isFullScreen ? <MdFullscreen /> : <MdFullscreenExit />}
           </button>
+=======
+>>>>>>> Stashed changes
         </div>
       </div>
     );
@@ -266,8 +274,6 @@ const YTPlayer = () => {
     togglePlay,
     isPlaying,
     handleSeekChange,
-    setFullScreen,
-    isFullScreen,
   ]);
 
   return (

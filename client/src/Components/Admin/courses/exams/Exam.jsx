@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import { FormInput } from "../input";
@@ -13,6 +13,7 @@ import {
   getSingleExamAdmin,
 } from "../../../../axios/global";
 import { reqImgWrapper } from "../../../../assets/requests";
+import TextFormatter from "../../TextFormatter";
 const options = ["quiz", "written"]; // 'quiz+written'
 const ansTypes = ["options", "file"];
 
@@ -257,6 +258,45 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
     getSingleExamAdmin(setData, eid);
   }, [eid]);
 
+  const handleOption = (e, id) => {
+    //  console.log(e,id)
+
+    const newArr = [...opt];
+    newArr[id] = e;
+    setOpt(newArr);
+  };
+  const handleQuestion = (e) => {
+    setQues(e);
+  };
+
+  const memoAnswerChoice = useMemo(() => {
+    const newOpt = opt;
+    return newOpt.map((ele, eid) => (
+      <button
+        key={`optionSelect_${eid}`}
+        className={`ring ring-green-500 w-full ${
+          ans.findIndex((item) => item === ele) === -1
+            ? "bg-slate-50"
+            : "bg-green-300"
+        } hover:bg-green-300 transition-colors flex gap-2 p-2 rounded-md`}
+        type="button"
+        onClick={() => {
+          if (ele == "") {
+            return;
+          }
+          if (ans.findIndex((item) => item === ele) === -1) {
+            setAns((pre) => [...pre, ele]);
+          } else {
+            const newArr = ans.filter((item) => item !== ele);
+            setAns(newArr);
+          }
+        }}
+      >
+        {eid + 1}. <p dangerouslySetInnerHTML={{ __html: ele }}></p>
+      </button>
+    ));
+  }, [opt, ans, setAns]);
+
   return (
     <>
       {startTime > currentTime.getTime() ? (
@@ -311,6 +351,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
               files.forEach((file) => {
                 form.append("questions", file);
               });
+
               addSingleQues(form, toggleQues, setData)
                 .then()
                 .finally((_) => {
@@ -323,19 +364,9 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
             }}
           >
             {/* question title */}
-            <section className="grid border p-2 rounded-md shadow space-y-2">
+            <section className="grid border p-2 rounded-md shadow gap-2">
               <label htmlFor="ques">Question*: </label>
-              <input
-                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-                id="ques"
-                type="text"
-                name="question"
-                placeholder="Title"
-                required
-                value={ques}
-                onChange={(e) => setQues(e.target.value)}
-              />
-              {/* <p className="text-xs flex flex-wrap break-words m-1">{ques}</p> */}
+              <TextFormatter pad={"pb-10"} setValue={handleQuestion} />
             </section>
             {/* question option */}
             <section
@@ -349,29 +380,24 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                   *add ';' to separate answer as options
                 </span>{" "}
               </label>
-              <input
-                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-                type="text"
-                name="options"
-                id="opt"
-                required={ansType === "options"}
-                placeholder="Options"
-                onChange={(e) =>
-                  setOpt(e.target.value.split(";")?.map((op) => op?.trim()))
-                }
-              />
-              <p className="text-xs flex flex-wrap break-words">
-                {opt.map((e, i) => {
-                  return (
-                    <span
-                      key={`${e}${i}`}
-                      className="m-1 p-1 rounded-sm bg-slate-200 text-black"
-                    >
-                      {e}
-                    </span>
-                  );
-                })}
-              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <section>
+                  <label className="text-sm"> Option 1</label>
+                  <TextFormatter setValue={(e) => handleOption(e, 0)} />
+                </section>
+                <section>
+                  <label className="text-sm"> Option 2</label>
+                  <TextFormatter setValue={(e) => handleOption(e, 1)} />
+                </section>
+                <section>
+                  <label className="text-sm"> Option 3</label>
+                  <TextFormatter setValue={(e) => handleOption(e, 2)} />
+                </section>
+                <section>
+                  <label className="text-sm"> Option 4</label>
+                  <TextFormatter setValue={(e) => handleOption(e, 3)} />
+                </section>
+              </div>
             </section>
             {/* question answer */}
             <section
@@ -385,29 +411,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                   *make sure answer includes in options
                 </span>{" "}
               </label>
-              <input
-                className="p-1 ring-1 ring-slate-700 border-none focus:outline-none outline-none"
-                type="text"
-                name="answer"
-                id="ans"
-                placeholder="Answer"
-                required={ansType === "options"}
-                onChange={(e) =>
-                  setAns(e.target.value.split(";")?.map((op) => op?.trim()))
-                }
-              />
-              <p className="text-xs flex flex-wrap break-words">
-                {ans.map((e, i) => {
-                  return (
-                    <span
-                      key={`${e}${i}${i}`}
-                      className="m-1 p-1 rounded-sm bg-slate-200 text-black"
-                    >
-                      {e}
-                    </span>
-                  );
-                })}
-              </p>
+              <div className="grid grid-cols-2 gap-3">{memoAnswerChoice}</div>
             </section>
             {/* question mark */}
             <section className="grid border p-2 rounded-md shadow space-y-2">
@@ -490,10 +494,11 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                     <span className="float-right m-1 text-red-500 font-semibold">
                       {quest?.mark}
                     </span>
-                    <p className="text-red-500 mb-1">
-                      <span>
-                        {l - id}. {quest.title}
-                      </span>
+                    <p className="text-red-500 mb-1 flex gap-3">
+                      {l - id}.
+                      <span
+                        dangerouslySetInnerHTML={{ __html: quest.title }}
+                      ></span>
                       <button
                         className="hover:bg-purple-400 rounded-full p-1 text-xl opacity-0 group-[ques]:group-hover:opacity-100 transition"
                         type="button"
@@ -529,10 +534,13 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                       {quest?.quesOptions?.map((qOpt) => {
                         return (
                           <li
-                            className="border p-1 border-black text-black"
+                            className="border p-1 border-black text-black flex gap-4"
                             key={`${qOpt?.id}+${qOpt?.title}`}
                           >
-                            {qOpt?.id}. {qOpt?.title}
+                            {qOpt?.id}.
+                            <p
+                              dangerouslySetInnerHTML={{ __html: qOpt?.title }}
+                            ></p>
                           </li>
                         );
                       })}

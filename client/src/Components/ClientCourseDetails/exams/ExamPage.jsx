@@ -42,9 +42,9 @@ function ExamPage() {
                 >
                   <p className="font-bold">{exam?.name}</p>
                   <p className="font-semibold">
-                    {exam?.topic}{" "}
+                    {exam?.topic}
                     <span className="uppercase text-sm">
-                      ({exam?.category})
+                      ({exam?.category || "quiz"})
                     </span>
                   </p>
                   <span className="absolute top-2 right-2 text-red-500 font-semibold">
@@ -70,7 +70,7 @@ function ExamPage() {
                                   ? `quiz/${exam?.id}`
                                   : exam?.category === "written"
                                   ? `written/${exam?.id}`
-                                  : `quiz_written/${exam?.id}`
+                                  : `quiz/${exam?.id}`
                               );
                             }
                           }}

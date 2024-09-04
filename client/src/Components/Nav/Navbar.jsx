@@ -6,6 +6,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import MobileNav from './MobileNav';
 import { useEffect, useState } from 'react';
 import { ContextConsumer } from '../../App';
+import logo from "/apple-touch-icon.png";
 import Avatar from './Avatar';
 
 const Navbar = () => {
@@ -39,9 +40,10 @@ const Navbar = () => {
     >
       <div
         id='navbar'
-        className='flex flex-row gap-4 m-auto max-w-6xl w-[100%] items-center justify-between '
+        className='flex flex-row gap-4 m-auto max-w-6xl w-[100%] items-center justify-between'
       >
         {/* logo */}
+        <img className='aspect-square' src={logo} alt="logo" width={45} height={45}/>
         <Link to={'/'}>
           <h1 className='text-2xl font-bold text-black w-fit pr-3'>
             ChemGenie
