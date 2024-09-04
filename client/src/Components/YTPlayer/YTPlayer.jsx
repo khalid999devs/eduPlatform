@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import "./style.css";
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import './style.css';
 import {
   FaForward,
   FaBackward,
   FaPlayCircle,
   FaPauseCircle,
-} from "react-icons/fa";
-import { MdClose, MdFullscreen, MdFullscreenExit } from "react-icons/md";
+} from 'react-icons/fa';
+import { MdClose, MdFullscreen, MdFullscreenExit } from 'react-icons/md';
 
 const YTPlayer = () => {
   const playerRef = useRef(null);
@@ -16,24 +16,33 @@ const YTPlayer = () => {
   const [squality, setsquality] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const [speed, setSpeed] = useState(1);
-  const [quality, setQuality] = useState("hd720");
+  const [quality, setQuality] = useState('hd720');
 
   const [isFullScreen, setFullScreen] = useState(false);
   const { cid, videoId } = useParams();
 
   const speeds = [0.5, 1, 1.5, 2];
-  const qualities = ["hd720", "large", "medium"];
+  const qualities = ['hd720', 'large', 'medium'];
 
   const togglePlay = () => {
     setIsPlaying((prev) => !prev);
   };
 
+  // console.log(
+  //   duration,
+  //   currentTime,
+
+  //   ((duration - currentTime) / duration) * 100,
+  //   ((duration - currentTime) / duration) * 100 < 4,
+  //   '%'
+  // );
+
   useEffect(() => {
     // Load the YouTube API script
-    const script = document.createElement("script");
-    script.src = "https://www.youtube.com/iframe_api";
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
     document.body.appendChild(script);
 
     // Define functions for YouTube API callbacks
@@ -43,9 +52,9 @@ const YTPlayer = () => {
     return () => {
       document.body.removeChild(script);
       delete window.onYouTubeIframeAPIReady;
-      playerRef.current?.removeEventListener("contextmenu", handlecontext);
-      window.removeEventListener("contextmenu", handlecontext);
-      window.removeEventListener("keydown", handlecontext);
+      playerRef.current?.removeEventListener('contextmenu', handlecontext);
+      window.removeEventListener('contextmenu', handlecontext);
+      window.removeEventListener('keydown', handlecontext);
     };
   }, [videoId, cid]);
 
@@ -71,9 +80,9 @@ const YTPlayer = () => {
     // You can use this reference to control the player (play, pause, seek, etc.)
     playerRef.current = player;
     // Add event listener to disable right-click context menu
-    playerRef.current?.addEventListener("contextmenu", handlecontext);
-    window.addEventListener("contextmenu", handlecontext);
-    window.addEventListener("keydown", handlecontext);
+    playerRef.current?.addEventListener('contextmenu', handlecontext);
+    window.addEventListener('contextmenu', handlecontext);
+    window.addEventListener('keydown', handlecontext);
   };
   const handlecontext = (e) => {
     e.preventDefault();
@@ -90,8 +99,8 @@ const YTPlayer = () => {
     // For example, you can play the video:
     let tit = event.target.videoTitle;
     let dur = event.target.getDuration();
-    let customTitle = localStorage.getItem("customTitle");
-    setTitle(customTitle ? customTitle : "Record Class");
+    let customTitle = localStorage.getItem('customTitle');
+    setTitle(customTitle ? customTitle : 'Record Class');
     setDuration(dur);
   };
 
@@ -150,17 +159,17 @@ const YTPlayer = () => {
     return (
       <div
         className={`custom-controls text-sm delay-200 flex justify-center items-center ${
-          isPlaying ? "opacity-0 pointer-events-none" : "opacity-100"
+          isPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
         } `}
         style={{
-          zIndex: "1000",
+          zIndex: '1000',
         }}
       >
         {/* duration shower */}
         <p
-          className="text-[.5rem] pointer-events-none p-2 grid rounded-md"
+          className='text-[.5rem] pointer-events-none p-2 grid rounded-md'
           style={{
-            backgroundColor: "#0872fd",
+            backgroundColor: '#0872fd',
           }}
         >
           <span>
@@ -174,11 +183,11 @@ const YTPlayer = () => {
           duration={duration}
           handleSeekChange={handleSeekChange}
         />
-        <div className="flex-grow-[.25] flex items-center justify-evenly">
+        <div className='flex-grow-[.25] flex items-center justify-evenly'>
           {/* forward of backward */}
-          <div className="text-xs flex justify-center">
+          <div className='text-xs flex justify-center'>
             <button
-              className="w-5 h-5 flex justify-center items-center"
+              className='w-5 h-5 flex justify-center items-center'
               onClick={backwardVideo}
             >
               <FaBackward />
@@ -188,18 +197,18 @@ const YTPlayer = () => {
             </button>
           </div>
           {/* other controller vidSetting*/}
-          <div className="flex gap-1">
+          <div className='flex gap-1'>
             {/* speed control */}
-            <div className="relative">
-              <button className="text-xs w-fit" onClick={showSpeed}>
+            <div className='relative'>
+              <button className='text-xs w-fit' onClick={showSpeed}>
                 Speed
               </button>
-              <ul onClick={showSpeed} className="absolute left-2">
+              <ul onClick={showSpeed} className='absolute left-2'>
                 {sspeed &&
                   speeds.map((ele, id) => {
                     return (
                       <li
-                        className="speed"
+                        className='speed'
                         key={id}
                         onClick={() => {
                           handleSpeedChange(ele);
@@ -214,15 +223,15 @@ const YTPlayer = () => {
             </div>
 
             {/* quality control */}
-            <div className="relative">
-              <button className="w-fit text-xs" onClick={showQuality}>
+            <div className='relative'>
+              <button className='w-fit text-xs' onClick={showQuality}>
                 Quality
-                <ul className="absolute left-2" onClick={showQuality}>
+                <ul className='absolute left-2' onClick={showQuality}>
                   {squality &&
                     qualities.map((ele, id) => {
                       return (
                         <li
-                          className="speed"
+                          className='speed'
                           key={id}
                           onClick={() => {
                             handleQualityChange(ele);
@@ -240,7 +249,7 @@ const YTPlayer = () => {
 
           {/* full screen handle */}
           <button
-            className="text-white"
+            className='text-white'
             onClick={() => {
               handleFullScreen();
             }}
@@ -267,18 +276,18 @@ const YTPlayer = () => {
       onContextMenu={(e) => e.preventDefault()}
       onKeyDown={(e) => {
         if (
-          e.key === "F12" ||
-          (e.ctrlKey && e.shiftKey && e.key === "I") ||
-          e.key === "Tab"
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+          e.key === 'Tab'
         ) {
           e.preventDefault();
         }
       }}
       onKeyDownCapture={(e) => {
         if (
-          e.key === "F12" ||
-          (e.ctrlKey && e.shiftKey && e.key === "I") ||
-          e.key === "Tab"
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+          e.key === 'Tab'
         ) {
           e.preventDefault();
         }
@@ -290,9 +299,9 @@ const YTPlayer = () => {
         onContextMenu={(e) => e.preventDefault()}
         onKeyDown={(e) => {
           if (
-            e.key === "F12" ||
-            (e.ctrlKey && e.shiftKey && e.code === "I") ||
-            e.key === "Tab"
+            e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && e.code === 'I') ||
+            e.key === 'Tab'
           ) {
             e.preventDefault();
           }
@@ -300,14 +309,14 @@ const YTPlayer = () => {
       />
       {/* video default control blocker */}
       <div
-        className="blockbefore transition"
+        className='blockbefore transition'
         style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          backgroundColor: !isPlaying ? "#1116" : "#0000",
-          zIndex: "0",
-          pointerEvents: "all",
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backgroundColor: !isPlaying ? '#1116' : '#0000',
+          zIndex: '0',
+          pointerEvents: 'all',
         }}
         onClick={() => {
           togglePlay();
@@ -316,11 +325,11 @@ const YTPlayer = () => {
         }}
       />
       <div
-        className={`centerController ${isPlaying ? "hide" : "active"}`}
+        className={`centerController ${isPlaying ? 'hide' : 'active'}`}
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <PPButton
@@ -331,18 +340,18 @@ const YTPlayer = () => {
         />
       </div>
       <div
-        className="customHeader transition-opacity duration-100 ease-out"
+        className='customHeader transition-opacity duration-100 ease-out'
         style={{
-          zIndex: "1000",
-          background: isPlaying ? "#fff1" : "",
-          opacity: isPlaying ? "0.5" : "1",
-          transitionProperty: "background",
-          transitionDelay: "300ms",
+          zIndex: '1000',
+          background: isPlaying ? '#fff1' : '',
+          opacity: isPlaying ? '0.5' : '1',
+          transitionProperty: 'background',
+          transitionDelay: '300ms',
         }}
       >
         <p
           className={`transition-colors pl-3 duration-300 delay-500 ${
-            isPlaying ? "text-transparent" : ""
+            isPlaying ? 'text-transparent' : ''
           }`}
         >
           {title}
@@ -368,8 +377,8 @@ const PPButton = ({ isPlaying, Click, playVideo, pauseVideo }) => {
 const ProgessBar = ({ currentTime = 0, duration = 1, handleSeekChange }) => {
   return (
     <input
-      type="range"
-      name="vidRange"
+      type='range'
+      name='vidRange'
       min={0}
       max={duration ? duration : 0}
       step={1}
@@ -413,15 +422,14 @@ function addPrefix(val) {
 }
 
 const HistoryBackBtn = () => {
-  
   return (
     <button
-      className="fixed z-50 top-5 right-5 bg-white grid place-content-center"
+      className='fixed z-50 top-5 right-5 bg-white grid place-content-center'
       onClick={() => {
-        window.history.back()
+        window.history.back();
       }}
     >
-      <MdClose color="white" />
+      <MdClose color='white' />
     </button>
   );
 };
