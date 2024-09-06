@@ -23,82 +23,11 @@ const CQExam = () => {
   useEffect(() => {
     getQuesClient(examid, "question", setData);
     getSingleExamClient(cid, examid, setEInfo);
-    const jsonData = {
-      questions: [
-        {
-          id: "5@7834076",
-          title: "New Ques 5?",
-          ansType: "options",
-          quesOptions: [
-            { id: 1, title: "op1" },
-            { id: 2, title: "op2" },
-            { id: 3, title: "op3" },
-            { id: 4, title: "op4" },
-            { id: 5, title: "op5" },
-          ],
-          mark: 5,
-        },
-        {
-          id: "5@8161241",
-          title: "New Ques 1?",
-          ansType: "options",
-          quesOptions: [
-            { id: 1, title: "op1" },
-            { id: 2, title: "op2" },
-            { id: 3, title: "op3" },
-          ],
-          mark: 15,
-        },
-        {
-          id: "5@8204966",
-          title: "New Ques 2?",
-          ansType: "options",
-          quesOptions: [
-            { id: 1, title: "op1" },
-            { id: 2, title: "op2" },
-            { id: 3, title: "op3" },
-            { id: 4, title: "op4" },
-          ],
-          mark: 13,
-        },
-        {
-          id: "5@8760079",
-          title: "New Question Image",
-          ansType: "options",
-          category: "null",
-          quesOptions: [
-            { id: 1, title: "op1" },
-            { id: 2, title: "op2" },
-            { id: 3, title: "op3" },
-            { id: 4, title: "op4" },
-          ],
-          mark: 17,
-          images: [
-            {
-              url: "uploads\\questions\\exam@5\\New_Question_Im\\New_Question_Im_exam@5_1719568760062.png",
-              originalName: "khalid ahammed.png",
-            },
-            {
-              url: "uploads\\questions\\exam@5\\New_Question_Im\\New_Question_Im_exam@5_1719568760069.jpeg",
-              originalName: "pexels-fotoaibe-813692.jpg",
-            },
-          ],
-        },
-      ],
-      answers: [
-        { id: "5@7834076", quesAns: [3] },
-        { id: "5@8161241", quesAns: [2, 3] },
-        { id: "5@8204966", quesAns: [2] },
-        { id: "5@8760079", quesAns: [1] },
-      ],
-    };
-
-    // setData(jsonData.questions);
   }, [examid]);
 
   useEffect(() => {
     let loop = setTimeout(() => {
-      if (!finish || curTime > endTime.getTime()) {
+      if (finish || curTime > endTime.getTime()) {
         navigate(`/courses/onClientReq/${cid}/exam`, {
           preventScrollReset: false,
         });
@@ -125,8 +54,10 @@ const CQExam = () => {
         endTime={endTime}
         setFinish={setFinish}
       />
-      {data?.length > 0
-        ? data?.map((quest, id) => {
+      {data?.length > 0 ? (
+        <div>
+          <h3 className="my-5 text-3xl font-bold text-center">Written Exam</h3>
+          {data?.map((quest, id) => {
             return (
               <Questions
                 key={`qid+${id}`}
@@ -140,8 +71,9 @@ const CQExam = () => {
                 allowSubmit={!finish}
               />
             );
-          })
-        : null}
+          })}
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -160,9 +92,12 @@ const ExamInfo = ({ data, startTime, endTime, setFinish }) => {
         Total Duration: {duration(examDur).hh}:{duration(examDur).mm}:
         {duration(examDur).ss}
       </h2>
-      <p className="rounded-md p-3 bg-red-500 text-white">
+      <p className="rounded-md p-3 bg-red-200/30 text-red-500 border border-red-500">
         NB:- If you have already taken the exam then just leave the page. After
         finishing the exam, you can see the answer paper
+      </p>
+      <p className="rounded-md p-3 bg-red-200/30 text-red-500 border border-red-500 mt-4">
+        NB:- Please submit your answer before finishing the time.
       </p>
       <Timer classes={"p-1 m-5"} endTime={endTime} setSubmit={setFinish} />
     </div>
@@ -212,7 +147,7 @@ const Questions = ({ id, qid, eid, cid, title, mark, images, allowSubmit }) => {
   };
 
   return (
-    <div>
+    <div className="bg-white border-gray-600 border rounded-md my-5 shadow-xl shadow-slate-300/40">
       {/* header */}
       <section className="flex justify-between p-2">
         <h1 className="font-semibold tracking-wide text-blue-950 flex items-center gap-3">

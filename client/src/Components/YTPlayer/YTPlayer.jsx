@@ -7,7 +7,7 @@ import {
   FaPlayCircle,
   FaPauseCircle,
 } from "react-icons/fa";
-import { MdClose, MdFullscreen, MdFullscreenExit } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 
 const YTPlayer = () => {
   const playerRef = useRef(null);
@@ -18,25 +18,17 @@ const YTPlayer = () => {
   const [duration, setDuration] = useState(0);
   const [title, setTitle] = useState("");
   const [speed, setSpeed] = useState(1);
-  const [quality, setQuality] = useState("hd720");
-
-  const { cid, videoId } = useParams();
-
+  const { videoId } = useParams();
+  const [showControl, setShowControl] = useState(true);
   const speeds = [0.5, 1, 1.5, 2];
   const qualities = ["hd720", "large", "medium"];
 
   const togglePlay = () => {
     setIsPlaying((prev) => !prev);
   };
-
-  // console.log(
-  //   duration,
-  //   currentTime,
-
-  //   ((duration - currentTime) / duration) * 100,
-  //   ((duration - currentTime) / duration) * 100 < 4,
-  //   '%'
-  // );
+  const toggleControl = () => {
+    setShowControl((prev) => !prev);
+  };
 
   useEffect(() => {
     // Load the YouTube API script
@@ -55,7 +47,7 @@ const YTPlayer = () => {
       window.removeEventListener("contextmenu", handlecontext);
       window.removeEventListener("keydown", handlecontext);
     };
-  }, [videoId, cid]);
+  }, [videoId]);
 
   const initializeYouTubePlayer = () => {
     // Create a new YouTube player
@@ -121,10 +113,12 @@ const YTPlayer = () => {
 
   const handleSeekChange = (e) => {
     // Handle changes in the seek input range
-    const newTime = parseFloat(e.target.value);
+    const newTime = parseFloat(e);
     setCurrentTime(newTime);
     if (playerRef.current) {
       playerRef.current?.seekTo(newTime, true);
+      pauseVideo();
+      setIsPlaying(false);
     }
   };
   const handleSpeedChange = (newSpeed) => {
@@ -132,9 +126,9 @@ const YTPlayer = () => {
     if (playerRef.current) {
       playerRef.current?.setPlaybackRate(newSpeed, true);
     }
+    showSpeed();
   };
   const handleQualityChange = (newSpeed) => {
-    setQuality(newSpeed);
     if (playerRef.current) {
       playerRef.current?.setPlaybackQuality(newSpeed);
     }
@@ -149,24 +143,30 @@ const YTPlayer = () => {
   const controller = useMemo(() => {
     return (
       <div
-        className={`custom-controls text-sm delay-200 flex justify-center items-center ${
-          isPlaying ? "opacity-0 md:group-hover:opacity-100" : "opacity-100"
+        className={`custom-controls p-4 flex justify-between items-center transition-transform md:hover:opacity-100 md:opacity-40 ${
+          !showControl ? "delay-500 translate-y-full md:translate-y-0" : "translate-y-0"
         } `}
         style={{
-          zIndex: "1000",
+          zIndex: "500",
         }}
       >
         {/* duration shower */}
         <div
-          className="text-sm pointer-events-none p-2 flex rounded-md"
+          className="text-sm select-none p-2 flex items-center justify-center rounded-md gap-3"
           style={{
             backgroundColor: "#0872fd",
           }}
         >
+          <PPButton
+            Click={togglePlay}
+            isPlaying={isPlaying}
+            pauseVideo={pauseVideo}
+            playVideo={playVideo}
+          />
           <span>
             {`${convertTime(currentTime).m}:${convertTime(currentTime).s}`}
           </span>
-          {"/"}
+          <span>{"/"}</span>
           <span>{`${convertTime(duration).m}:${convertTime(duration).s}`}</span>
         </div>
         <ProgessBar
@@ -174,7 +174,7 @@ const YTPlayer = () => {
           duration={duration}
           handleSeekChange={handleSeekChange}
         />
-        <div className="flex-grow-[.25] flex items-center justify-evenly">
+        <div className="flex gap-4 items-center justify-evenly">
           {/* forward of backward */}
 
           <div className="text-sm flex gap-3 justify-center">
@@ -197,7 +197,9 @@ const YTPlayer = () => {
                   speeds.map((ele, id) => {
                     return (
                       <li
-                        className="speed"
+                        className={`speed ${
+                          speed === ele && "bg-blue-700 text-white"
+                        }`}
                         key={id}
                         onClick={() => {
                           handleSpeedChange(ele);
@@ -212,7 +214,7 @@ const YTPlayer = () => {
             </div>
 
             {/* quality control */}
-            <div className="relative">
+            <div className="relative hidden">
               <button className="w-fit text-xs" onClick={showQuality}>
                 Quality
                 <ul className="absolute left-2" onClick={showQuality}>
@@ -239,6 +241,8 @@ const YTPlayer = () => {
       </div>
     );
   }, [
+    speed,
+    showControl,
     duration,
     currentTime,
     convertTime,
@@ -249,7 +253,7 @@ const YTPlayer = () => {
 
   return (
     <div
-      className={`video-container group`}
+      className={`video-container`}
       onContextMenu={(e) => e.preventDefault()}
       onKeyDown={(e) => {
         if (
@@ -292,14 +296,10 @@ const YTPlayer = () => {
           width: "100%",
           height: "100%",
           backgroundColor: !isPlaying ? "#1116" : "#0000",
-          zIndex: "0",
+          zIndex: "10",
           pointerEvents: "all",
         }}
-        onClick={() => {
-          togglePlay();
-          if (!isPlaying) playVideo();
-          else pauseVideo();
-        }}
+        onClick={toggleControl}
       />
       <div
         className={`centerController ${isPlaying ? "hide" : "active"}`}
@@ -307,6 +307,7 @@ const YTPlayer = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          zIndex: "20",
         }}
       >
         <PPButton
@@ -353,15 +354,22 @@ const PPButton = ({ isPlaying, Click, playVideo, pauseVideo }) => {
 };
 const ProgessBar = ({ currentTime = 0, duration = 1, handleSeekChange }) => {
   return (
-    <input
-      type="range"
-      name="vidRange"
-      min={0}
-      max={duration ? duration : 0}
-      step={1}
-      value={currentTime ? currentTime : 0}
-      onChange={handleSeekChange}
-    />
+    <label
+      className="w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute -top-1 left-0"
+      htmlFor="vidRange"
+      onClick={(e) => {
+        const T = e.pageX;
+        const B = window?.innerWidth;
+        handleSeekChange((T / B) * duration);
+      }}
+    >
+      <span
+        className={`absolute w-full h-full left-0 top-0 bg-white rounded-full shadow shadow-blue-200 pointer-events-none`}
+        style={{
+          transform: `translateX(${(currentTime / duration) * 100 - 100}%)`,
+        }}
+      ></span>
+    </label>
   );
 };
 const PPIcon = ({ isPlaying, playVideo, pauseVideo, Click }) => {

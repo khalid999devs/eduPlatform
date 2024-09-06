@@ -1,8 +1,7 @@
 import React from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
-import { useParams } from "react-router-dom";
+
 function Video({ sl, title = "", link = "", desc = "" }) {
-  const { cid } = useParams();
   const vid = link.split("/");
   return (
     <div className="grid grid-cols-3 lg:grid-cols-4 gap items-center justify-between my-px p-1 shadow-lg shadow-gray-500 hover:shadow-inner bg-slate-800 text-white rounded-md text-base text-center group">

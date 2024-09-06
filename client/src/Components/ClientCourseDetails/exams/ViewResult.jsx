@@ -55,7 +55,8 @@ const ViewResult = () => {
                     >
                       {/* question title */}
                       <p className="w-full break-words">
-                        {id + 1}. {ele?.title}{" "}
+                        {id + 1}. 
+                        <div className="inline-flex ml-2" dangerouslySetInnerHTML={{__html: ele?.title}}></div>
                         <span className="float-right">{ele?.mark}</span>
                       </p>
                       {images?.length != 0
@@ -87,7 +88,13 @@ const ViewResult = () => {
                               } hover:backdrop-brightness-125`}
                               key={`qopt${quesOpt?.id}`}
                             >
-                              {oid + 1}. {quesOpt?.title}
+                              {oid + 1}.
+                              <div
+                              className="inline-flex ml-2"
+                                dangerouslySetInnerHTML={{
+                                  __html: quesOpt?.title,
+                                }}
+                              ></div>
                               {images?.length != 0 ? (
                                 <>
                                   <img

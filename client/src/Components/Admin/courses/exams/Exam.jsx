@@ -374,12 +374,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 category === "written" ? "hidden" : ""
               }`}
             >
-              <label htmlFor="opt">
-                Options:{" "}
-                <span className="text-red-500 text-sm">
-                  *add ';' to separate answer as options
-                </span>{" "}
-              </label>
+              <label htmlFor="opt">Options:</label>
               <div className="grid grid-cols-2 gap-2">
                 <section>
                   <label className="text-sm"> Option 1</label>
@@ -405,12 +400,7 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                 category === "written" ? "hidden" : ""
               }`}
             >
-              <label htmlFor="ans">
-                Answer:{" "}
-                <span className="text-red-500 text-sm">
-                  *make sure answer includes in options
-                </span>{" "}
-              </label>
+              <label htmlFor="ans">Answer:</label>
               <div className="grid grid-cols-2 gap-3">{memoAnswerChoice}</div>
             </section>
             {/* question mark */}
@@ -553,9 +543,10 @@ const AddQuestion = ({ eid, category, startTime = 0 }) => {
                           <li
                             className="border p-1 border-black text-black"
                             key={`${qans}+${aid}`}
-                          >
-                            {qans}
-                          </li>
+                            dangerouslySetInnerHTML={{
+                              __html: quest?.quesOptions[qans - 1]?.title,
+                            }}
+                          ></li>
                         );
                       })}
                     </ol>
