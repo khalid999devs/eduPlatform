@@ -117,8 +117,10 @@ const YTPlayer = () => {
     setCurrentTime(newTime);
     if (playerRef.current) {
       playerRef.current?.seekTo(newTime, true);
-      pauseVideo();
-      setIsPlaying(false);
+      if (!isPlaying) {
+        pauseVideo();
+        setIsPlaying(false);
+      }
     }
   };
   const handleSpeedChange = (newSpeed) => {
@@ -144,7 +146,9 @@ const YTPlayer = () => {
     return (
       <div
         className={`custom-controls p-4 flex justify-between items-center transition-transform md:hover:opacity-100 md:opacity-40 ${
-          !showControl ? "delay-500 translate-y-full md:translate-y-0" : "translate-y-0"
+          !showControl
+            ? "delay-500 translate-y-full md:translate-y-0"
+            : "translate-y-0"
         } `}
         style={{
           zIndex: "500",
@@ -302,7 +306,9 @@ const YTPlayer = () => {
         onClick={toggleControl}
       />
       <div
-        className={`centerController ${isPlaying ? "hide" : "active"}`}
+        className={`centerController ${
+          !showControl ? (!isPlaying ? "active" : "hide") : "active"
+        } `}
         style={{
           display: "flex",
           justifyContent: "center",
@@ -354,22 +360,34 @@ const PPButton = ({ isPlaying, Click, playVideo, pauseVideo }) => {
 };
 const ProgessBar = ({ currentTime = 0, duration = 1, handleSeekChange }) => {
   return (
-    <label
-      className="w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute -top-1 left-0"
-      htmlFor="vidRange"
-      onClick={(e) => {
-        const T = e.pageX;
-        const B = window?.innerWidth;
-        handleSeekChange((T / B) * duration);
-      }}
-    >
-      <span
-        className={`absolute w-full h-full left-0 top-0 bg-white rounded-full shadow shadow-blue-200 pointer-events-none`}
-        style={{
-          transform: `translateX(${(currentTime / duration) * 100 - 100}%)`,
+    <>
+      <label
+        className="w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0 hidden"
+        htmlFor="vidRange"
+        onClick={(e) => {
+          const T = e.pageX;
+          const B = window?.innerWidth;
+          handleSeekChange((T / B) * duration);
         }}
-      ></span>
-    </label>
+      >
+        <span
+          className={`absolute w-full h-full left-0 top-0 bg-white rounded-full shadow shadow-blue-200 pointer-events-none`}
+          style={{
+            transform: `translateX(${(currentTime / duration) * 100 - 100}%)`,
+          }}
+        ></span>
+      </label>
+      <input
+        className="w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0"
+        type="range"
+        name="vidRange"
+        min={0}
+        max={duration ? duration : 0}
+        step={0.5}
+        value={currentTime ? currentTime : 0}
+        onChange={(e) => handleSeekChange(e.target.value)}
+      />
+    </>
   );
 };
 const PPIcon = ({ isPlaying, playVideo, pauseVideo, Click }) => {

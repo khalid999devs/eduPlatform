@@ -45,10 +45,11 @@ const Navbar = () => {
         {/* logo */}
         <Link to={"/"}>
           <img
-            className="aspect-auto mx-10 mb-2"
+            className="aspect-video object-contain mx-10"
             src={logo}
             alt="logo"
-            width={105}
+            width={150}
+
           />
         </Link>
         {/* main nav */}

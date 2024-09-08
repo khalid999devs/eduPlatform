@@ -80,12 +80,11 @@ iframe {
 }
 
 .video-container input[type="range"] {
-  flex: 1;
+  /* flex: 1;
   height: fit-content;
-  background-color: #0394ee;
-  accent-color: #0394ee;
+  accent-color: #50a5fc;
   position: relative;
-  margin: 0;
+  margin: 0; */
 }
 
 .centerController {
