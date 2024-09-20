@@ -6,6 +6,7 @@ const {
   clientcourses,
   sequelize,
   Sequelize,
+  recordedclasses,
 } = require('../models');
 const {
   BadRequestError,
@@ -361,7 +362,27 @@ const confirmSingleOrder = async (req, res) => {
     { where: { courseId: courseId, clientId: user.id } }
   );
 
-  await clientcourses.create({ courseId: course.id, clientId: user.id });
+  // if (course.isLockVidFeature) {}
+  //get all recorded class and setup lockstates
+  const allRecordedClasses = await recordedclasses.findAll({
+    attributes: ['id'],
+    where: { courseId: courseId },
+  });
+
+  let redVidLockState = {};
+  let recVidDoneState = {};
+  allRecordedClasses.forEach((item, i) => {
+    redVidLockState[item.id] = i == 0 ? 0 : 1;
+    recVidDoneState[item.id] = 0;
+  });
+
+  await clientcourses.create({
+    courseId: course.id,
+    clientId: user.id,
+    redVidLockState: JSON.stringify(redVidLockState),
+    recVidDoneState: JSON.stringify(recVidDoneState),
+    currentPlVidId: allRecordedClasses[0].id || 'next',
+  });
   course.purchased = course.purchased + 1;
   await course.save();
 

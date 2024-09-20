@@ -1,0 +1,1 @@
+{type:"Success",numbers:"01988892068",message:"You purchase for "Organic Chemistry Batch 24" is successful. Your order id is: #88305   --ChemGenie",fullTime:"16-9-2024 ,time-20:42"},

@@ -32,17 +32,16 @@ const updateCourse = async (id, data, zoomInfo, setFetchTrigger) => {
     });
 };
 
-const deleteClass = async (id) => {
+const deleteClass = async (id, nextClassId, courseId) => {
   try {
     axios
-      .delete(
-        `${reqs.DELETE_CLASS}/${id}`,
-
-        {
-          // /api/course/delete-course/14
-          withCredentials: true,
-        }
-      )
+      .delete(`${reqs.DELETE_CLASS}/${id}`, {
+        params: {
+          nextClassId: nextClassId,
+          courseId: courseId,
+        },
+        withCredentials: true,
+      })
       .then((res) => {
         if (res.data.succeed) alert(`Recorded class ${id} has been DELETED`);
       })

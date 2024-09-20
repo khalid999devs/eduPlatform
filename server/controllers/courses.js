@@ -7,6 +7,7 @@ const {
   Admin,
   resources,
   recordedclasses,
+  sequelize,
 } = require('../models');
 const {
   BadRequestError,
@@ -259,9 +260,55 @@ const deleteCourse = async (req, res) => {
   });
 };
 
+const updateClassDone = async (req, res) => {
+  const { courseId, nextClassId, currentClassId } = req.body;
+  const clientId = req.user.id;
+  console.log(currentClassId);
+
+  let targetCourse = await clientcourses.findOne({
+    where: { clientId: clientId, courseId: courseId },
+  });
+  if (targetCourse) {
+    if (
+      nextClassId &&
+      (typeof nextClassId === 'string' || typeof nextClassId === 'number')
+    ) {
+      let lockVidStates = JSON.parse(targetCourse.redVidLockState);
+
+      if (lockVidStates[nextClassId] == 0 || lockVidStates[nextClassId] == 1) {
+        lockVidStates[nextClassId] = 0;
+      }
+
+      targetCourse.currentPlVidId = nextClassId;
+      targetCourse.redVidLockState = JSON.stringify(lockVidStates);
+    } else {
+      targetCourse.currentPlVidId = 'next';
+    }
+    let doneVidStates = JSON.parse(targetCourse.recVidDoneState);
+
+    if (
+      doneVidStates[currentClassId] == 0 ||
+      doneVidStates[currentClassId] == 1
+    ) {
+      doneVidStates[currentClassId] = 1;
+    }
+    targetCourse.recVidDoneState = JSON.stringify(doneVidStates);
+  }
+
+  // console.log(targetCourse);
+
+  await targetCourse.save();
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully updated the class!',
+  });
+};
+
 const addRecordedClass = async (req, res) => {
   const courseId = req.params.id;
-  const { videoURL, videoTitle, videoLength, desc } = req.body;
+  const { videoURL, videoTitle, videoLength, desc, prevClassId, folder } =
+    req.body;
   if (!videoURL) {
     throw new BadRequestError('Video URL must be provided');
   }
@@ -269,13 +316,43 @@ const addRecordedClass = async (req, res) => {
   if (!course) {
     throw new NotFoundError('Course could not found!');
   }
-  const record = await recordedclasses.create({
+  const classData = {
     videoURL,
     videoTitle,
     videoLength: Number(videoLength),
     desc,
     courseId: Number(courseId),
+  };
+  if (folder) classData.folder = folder;
+  const record = await recordedclasses.create(classData);
+
+  const query = `
+  UPDATE clientcourses 
+  SET redVidLockState = JSON_SET(
+    redVidLockState, 
+    CONCAT('$.', :recordId), 
+    CASE 
+      WHEN :prevClassId IS NULL OR :prevClassId = 'next' THEN 0
+      WHEN JSON_UNQUOTE(JSON_EXTRACT(redVidLockState, CONCAT('$.', :prevClassId))) = '0' AND JSON_UNQUOTE(JSON_EXTRACT(recVidDoneState, CONCAT('$.', :prevClassId))) = '1' THEN 0 
+      ELSE 1 
+    END
+  ),
+  recVidDoneState = JSON_SET(recVidDoneState,CONCAT('$.',:recordId),0),
+  currentPlVidId = CASE 
+    WHEN currentPlVidId = 'next' THEN :recordId 
+    ELSE currentPlVidId 
+  END
+  WHERE courseId = :courseId;
+`;
+
+  await sequelize.query(query, {
+    replacements: {
+      recordId: record.id,
+      prevClassId: prevClassId || null, // Handle null/undefined values
+      courseId: courseId,
+    },
   });
+
   res.status(201).json({
     succeed: true,
     msg: 'Successfully added the record.',
@@ -302,10 +379,47 @@ const editRecordedClass = async (req, res) => {
 
 const deleteRecordedClass = async (req, res) => {
   const recordId = req.params.id;
+  const { nextClassId, courseId } = req.query;
   let record = await recordedclasses.findOne({ where: { id: recordId } });
   if (!record) {
     throw new NotFoundError('The specific recorded class could not found!');
   }
+  let query = '';
+  if (nextClassId) {
+    query = `UPDATE clientcourses 
+  SET redVidLockState = JSON_SET(redVidLockState, 
+    CONCAT('$.', :nextId), 
+    CASE 
+      WHEN :nextId IS NOT NULL AND JSON_UNQUOTE(JSON_EXTRACT(redVidLockState, CONCAT('$.', :recordId))) = '0' THEN 0 
+      ELSE JSON_UNQUOTE(JSON_EXTRACT(redVidLockState, CONCAT('$.', :nextId))) 
+    END
+  ),
+  currentPlVidId = CASE 
+    WHEN currentPlVidId = :recordId AND currentPlVidId <> 'next' THEN :nextId
+    WHEN currentPlVidId <> 'next' AND :nextId IS NULL THEN 'next'
+    ELSE currentPlVidId
+  END
+  WHERE courseId = :courseId;
+`;
+  } else {
+    query = `UPDATE clientcourses 
+  SET currentPlVidId = CASE 
+    WHEN currentPlVidId = :recordId AND currentPlVidId <> 'next' THEN :nextId
+    WHEN currentPlVidId <> 'next' AND :nextId IS NULL THEN 'next'
+    ELSE currentPlVidId
+  END
+  WHERE courseId = :courseId;
+`;
+  }
+
+  await sequelize.query(query, {
+    replacements: {
+      recordId: record.id,
+      courseId: courseId,
+      nextId: nextClassId || null, // This will pass null if nextClassId is not set
+    },
+  });
+
   await record.destroy();
   res.json({
     succeed: true,
@@ -450,4 +564,5 @@ module.exports = {
   deleteResource,
   deleteCourse,
   editClassInfo,
+  updateClassDone,
 };

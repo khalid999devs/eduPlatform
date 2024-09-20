@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      folder: {
+        type: DataTypes.STRING,
+        defaultValue: null,
+      },
       desc: {
         type: DataTypes.TEXT,
       },

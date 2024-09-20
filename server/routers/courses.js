@@ -15,6 +15,7 @@ const {
   deleteResource,
   deleteCourse,
   editClassInfo,
+  updateClassDone,
 } = require('../controllers/courses');
 const {
   startDiscussion,
@@ -56,6 +57,8 @@ router.get(
 );
 router.get('/get-valid-reviews-client/:id', clientValidate, getAllValidReviews);
 router.get('/get-valid-reviews-admin/:id', adminValidate, getAllValidReviews);
+
+router.put('/update-done-class', clientValidate, updateClassDone);
 
 // router.post('/zoom-creds', getZoomCreds);
 router.post('/zoom-creds', clientValidate, getZoomCreds);

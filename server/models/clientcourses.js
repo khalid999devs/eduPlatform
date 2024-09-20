@@ -4,6 +4,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    redVidLockState: {
+      type: DataTypes.TEXT,
+      defaultValue: '{}',
+    },
+    recVidDoneState: {
+      type: DataTypes.TEXT,
+      defaultValue: '{}',
+    },
+    currentPlVidId: {
+      type: DataTypes.STRING,
+    },
   });
 
   clientcourses.associate = (models) => {

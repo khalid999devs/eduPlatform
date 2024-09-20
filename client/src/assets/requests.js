@@ -66,6 +66,7 @@ const reqs = {
   GET_STUDENTS: '/api/client/getAll', //admin
   UPDATE_COURSE: '/api/course/edit-course',
   UPDATE_IMAGE: '/api/course/update-image',
+  UPDATE_DONE_CLASS: '/api/course/update-done-class',
   ZOOM_CRED: '/api/course/zoom-creds',
 
   //contact

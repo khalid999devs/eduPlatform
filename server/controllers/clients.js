@@ -153,6 +153,17 @@ const getUser = async (req, res) => {
     },
   });
 
+  extraInfo.clientcourses.forEach((item) => {
+    if (item.dataValues.redVidLockState)
+      item.dataValues.redVidLockState = JSON.parse(
+        item.dataValues.redVidLockState
+      );
+    if (item.dataValues.recVidDoneState)
+      item.dataValues.recVidDoneState = JSON.parse(
+        item.dataValues.recVidDoneState
+      );
+  });
+
   const result = {
     ...req.user,
     ...extraInfo.dataValues,

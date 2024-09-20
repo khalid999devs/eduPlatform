@@ -19,8 +19,7 @@ const emailValidate = async (req, res, next) => {
     // }
     next();
   } else {
-    deleteFile(req.file.path);
-    throw new UnauthenticatedError('Email field should not be empty');
+    next();
   }
 };
 

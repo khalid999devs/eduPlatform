@@ -17,6 +17,7 @@ import reqs, { reqImgWrapper, reqPdfWrapper } from '../../../assets/requests';
 
 import axios from 'axios';
 import Exam from './exams/Exam';
+import RecordedClass from './videos/RecordedClass';
 function EachCourse() {
   const { id } = useParams();
   const { currentTab, render } = tabSwitcher();
@@ -226,56 +227,8 @@ function EachCourse() {
           </div>
         </div>
       )}
-      {/* map recorded video */}
-      {currentTab == 'record' && (
-        <div
-          className='grid grid-cols-1 gap-1 justify-center mt-10'
-          id='record'
-        >
-          <h2 className='text-center text-lg underline font-bold'>
-            Recorded Videos
-          </h2>
-          <p className='inline-block text-left w-fit mx-0'>
-            Total Class: {data?.recordedclasses?.length}
-          </p>
-          {data?.recordedclasses?.length != 0 ? (
-            <div className='grid grid-cols-3 gap items-center justify-between my-px p-1 border border-red-600 rounded-md text-base text-center'>
-              <b>Serial No.</b>
-              <b className='border-l-2 border-blue-600'>Class Title</b>
-              <b className='border-l-2 border-blue-600'>Class Link</b>
-            </div>
-          ) : null}
-          {data?.recordedclasses?.length != 0 ? (
-            <>
-              {data?.recordedclasses
-                ?.sort((a, b) => {
-                  let x = a.createdAt;
-                  let y = b.createdAt;
-                  if (x > y) return 1;
-                  else if (x < y) return -1;
-                  else if (x == y) return 0;
-                })
-                ?.map((vid, uid) => {
-                  return (
-                    <Video
-                      key={uid}
-                      id={vid.id}
-                      sl={uid + 1}
-                      length={vid.videoLength}
-                      link={vid.videoURL}
-                      title={vid.videoTitle}
-                      desc={vid.desc}
-                    />
-                  );
-                })}
-            </>
-          ) : null}
-        </div>
-      )}
-      {/* upload recorded video */}
-
-      {/* form for video upload and exam link*/}
-      {currentTab == 'record' && <VdoUpload id={id} />}
+      {/* map and upload recorded video */}
+      {currentTab == 'record' && <RecordedClass courseId={id} data={data} />}
 
       {/* exam section */}
       {currentTab == 'exam' && (
