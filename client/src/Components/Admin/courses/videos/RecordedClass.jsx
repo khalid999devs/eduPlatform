@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import VdoUpload from './vdoCourse';
 import Video from './video';
 import PrimaryButton from '../../../Buttons/PrimaryButton';
+import axios from 'axios';
+import reqs from '../../../../assets/requests';
+import Checkbox from '../../../Form/Checkbox';
 
-const RecordedClass = ({ courseId, data }) => {
+const RecordedClass = ({ courseId, data, setData }) => {
   const [addClassState, setAddClassState] = useState({
     prevId: null,
     state: false,
@@ -64,7 +67,32 @@ const RecordedClass = ({ courseId, data }) => {
     }
   }, [data?.recordedclasses]);
 
-  // console.log(data.recordedclasses);
+  // console.log(data.recordedclass);
+  const changeLockVidFeature = (lockFeatureState) => {
+    if (
+      data.isLockVidFeature === false ||
+      (data.isLockVidFeature === true && data.id)
+    ) {
+      axios
+        .patch(
+          `${reqs.UPDATE_COURSE}/${data.id}`,
+          { isLockVidFeature: lockFeatureState ? true : false },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          if (res.data.succeed) {
+            setData((data) => ({
+              ...data,
+              isLockVidFeature: lockFeatureState ? true : false,
+            }));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err.response.data.msg);
+        });
+    }
+  };
 
   return (
     <>
@@ -79,10 +107,20 @@ const RecordedClass = ({ courseId, data }) => {
         recorderClassData={data?.recordedclasses}
         setAddClassState={setAddClassState}
       />
-      <div className='grid grid-cols-1 gap-1 justify-center mt-10' id='record'>
-        <h2 className='text-center text-lg underline font-bold'>
-          Recorded Videos
-        </h2>
+      <div className='grid grid-cols-1 gap-1 justify-center mt-2' id='record'>
+        <div className='flex items-center w-full justify-between mb-4'>
+          <h2 className='text-center text-xl font-bold'>Recorded Videos</h2>
+          <div>
+            <Checkbox
+              text={'Lock Feature'}
+              checked={data?.isLockVidFeature}
+              setChecked={changeLockVidFeature}
+              name={'Lock-toggle'}
+              classes={`!gap-2 !font-medium !text-[0.95rem]`}
+            />
+          </div>
+        </div>
+
         <p className='inline-block text-left w-fit mx-0'>
           Total Class: {data?.recordedclasses?.length}
         </p>

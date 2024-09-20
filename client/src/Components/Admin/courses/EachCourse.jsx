@@ -228,7 +228,9 @@ function EachCourse() {
         </div>
       )}
       {/* map and upload recorded video */}
-      {currentTab == 'record' && <RecordedClass courseId={id} data={data} />}
+      {currentTab == 'record' && (
+        <RecordedClass courseId={id} data={data} setData={setData} />
+      )}
 
       {/* exam section */}
       {currentTab == 'exam' && (
