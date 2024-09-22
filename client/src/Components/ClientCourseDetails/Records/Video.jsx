@@ -4,6 +4,7 @@ import { CiLock } from 'react-icons/ci';
 import { CiUnlock } from 'react-icons/ci';
 import { MdDone } from 'react-icons/md';
 import { FaPlay } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 function Video({
   sl,
@@ -20,6 +21,7 @@ function Video({
   classes,
 }) {
   const vid = link.split('/');
+  const navigate = useNavigate();
 
   return (
     <div
@@ -45,10 +47,10 @@ function Video({
       </div>
 
       {!lockState && (
-        <a
-          href={`record/${
-            vid[vid.length - 1]
-          }&courseId=${courseId}&classId=${id}`}
+        <div
+          // href={`record/${
+          //   vid[vid.length - 1]
+          // }&courseId=${courseId}&classId=${id}`}
           className='flex items-center justify-center text-md pl-0.5 w-9 h-9 mx-auto bg-white text-onPrimary-main cursor-pointer duration-300 hover:bg-onPrimary-main hover:text-white transition-all border border-white rounded-full'
           title={title}
           onClick={() => {
@@ -62,10 +64,21 @@ function Video({
                   : '',
               })
             );
+
+            if (navigator.onLine) {
+              window.open(
+                `record/${
+                  vid[vid.length - 1]
+                }&courseId=${courseId}&classId=${id}`,
+                '_self'
+              );
+            } else {
+              navigate('/error?offline=1');
+            }
           }}
         >
           <FaPlay />
-        </a>
+        </div>
       )}
       {/* 
       <div className='text-left border-l-2 border-white m-2 w-auto p-2 hidden lg:block'>

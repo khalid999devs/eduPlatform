@@ -11,6 +11,8 @@ export const reqPdfWrapper = (src) => {
 };
 
 const reqs = {
+  CONNECTION_TEST: '/api/test',
+
   //admin auth
   ADMIN_LOGIN: '/api/admin/login',
   ADMIN_LOGOUT: '/api/admin/logout',

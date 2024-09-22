@@ -82,6 +82,13 @@ app.use('/api/exam', examRouter);
 app.use('/api/gallery', galleryRouter);
 app.use('/api/notification', notificationRouter);
 
+app.get('/api/test', (req, res) => {
+  res.json({
+    succeed: true,
+    msg: 'Successfully connected to the server!',
+  });
+});
+
 //notfound and errors
 const errorHandlerMiddleWare = require('./middlewares/errorHandler');
 const notFoundMiddleWare = require('./middlewares/notFound');
