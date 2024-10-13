@@ -371,9 +371,11 @@ const confirmSingleOrder = async (req, res) => {
 
   let redVidLockState = {};
   let recVidDoneState = {};
+  let recVidPlTimeState = {};
   allRecordedClasses.forEach((item, i) => {
     redVidLockState[item.id] = i == 0 ? 0 : 1;
     recVidDoneState[item.id] = 0;
+    recVidPlTimeState[item.id] = 10;
   });
 
   await clientcourses.create({
@@ -381,6 +383,7 @@ const confirmSingleOrder = async (req, res) => {
     clientId: user.id,
     redVidLockState: JSON.stringify(redVidLockState),
     recVidDoneState: JSON.stringify(recVidDoneState),
+    recVidPlTimeState: JSON.stringify(recVidPlTimeState),
     currentPlVidId: allRecordedClasses[0].id || 'next',
   });
   course.purchased = course.purchased + 1;

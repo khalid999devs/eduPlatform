@@ -28,6 +28,8 @@ const VdoUpload = ({
       if (rcrdData.videoURL.length == 0) alert('PLease provide the link');
       else {
         let prevId = null;
+        let classUnlockDefault = null;
+
         if (classData && classData[classData.length - 1]) {
           let dataobj = classData[classData.length - 1];
           if (
@@ -42,6 +44,9 @@ const VdoUpload = ({
               dataobj.id ||
               Object.values(dataobj)[0][Object.values(dataobj)[0].length - 1]
                 .id;
+            if (rcrdData.folder && !folders.includes(rcrdData.folder)) {
+              classUnlockDefault = true;
+            }
           } else {
             let folderObj = { id: -1 };
 
@@ -64,6 +69,7 @@ const VdoUpload = ({
               rcrdData.folder === 'None' || !rcrdData.folder
                 ? null
                 : rcrdData.folder,
+            classUnlockDefault,
           },
           prevId,
           setAddClassState

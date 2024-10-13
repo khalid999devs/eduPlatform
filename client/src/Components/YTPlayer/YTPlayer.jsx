@@ -22,6 +22,10 @@ const YTPlayer = () => {
   const [speed, setSpeed] = useState(1);
   const { videoId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [lastSavedDuration, setLastSavedDuration] = useState(10);
+  const [lockedTimeDuration, setLockedTimeDuration] = useState(30);
+  const currentTimeRef = useRef(currentTime);
+  const prevSavedTimeRef = useRef(lastSavedDuration);
 
   const courseId = Number(searchParams.get('courseId'));
   const classId = Number(searchParams.get('classId'));
@@ -39,6 +43,77 @@ const YTPlayer = () => {
   };
 
   useEffect(() => {
+    if (playerRef.current) {
+      axios
+        .post(
+          reqs.GET_CLASS_TIME,
+          { courseId: courseId, classId: classId },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          if (res.data.succeed) {
+            const currTime = res.data.currentTime;
+            currentTimeRef.current = currTime;
+            prevSavedTimeRef.current = currTime;
+            if (currTime > 10) {
+              setCurrentTime(currTime);
+              playerRef.current.seekTo(currTime, true);
+            }
+            setLastSavedDuration(currTime);
+            setLockedTimeDuration(currTime + 20);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+    //get the current last played duration from server
+  }, [courseId, classId, videoId, playerRef.current]);
+
+  // console.log(lastSavedDuration, lockedTimeDuration, currentTime);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // console.log(currentTimeRef.current, prevSavedTimeRef.current);
+      if (currentTimeRef.current > prevSavedTimeRef.current) {
+        const dataToSend = {
+          lockedStartTime: lastSavedDuration,
+          currentTime: currentTimeRef.current,
+          classId: classId,
+          courseId: courseId,
+        };
+        // console.log('running');
+
+        // prevSavedTimeRef.current = currentTimeRef.current;
+        // setLastSavedDuration(currentTimeRef.current);
+
+        axios
+          .put(reqs.UPDATE_CLASS_TIME, dataToSend, { withCredentials: true })
+          .then((res) => {
+            if (res.data.succeed) {
+              setLastSavedDuration(res.data.currentTime);
+              prevSavedTimeRef.current = res.data.currentTime;
+            }
+          })
+          .catch((error) => {
+            console.error('Error saving data:', error);
+          });
+      }
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    currentTimeRef.current = currentTime;
+    if (currentTime > prevSavedTimeRef.current) {
+      let extraTime = 20;
+      if (duration - currentTime < 20) {
+        extraTime = duration - currentTime;
+      }
+      setLockedTimeDuration(currentTime + extraTime);
+    }
+
     if (((duration - currentTime) / duration) * 100 < 4) {
       if (doneReqCount < 1) {
         // console.log(classId, courseId);
@@ -228,6 +303,8 @@ const YTPlayer = () => {
           currentTime={currentTime}
           duration={duration}
           handleSeekChange={handleSeekChange}
+          lockedStartTime={lastSavedDuration} //locakedsavedData represents the current state of the lastsavedData....for user efficiency only
+          savedIndicatorTime={lastSavedDuration}
         />
         <div className='flex gap-4 items-center justify-evenly'>
           {/* forward of backward */}
@@ -409,17 +486,73 @@ const PPButton = ({ isPlaying, Click, playVideo, pauseVideo }) => {
     />
   );
 };
-const ProgessBar = ({ currentTime = 0, duration = 1, handleSeekChange }) => {
+// const ProgessBar = ({ currentTime = 0, duration = 1, handleSeekChange }) => {
+//   return (
+//     <>
+//       <label
+//         className='w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0 hidden'
+//         htmlFor='vidRange'
+//         onClick={(e) => {
+//           const T = e.pageX;
+//           const B = window?.innerWidth;
+//           handleSeekChange((T / B) * duration);
+//         }}
+//       >
+//         <span
+//           className={`absolute w-full h-full left-0 top-0 bg-white rounded-full shadow shadow-blue-200 pointer-events-none`}
+//           style={{
+//             transform: `translateX(${(currentTime / duration) * 100 - 100}%)`,
+//           }}
+//         ></span>
+//       </label>
+//       <input
+//         className='w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0'
+//         type='range'
+//         name='vidRange'
+//         min={0}
+//         max={duration ? duration : 0}
+//         step={0.5}
+//         value={currentTime ? currentTime : 0}
+//         onChange={(e) => handleSeekChange(e.target.value)}
+//       />
+//     </>
+//   );
+// };
+
+const ProgessBar = ({
+  currentTime = 0,
+  duration = 1,
+  handleSeekChange,
+  lockedStartTime,
+  savedIndicatorTime,
+}) => {
+  const handleClick = (e) => {
+    const progressBar = e.target;
+    const { left, width } = progressBar.getBoundingClientRect();
+    const clickX = e.clientX - left;
+    const newTime = (clickX / width) * duration;
+
+    // Allow seeking only if newTime is before the locked area
+    if (newTime < lockedStartTime + 10) {
+      handleSeekChange(newTime);
+    }
+  };
+
+  const handleContinuousChange = (e) => {
+    const newTime = e.target.value;
+
+    // Allow seeking only if newTime is before the locked area
+    if (newTime < lockedStartTime + 10) {
+      handleSeekChange(newTime);
+    }
+  };
+
   return (
     <>
       <label
-        className='w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0 hidden'
+        className='w-full h-1 rounded-full z-30 bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0 hidden'
         htmlFor='vidRange'
-        onClick={(e) => {
-          const T = e.pageX;
-          const B = window?.innerWidth;
-          handleSeekChange((T / B) * duration);
-        }}
+        onClick={handleClick} // Handle click to seek
       >
         <span
           className={`absolute w-full h-full left-0 top-0 bg-white rounded-full shadow shadow-blue-200 pointer-events-none`}
@@ -429,18 +562,32 @@ const ProgessBar = ({ currentTime = 0, duration = 1, handleSeekChange }) => {
         ></span>
       </label>
       <input
-        className='w-full h-1 rounded-full bg-blue-500/50 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0'
+        className='w-full h-1 rounded-full bg-blue-500/50 -z-10 hover:bg-blue-400/60 transition-colors absolute cursor-pointer -top-1 left-0'
         type='range'
         name='vidRange'
         min={0}
-        max={duration ? duration : 0}
+        max={duration}
         step={0.5}
-        value={currentTime ? currentTime : 0}
-        onChange={(e) => handleSeekChange(e.target.value)}
+        value={currentTime}
+        onClick={handleClick}
+        onChange={(e) => {
+          // if (currentTime < lockedStartTime) handleSeekChange(e.target.value);
+          handleContinuousChange(e);
+        }}
+      />
+      {/* Create a visual representation of the locked area */}
+      <div
+        className='absolute -z-10 bg-opacity-40 bg-black h-1.5 rounded-full'
+        style={{
+          left: `${(lockedStartTime / duration) * 100 + 2}%`, // Start of locked area
+          width: `${100 - (lockedStartTime / duration) * 100}%`, // Width of locked area to end
+          top: '-12%',
+        }}
       />
     </>
   );
 };
+
 const PPIcon = ({ isPlaying, playVideo, pauseVideo, Click }) => {
   if (!isPlaying)
     return (

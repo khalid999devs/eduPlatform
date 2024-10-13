@@ -66,9 +66,12 @@ const reqs = {
   GET_COURSES: '/api/course/get-pub-courses', //public
   GET_SINGLE_COURSE: '/api/course/get-pub-course', //public
   GET_STUDENTS: '/api/client/getAll', //admin
+
+  GET_CLASS_TIME: '/api/course/get-class-time',
   UPDATE_COURSE: '/api/course/edit-course',
   UPDATE_IMAGE: '/api/course/update-image',
   UPDATE_DONE_CLASS: '/api/course/update-done-class',
+  UPDATE_CLASS_TIME: '/api/course/update-class-time',
   ZOOM_CRED: '/api/course/zoom-creds',
 
   //contact

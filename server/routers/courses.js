@@ -16,6 +16,8 @@ const {
   deleteCourse,
   editClassInfo,
   updateClassDone,
+  updateClassCurrTime,
+  getClassCurrTime,
 } = require('../controllers/courses');
 const {
   startDiscussion,
@@ -58,7 +60,10 @@ router.get(
 router.get('/get-valid-reviews-client/:id', clientValidate, getAllValidReviews);
 router.get('/get-valid-reviews-admin/:id', adminValidate, getAllValidReviews);
 
+router.post('/get-class-time', clientValidate, getClassCurrTime);
+
 router.put('/update-done-class', clientValidate, updateClassDone);
+router.put('/update-class-time', clientValidate, updateClassCurrTime);
 
 // router.post('/zoom-creds', getZoomCreds);
 router.post('/zoom-creds', clientValidate, getZoomCreds);

@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       defaultValue: '{}',
     },
+    recVidPlTimeState: {
+      type: DataTypes.TEXT,
+      defaultValue: '{}',
+    },
     currentPlVidId: {
       type: DataTypes.STRING,
     },

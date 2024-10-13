@@ -1,7 +1,5 @@
 const {
   courses,
-  notifications,
-  discussions,
   reviews,
   clientcourses,
   Admin,
@@ -16,13 +14,9 @@ const {
   UnauthorizedError,
   CustomAPIError,
 } = require('../errors');
-const { redis } = require('../utils/redis');
-const mailer = require('../utils/sendMail');
 const deleteFile = require('../utils/deleteFile');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const { Op } = require('sequelize');
-const cloudinary = require('cloudinary');
 
 const uploadCourse = async (req, res) => {
   try {
@@ -263,7 +257,6 @@ const deleteCourse = async (req, res) => {
 const updateClassDone = async (req, res) => {
   const { courseId, nextClassId, currentClassId } = req.body;
   const clientId = req.user.id;
-  console.log(currentClassId);
 
   let targetCourse = await clientcourses.findOne({
     where: { clientId: clientId, courseId: courseId },
@@ -305,10 +298,68 @@ const updateClassDone = async (req, res) => {
   });
 };
 
+const updateClassCurrTime = async (req, res) => {
+  const { classId, courseId, currentTime } = req.body;
+  const clientId = req.user.id;
+
+  const query = `
+  UPDATE clientcourses 
+  SET recVidPlTimeState = JSON_SET(recVidPlTimeState,CONCAT('$.',:recordId),:currTime)
+  WHERE courseId = :courseId AND clientId = :userId;
+`;
+
+  await sequelize.query(query, {
+    replacements: {
+      recordId: classId,
+      courseId: courseId,
+      currTime: currentTime,
+      userId: clientId,
+    },
+  });
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully updated current time state!',
+    currentTime: currentTime,
+  });
+};
+
+const getClassCurrTime = async (req, res) => {
+  const { courseId, classId } = req.body;
+  const clientId = req.user.id;
+  let targetCourse = await clientcourses.findOne({
+    where: { clientId: clientId, courseId: courseId },
+  });
+  if (!targetCourse) {
+    throw new NotFoundError('This specifiq class info could not be found!');
+  }
+
+  let currentTimeStateObj = JSON.parse(targetCourse.recVidPlTimeState);
+  const currentClassTime = Number(currentTimeStateObj[classId]);
+  if (!currentClassTime) {
+    throw new NotFoundError(
+      'Could not found current class time data! Something is wrong.'
+    );
+  }
+
+  res.json({
+    succeed: true,
+    msg: 'Successfully fetched current Class time data!',
+    currentTime: currentClassTime,
+  });
+};
+
 const addRecordedClass = async (req, res) => {
   const courseId = req.params.id;
-  const { videoURL, videoTitle, videoLength, desc, prevClassId, folder } =
-    req.body;
+  const {
+    videoURL,
+    videoTitle,
+    videoLength,
+    desc,
+    prevClassId,
+    folder,
+    classUnlockDefault = null,
+  } = req.body;
   if (!videoURL) {
     throw new BadRequestError('Video URL must be provided');
   }
@@ -326,7 +377,21 @@ const addRecordedClass = async (req, res) => {
   if (folder) classData.folder = folder;
   const record = await recordedclasses.create(classData);
 
-  const query = `
+  let query;
+  if (classUnlockDefault) {
+    query = `
+  UPDATE clientcourses 
+  SET redVidLockState = JSON_SET(redVidLockState, CONCAT('$.', :recordId),0),
+  recVidDoneState = JSON_SET(recVidDoneState,CONCAT('$.',:recordId),0),
+  recVidPlTimeState = JSON_SET(recVidPlTimeState,CONCAT('$.',:recordId),10),
+  currentPlVidId = CASE 
+    WHEN currentPlVidId = 'next' THEN :recordId 
+    ELSE currentPlVidId 
+  END
+  WHERE courseId = :courseId;
+`;
+  } else {
+    query = `
   UPDATE clientcourses 
   SET redVidLockState = JSON_SET(
     redVidLockState, 
@@ -338,12 +403,14 @@ const addRecordedClass = async (req, res) => {
     END
   ),
   recVidDoneState = JSON_SET(recVidDoneState,CONCAT('$.',:recordId),0),
+  recVidPlTimeState = JSON_SET(recVidPlTimeState,CONCAT('$.',:recordId),10),
   currentPlVidId = CASE 
     WHEN currentPlVidId = 'next' THEN :recordId 
     ELSE currentPlVidId 
   END
   WHERE courseId = :courseId;
 `;
+  }
 
   await sequelize.query(query, {
     replacements: {
@@ -565,4 +632,6 @@ module.exports = {
   deleteCourse,
   editClassInfo,
   updateClassDone,
+  updateClassCurrTime,
+  getClassCurrTime,
 };
