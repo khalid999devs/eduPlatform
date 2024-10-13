@@ -365,15 +365,16 @@ const confirmSingleOrder = async (req, res) => {
   // if (course.isLockVidFeature) {}
   //get all recorded class and setup lockstates
   const allRecordedClasses = await recordedclasses.findAll({
-    attributes: ['id'],
+    attributes: ['id', 'isFirst'],
     where: { courseId: courseId },
   });
 
   let redVidLockState = {};
   let recVidDoneState = {};
   let recVidPlTimeState = {};
+
   allRecordedClasses.forEach((item, i) => {
-    redVidLockState[item.id] = i == 0 ? 0 : 1;
+    redVidLockState[item.id] = i == 0 || item.isFirst == true ? 0 : 1;
     recVidDoneState[item.id] = 0;
     recVidPlTimeState[item.id] = 10;
   });

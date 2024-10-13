@@ -1,0 +1,2 @@
+{succeed:true,fullTime:"13-10-2024 ,time-16:23",mode:"par",email:"bdentrkw@gmail.com"},
+{succeed:true,fullTime:"13-10-2024 ,time-16:27",mode:"order",email:"bdentrkw@gmail.com"},

@@ -367,7 +367,7 @@ const addRecordedClass = async (req, res) => {
   if (!course) {
     throw new NotFoundError('Course could not found!');
   }
-  const classData = {
+  let classData = {
     videoURL,
     videoTitle,
     videoLength: Number(videoLength),
@@ -375,6 +375,8 @@ const addRecordedClass = async (req, res) => {
     courseId: Number(courseId),
   };
   if (folder) classData.folder = folder;
+  if (classUnlockDefault) classData.isFirst = true;
+
   const record = await recordedclasses.create(classData);
 
   let query;

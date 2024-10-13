@@ -115,7 +115,7 @@ const YTPlayer = () => {
     // }
 
     if (lockedTimeDuration > -1 && duration) {
-      console.log(((duration - lastSavedDuration) / duration) * 100);
+      // console.log(((duration - lastSavedDuration) / duration) * 100);
 
       if (((duration - lastSavedDuration) / duration) * 100 < 4) {
         if (doneReqCount < 1) {

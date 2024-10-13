@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: null,
       },
+      isFirst: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       desc: {
         type: DataTypes.TEXT,
       },
