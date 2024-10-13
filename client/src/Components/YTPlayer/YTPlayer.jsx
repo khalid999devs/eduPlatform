@@ -23,7 +23,7 @@ const YTPlayer = () => {
   const { videoId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [lastSavedDuration, setLastSavedDuration] = useState(10);
-  const [lockedTimeDuration, setLockedTimeDuration] = useState(30);
+  const [lockedTimeDuration, setLockedTimeDuration] = useState(-1);
   const currentTimeRef = useRef(currentTime);
   const prevSavedTimeRef = useRef(lastSavedDuration);
 
@@ -55,12 +55,12 @@ const YTPlayer = () => {
             const currTime = res.data.currentTime;
             currentTimeRef.current = currTime;
             prevSavedTimeRef.current = currTime;
+            setLastSavedDuration(currTime);
+            setLockedTimeDuration(currTime + 20);
             if (currTime > 10) {
               setCurrentTime(currTime);
               playerRef.current.seekTo(currTime, true);
             }
-            setLastSavedDuration(currTime);
-            setLockedTimeDuration(currTime + 20);
           }
         })
         .catch((err) => {
@@ -106,53 +106,57 @@ const YTPlayer = () => {
 
   useEffect(() => {
     currentTimeRef.current = currentTime;
-    if (currentTime > prevSavedTimeRef.current) {
-      let extraTime = 20;
-      if (duration - currentTime < 20) {
-        extraTime = duration - currentTime;
-      }
-      setLockedTimeDuration(currentTime + extraTime);
-    }
+    // if (currentTime > prevSavedTimeRef.current) {
+    //   let extraTime = 20;
+    //   if (duration - currentTime < 20) {
+    //     extraTime = duration - currentTime;
+    //   }
+    //   setLockedTimeDuration(currentTime + extraTime);
+    // }
 
-    if (((duration - currentTime) / duration) * 100 < 4) {
-      if (doneReqCount < 1) {
-        // console.log(classId, courseId);
-        setIsDoneReqCount((doneReqCount) => doneReqCount + 1);
-        const vidIdObj = localStorage.getItem('cp')
-          ? JSON.parse(localStorage.getItem('cp'))
-          : '';
-        // console.log(currentplVid, classId);
-        if (vidIdObj && vidIdObj.currentPlVidId) {
-          const currentplVid = vidIdObj.currentPlVidId - 300;
-          const nextClassId = vidIdObj.nextClassId
-            ? vidIdObj.nextClassId - 450
-            : null;
-          // console.log(currentplVid, classId, nextClassId);
+    if (lockedTimeDuration > -1 && duration) {
+      console.log(((duration - lastSavedDuration) / duration) * 100);
 
-          // if (currentplVid === classId) {
-          axios
-            .put(
-              reqs.UPDATE_DONE_CLASS,
-              {
-                courseId,
-                nextClassId: nextClassId,
-                currentClassId: classId,
-              },
-              { withCredentials: true }
-            )
-            .then((res) => {
-              if (res.data.succeed) {
-                localStorage.removeItem('cp');
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          // }
+      if (((duration - lastSavedDuration) / duration) * 100 < 4) {
+        if (doneReqCount < 1) {
+          // console.log(classId, courseId);
+          setIsDoneReqCount((doneReqCount) => doneReqCount + 1);
+          const vidIdObj = localStorage.getItem('cp')
+            ? JSON.parse(localStorage.getItem('cp'))
+            : '';
+          // console.log(currentplVid, classId);
+          if (vidIdObj && vidIdObj.currentPlVidId) {
+            const currentplVid = vidIdObj.currentPlVidId - 300;
+            const nextClassId = vidIdObj.nextClassId
+              ? vidIdObj.nextClassId - 450
+              : null;
+            // console.log(currentplVid, classId, nextClassId);
+
+            // if (currentplVid === classId) {
+            axios
+              .put(
+                reqs.UPDATE_DONE_CLASS,
+                {
+                  courseId,
+                  nextClassId: nextClassId,
+                  currentClassId: classId,
+                },
+                { withCredentials: true }
+              )
+              .then((res) => {
+                if (res.data.succeed) {
+                  localStorage.removeItem('cp');
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            // }
+          }
         }
       }
     }
-  }, [duration, currentTime]);
+  }, [duration, currentTime, lastSavedDuration, lockedTimeDuration]);
 
   useEffect(() => {
     // Load the YouTube API script
@@ -381,6 +385,7 @@ const YTPlayer = () => {
     togglePlay,
     isPlaying,
     handleSeekChange,
+    lastSavedDuration,
   ]);
 
   return (

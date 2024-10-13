@@ -1,5 +1,5 @@
-// export const so = 'https://chemapi.chemgenie.app';
-export const so = 'http://localhost:8001';
+export const so = 'https://chemapi.chemgenie.app';
+// export const so = 'http://localhost:8001';
 
 export const reqImgWrapper = (src) => {
   if (!src) return null;
