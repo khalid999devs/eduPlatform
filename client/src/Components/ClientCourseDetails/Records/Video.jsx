@@ -62,6 +62,7 @@ function Video({
                 currentPlVidId: currentPlVidId
                   ? Number(currentPlVidId) + 300
                   : '',
+                lockState: isLockVidFeature,
               })
             );
 

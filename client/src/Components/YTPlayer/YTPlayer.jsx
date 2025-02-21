@@ -26,6 +26,7 @@ const YTPlayer = () => {
   const [lockedTimeDuration, setLockedTimeDuration] = useState(-1);
   const currentTimeRef = useRef(currentTime);
   const prevSavedTimeRef = useRef(lastSavedDuration);
+  const [lockProgressBar, setLockProgressBar] = useState(true);
 
   const courseId = Number(searchParams.get('courseId'));
   const classId = Number(searchParams.get('classId'));
@@ -41,6 +42,15 @@ const YTPlayer = () => {
   const toggleControl = () => {
     setShowControl((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (localStorage.getItem('cp')) {
+      const vobj = JSON.parse(localStorage.getItem('cp'));
+
+      if (vobj.lockState === true || vobj.lockState === false)
+        setLockProgressBar(vobj.lockState);
+    }
+  }, []);
 
   useEffect(() => {
     if (playerRef.current) {
@@ -309,6 +319,7 @@ const YTPlayer = () => {
           handleSeekChange={handleSeekChange}
           lockedStartTime={lastSavedDuration} //locakedsavedData represents the current state of the lastsavedData....for user efficiency only
           savedIndicatorTime={lastSavedDuration}
+          lockProgressBar={lockProgressBar}
         />
         <div className='flex gap-4 items-center justify-evenly'>
           {/* forward of backward */}
@@ -386,6 +397,7 @@ const YTPlayer = () => {
     isPlaying,
     handleSeekChange,
     lastSavedDuration,
+    lockProgressBar,
   ]);
 
   return (
@@ -530,6 +542,7 @@ const ProgessBar = ({
   handleSeekChange,
   lockedStartTime,
   savedIndicatorTime,
+  lockProgressBar,
 }) => {
   const handleClick = (e) => {
     const progressBar = e.target;
@@ -538,7 +551,7 @@ const ProgessBar = ({
     const newTime = (clickX / width) * duration;
 
     // Allow seeking only if newTime is before the locked area
-    if (newTime < lockedStartTime + 10) {
+    if (newTime < lockedStartTime + 10 || !lockProgressBar) {
       handleSeekChange(newTime);
     }
   };
@@ -547,7 +560,7 @@ const ProgessBar = ({
     const newTime = e.target.value;
 
     // Allow seeking only if newTime is before the locked area
-    if (newTime < lockedStartTime + 10) {
+    if (newTime < lockedStartTime + 10 || !lockProgressBar) {
       handleSeekChange(newTime);
     }
   };
@@ -581,14 +594,16 @@ const ProgessBar = ({
         }}
       />
       {/* Create a visual representation of the locked area */}
-      <div
-        className='absolute -z-10 bg-opacity-40 bg-black h-1.5 rounded-full'
-        style={{
-          left: `${(lockedStartTime / duration) * 100 + 2}%`, // Start of locked area
-          width: `${100 - (lockedStartTime / duration) * 100}%`, // Width of locked area to end
-          top: '-12%',
-        }}
-      />
+      {lockProgressBar && (
+        <div
+          className='absolute -z-10 bg-opacity-40 bg-black h-1.5 rounded-full'
+          style={{
+            left: `${(lockedStartTime / duration) * 100 + 2}%`, // Start of locked area
+            width: `${100 - (lockedStartTime / duration) * 100}%`, // Width of locked area to end
+            top: '-12%',
+          }}
+        />
+      )}
     </>
   );
 };
